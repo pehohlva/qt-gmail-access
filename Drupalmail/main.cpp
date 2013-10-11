@@ -12,8 +12,8 @@
 #include "net_starterimap.h"
 #include "parser_eml.h"
 
-/// cd /Users/pro/Desktop/Qt_project/GmailHand/
-/// cd /Users/pro/project/version_sv/GmailHand/
+// qmake -spec /usr/local/Qt4.8/mkspecs/macx-g++ -o Makefile Drupalmail.pro
+// /Users/pro/project/github/Drupalmail/
 //  cd /Users/pro/.GMaildir/
 
 const int liwi = 44;
@@ -21,53 +21,26 @@ const int liwi = 44;
 int main(int argc, char *argv[]) {
     QCoreApplication app(argc, argv); //renamed the a to app
     QStringList localip;
-    
     QTextCodec *codecx;
-        codecx = QTextCodec::codecForMib(106);
-        
-        
+    codecx = QTextCodec::codecForMib(106);
     QTextStream out(stdout);
     out.setCodec(codecx);
-    
-    /////   /Users/pro/project/version_sv/handlermail/main.cpp
-    //// QFileInfo tesft("/Users/pro/project/version_sv/handlermail/zzz1.txt");
-    QFileInfo feml("/Users/pro/project/version_sv/handlermail/zzz_sample_mail.eml");
+    /// get the sample change file eml
+    QFileInfo feml("sample.eml");
     QByteArray xml;
     QString str("*");
     out << str.fill('A', liwi) << "\n";
-    /* 
-    QFile f(tesft.absoluteFilePath());
 
-    if (f.exists()) {
-        if (f.open(QIODevice::ReadOnly)) {
-            xml = f.readAll();
-            f.close();
-        }
-    }
-     out <<   encoded  << "\n";
-     * */ 
-    /// codificare MCodecs::quotedPrintableEncode(xml,true);
-    /// decodificare 
-    ////// QByteArray encoded = MCodecs::quotedPrintableDecode(xml);
-    
-    ///// QString testo = QString::fromAscii( xml.constData()  );
-    
      if (feml.exists()) {
         out << "Parse File:" << feml.absoluteFilePath() << "\n";
     } else {
         out << "Warming file not found:" << feml.absoluteFilePath() << "\n";
     }
-     
-    
     out << str.fill('B', liwi) << "\n";
     out.flush();
-    //// /Users/pro/project/version_sv/handlermail/main.cpp
-
-    //// qDebug() << "unicode: " << newline_br.unicode() << "\n";
-
-    /////qFatal("SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN");
-
+    //// only parse mail this 
     ReadMail::Parser read_mail(feml.absoluteFilePath());
+    //// only parse mail this 
     QTimer::singleShot(500, &app, SLOT(quit()));
     return app.exec();
 }
