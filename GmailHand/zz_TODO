@@ -1,0 +1,401 @@
+       
+
+
+#ifdef ONLY_CONSOLE_RUN
+
+        if (Mheader.length() < MINIMUMHEADERLENGTH) {
+            /// file strano con poco contenuto
+            /// emit error here 
+            QString msga = QString("Mail Header Info chunk lost to small only %1 byte! ").arg(Mheader.length());
+            qFatal(qPrintable(QString("%3 \nWARNING/ALERT STOP at:%1:%2")
+                    .arg(__FILE__)
+                    .arg(__LINE__)
+                    .arg(msga)));
+            is_valid = false;
+        }
+        if (Mfull_A.length() < MINFULMAIL_LENGTH) {
+            /// file strano con poco contenuto
+            QString msgb = QString("Body full chunk lost to small only %1 byte! ").arg(Mfull_A.length());
+            qFatal(qPrintable(QString("%3 \nWARNING/ALERT STOP at:%1:%2")
+                    .arg(__FILE__)
+                    .arg(__LINE__)
+                    .arg(msgb)));
+            is_valid = false;
+        }
+        if (Mfull.length() < MINIMUMBODYLENGTH) {
+            /// file strano con poco contenuto
+            QString msgc = QString("Mail Text from to small only %1 byte! ").arg(Mfull_A.length());
+            qFatal(qPrintable(QString("%3 \nWARNING/ALERT STOP at:%1:%2")
+                    .arg(__FILE__)
+                    .arg(__LINE__)
+                    .arg(msgc)));
+            is_valid = false;
+        }
+
+#else
+        is_valid = false;
+        //// emit XX /// emit error here  if co to qobject
+#endif 
+
+
+
+
+Qmailf *doc = new Qmailf(from);
+   
+
+
+
+        for (int i = 0; i < mailrootdirective.size(); ++i) {
+            QString muklti = QString(mailrootdirective.at(i).toLocal8Bit());
+
+            if (muklti.startsWith("multipart/") && Tiper < 1) {
+                if (muklti.startsWith("multipart/alternative")) {
+                    Tiper = 100; ////  found 
+                } else if (muklti.startsWith("multipart/signed")) {
+                    Tiper = 201;
+                } else if (muklti.startsWith("multipart/related")) {
+                    Tiper = 202;
+                } else if (muklti.startsWith("multipart/digest")) {
+                    Tiper = 203;
+                } else if (muklti.startsWith("multipart/mixed")) {
+                    Tiper = 500; //// found 
+                    //// multipart/mixed can having multipart/alternative inside deep
+                }
+            } else if (muklti.startsWith("text/plain") && Tiper < 1) {
+                /// text only mail on root directive :-) 
+                qmail.master = QString("Content-Type: text/plain ") + muklti.simplified();
+                qmail.charcodec = _chartset_resolver(muklti.simplified());
+                Tiper = 1; /// old text plain mail haha!!!
+            }
+
+       
+
+
+
+        QString msg;
+        if (Mheader.length() < 100) {
+            /// file strano con poco contenuto
+            /// emit error here 
+            msg + QString("Header chunk lost to small only %1 byte! ").arg(Mheader.length());
+        }
+        if (Mfull_A.length() < 3) {
+            /// file strano con poco contenuto
+
+            msg + QString("Body full chunk lost to small, only %1 byte! ").arg(Mfull.length());
+        }
+        if (Mfull.length() < 3) {
+            /// file strano con poco contenuto
+            msg + QString("Body text from mail  to small, only %1 byte! ").arg(Mfull.length());
+        }
+
+        if (msg.size() > 1) {
+#ifdef ONLY_CONSOLE_RUN
+            qFatal(qPrintable(msg + "cabe"));
+#else
+
+
+
+
+
+///// buono da mettere 
+ qDebug() << "in " << Mfull.length();
+        
+         QString msg_work_line = QString("Work on progress here Mheader length %1.").arg( 506 );
+            qFatal(qPrintable(QString("%3 \nWARNING/ALERT STOP at:%1:%2")
+                .arg(__FILE__)
+                .arg(__LINE__)
+                .arg(msg_work_line)));
+
+
+
+       
+qDebug() << "key_stop " << out <<;
+qFatal("SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN");
+
+ QRegExp boundaryMatch("boundary=\"+(.*)\"");
+QRegExp boundaryMatchOut("boundary=+(.*)\\s*$");
+
+
+
+ QRegExp boundaryMatch("boundary=\"+(.*)\"");
+        QRegExp boundaryMatchOut("boundary=+(.*)\\s*$");
+
+        QString Skey = x;
+        /// Skey = x.simplified();
+        if (boundaryMatch.indexIn(x) != -1) {
+            return boundaryMatch.cap(1).simplified();
+
+        }
+
+
+mailrootdirective
+
+ qDebug() << "mailrootdirective: " << mailrootdirective << "\n";
+        qFatal("SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN");
+///// read line from qbuffer...
+
+        /// doc->  VirtualFile(from);
+        //// QString Meta_Header_info out;
+        const QString Meta_Header_info = meta.simplified();
+        ////const QString fmime = contenttype_resolver(Meta_Header_info);
+        ////MMime::MimeTypes help;
+        // MMime::MimeTypes help;
+        doc->SetMeta(Meta_Header_info);
+        bit_array_clean = out.toAscii();
+        if (extern_is_base64) {
+            //// bit_array_clean = QByteArray::fromBase64(bit_array_clean.simplified());
+            doc->SetChunk(bit_array_clean);  /// allway transport base64 any format image text html ecc.
+        } else {
+            doc->SetChunk(QByteArray(bit_array_clean.toBase64())); /// allway transport base64 any format image text html ecc.
+        }
+        QMap<int,QVariant> att_files;
+        QVariant v = VPtr<Qmailf>::asQVariant(doc);
+        qmail.alist.insert(doc->Uid(),v);
+
+
+
+////qDebug() << "key_start " << __FUNCTION__ << "  : " << key_start << "\n";
+    ////qDebug() << "key_stop " << __FUNCTION__ << "  : " << key_stop << "\n";
+    const int new_from_start = from;
+    QBuffer *buffer = new QBuffer(); //// read line by line 76 char
+    buffer->open(QIODevice::ReadWrite);
+    int current_remain = Mbody.length();
+    //// int after_key_pos = (from + key.length() + 2 + offset); /// 2 = -- end is 4 
+    buffer->write(Mbody.mid(from, current_remain));
+    buffer->seek(0); //// int distance 
+    ///// QByteArray & QByteArray::replace ( const QByteArray & before, const QByteArray & after )
+    QByteArray out;
+    bool order_to_read = false;
+    //// key Content-Transfer Content-Transfer- Content-Type text/ format=
+    int line_real, total_line, pos_magic, distance, after_line_header = 0;
+    line_real = 0;
+    ///QStringList error_codes;
+    ////error_codes << "Content-Transfer-" << "Content-Ty" << "format=";
+
+    while (buffer->canReadLine()) {
+        QByteArray line = buffer->readLine();
+        QByteArray search_space = line.simplified();
+         if (line.indexOf(newline_br) != -1) {
+            line_real++;
+        }
+
+            if (!search_space.isEmpty()) {
+                out.append(line);
+            } else {
+                out.append( QString("#spaceline#%1\n\r").arg(key_start).toAscii() );
+                pos_magic = qMin(out.length(), current_remain);
+            }
+
+
+    }
+    /// qMin(out.length(),10000000);
+    //////int bottom_pos = fromTop = qMax(out.indexOf(key_stop.toAscii()), out.indexOf(key_start.toAscii()));
+    const int Lenght_doc = distance;
+    ////qDebug() << "bottom_pos" << QByteArray(Mbody.mid(new_from_start + pos_magic ,distance))  << " .. "; //// Mbody.mid(111,bottom_pos) 
+    qDebug() << "XXXX" << out << "XXXX";
+    ///// qDebug() <<  "XXXX" << QByteArray(out.mid(0,pos_magic)) << "XXXX";
+    ///qDebug() << "bottom_pos" << distance << " .. ";
+    ///// qDebug() << "rectext on {" << line_real << "}  : {" << out << "}\n";
+    //// qDebug() << line_real << "< line frombottom:" << tobottom << " fromTop:" << fromTop << "  : distance:" << distance << "\n";
+    qFatal("SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN");
+    
+
+        
+        
+
+
+        if (line_real == 1) {
+            out.append(new_key);
+            out.append(newline_br);
+            order_to_read = false;
+            out.prepend(QString("#%1#  ").arg(1).toAscii() );
+        } else {
+            line.prepend(QString("#%1#  ").arg(line_real).toAscii() );
+        }
+        
+        if (line_real == 2) {
+            out.append(QString("#\n#\n#read_cmd_true at %1 ##\n\n").arg( __LINE__ ));
+            order_to_read = true;
+        }
+
+        if ( line_real > 1  ) {
+            out.append(QString("#init at %1 \n").arg( __LINE__ ));
+            if (out.indexOf(key_start.toAscii()) !=-1 ) {
+            //// if (line.startsWith(key_start.toAscii())) {
+            //// if (line.indexOf(key_start.toAscii()) !=-1 ) {
+            //// Mbody.indexOf(key_start, 0);
+               //// if (order_to_read) {
+                    out.append(line);
+               ///// }
+
+            } else {
+                if (order_to_read) {
+                    out.append(newline_br);
+                    order_to_read = false;
+                    //// take her the exact out.length();
+                    distance = out.length();
+                    order_to_read = false;
+                    total_line = line_real;
+                    ///// out.clear();
+                    buffer->close();
+                }
+            }
+        }
+
+       
+
+        
+            
+            //// out.append("#null false line#");
+            if (search_space.isEmpty()) {
+                out.append("#spaceline#");
+                pos_magic = qMin(out.length(), current_remain);
+            }
+
+        
+
+
+
+
+
+
+
+
+
+
+    _a1 = Mbody.indexOf(key_start),0);
+    if (_a1 != -1) {
+             const int lenght_slice = SliceBodyPart(a1,0,boundary);
+
+        qDebug() << "rectext: " << qmail.charcodec << "\n";
+
+    }
+
+
+
+
+ QRegExp LiFeed("\"[^\"\n]*\"");
+              if (LiFeed.indexIn(txt_mail) != -1) {
+                  
+                  qDebug() << LiFeed.cap(0) << " <<<  primo\n";
+                  ////qDebug() << LiFeed.cap(2)  << "\n";
+                  ///qDebug() << LiFeed.cap(3)  << "\n";
+              }
+
+
+
+
+
+
+
+        
+        if (line_real > 2) {
+            
+                
+                
+                
+                
+                
+                
+                
+            } else {
+                out.append("####startsWith######");
+                fromTop = qMax(11, out.length());
+            }
+            
+        } else {
+            out.append(line);
+        }
+
+
+        
+
+
+        after_line_header = qMax(key_start.length(), line_real);
+        tobottom = qMax(tobottom, out.length());
+
+        ///line_kmh = line.length();
+        //// check meta header of part
+        if (line_real > 0 && line_real < 7) {
+            for (int i = 0; i < error_codes.size(); ++i) {
+                const QString meta = QString(error_codes.at(i).toLocal8Bit());
+                if (line.indexOf(meta) != -1) {
+                    
+                    
+                }
+            }
+        }
+
+
+
+
+
+
+        
+        int a2 = Mbody.indexOf(key_start, (a1 + _BOUNDARY_MAXL_));
+        if (a2 != -1) {
+
+            int lostart = a1 + key_start.length() + 1;
+            ////int longtext = a2 - a1;
+            qDebug() << "next: " << a2 << "\n";
+            QByteArray header = Mbody.mid(lostart, 120);
+            SliceBodyPart(a1,0,key_start); 
+            /////// QByteArray body = QByteArray(Mbody.mid(lostart,360).constData());
+            //// output->body(Mbody.mid(lostart,360));
+            //// QByteArray body = Mbody.mid(lostart,360); //// SliceBodyPart(,key_start);  /// SliceBodyPart
+            ///// const int lungo = SliceBodyPart(lostart,key_start); 
+            qmail.charcodec = chartset_resolver(header);
+            if (header.contains("text/plain") && header.contains("quoted-printable")) {
+                qDebug() << "rectext: " << body << "\n";
+                /////qmail.txt = Makedecoder(qmail.charcodec, decodeQP(body), 3);
+            }
+            /////qDebug() << "rectext: " << qmail.txt << "\n";
+
+
+
+
+cd /Users/pro/project/version_sv/GmailHand/lib
+
+=?ISO-8859-1
+
+
+grep  -nRHI "=?ISO-8859-1" *
+
+grep  -nRHI "multipart/mixed" *
+
+translateQuotedPrintableToBin
+
+
+Imap::decodeByteArray
+Content-Type
+grep  -nRHI "boundary" *
+
+/Users/pro/project/version_sv/GmailHand/zz_TODO
+trojita/src/Imap/Encoders.cpp:218:        // eg. "Sm=?ISO-8859-1?B?9g==?=rg=?ISO-8859-1?B?5Q==?=sbord" will match "=?ISO-8859-1?B?9g==?=rg=?ISO-8859-1?B?5Q==?=" as a single encoded word without minimal=true
+trojita/src/Imap/Encoders.cpp:219:        // with minimal=true, "=?ISO-8859-1?B?9g==?=" will be the first encoded word and "=?ISO-8859-1?B?5Q==?=" the second.
+trojita/tests/Misc/test_rfccodecs.cpp:100:        << QByteArray("=?ISO-8859-1?B?SmFuIEt1bmRy4XQ=?=")
+trojita/tests/Misc/test_rfccodecs.cpp:153:        << QByteArray("(=?ISO-8859-1?Q?a?=)")
+trojita/tests/Misc/test_rfccodecs.cpp:157:        << QByteArray("(=?ISO-8859-1?Q?a?= b)")
+trojita/tests/Misc/test_rfccodecs.cpp:161:        << QByteArray("(=?ISO-8859-1?Q?a?=  =?ISO-8859-1?Q?b?=)")
+trojita/tests/Misc/test_rfccodecs.cpp:165:        << QByteArray("(=?ISO-8859-1?Q?a?= \n \t =?ISO-8859-1?Q?b?=)")
+trojita/tests/Misc/test_rfccodecs.cpp:169:        << QByteArray("(=?ISO-8859-1?Q?a_b?=)")
+trojita/tests/Misc/test_rfccodecs.cpp:173:        << QByteArray("(=?ISO-8859-1?Q?a?= =?ISO-8859-2?Q?_b?=)")
+vmime/tests/parser/textTest.cpp:179:			parseText("=?ISO-8859-1?Q?Keld_J=F8rn_Simonsen?="));
+vmime/tests/parser/textTest.cpp:183:			parseText("=?ISO-8859-1?Q?Andr=E9?= Pirard"));
+vmime/tests/parser/textTest.cpp:187:			parseText("=?ISO-8859-1?B?SWYgeW91IGNhbiByZWFkIHRoaXMgeW8=?=\r\n " \
+vmime/tests/parser/textTest.cpp:213:		VASSERT_EQ("1", "a", DISPLAY_FORM("=?ISO-8859-1?Q?a?="));
+vmime/tests/parser/textTest.cpp:214:		VASSERT_EQ("2", "a b", DISPLAY_FORM("=?ISO-8859-1?Q?a?= b"));
+vmime/tests/parser/textTest.cpp:215:		VASSERT_EQ("3", "ab", DISPLAY_FORM("=?ISO-8859-1?Q?a?= =?ISO-8859-1?Q?b?="));
+vmime/tests/parser/textTest.cpp:216:		VASSERT_EQ("4", "ab", DISPLAY_FORM("=?ISO-8859-1?Q?a?= \t  =?ISO-8859-1?Q?b?="));
+vmime/tests/parser/textTest.cpp:217:		VASSERT_EQ("5", "ab", DISPLAY_FORM("=?ISO-8859-1?Q?a?= \r\n  \t =?ISO-8859-1?Q?b?="));
+vmime/tests/parser/textTest.cpp:218:		VASSERT_EQ("6", "a b", DISPLAY_FORM("=?ISO-8859-1?Q?a_b?="));
+vmime/tests/parser/textTest.cpp:219:		VASSERT_EQ("7", "a b", DISPLAY_FORM("=?ISO-8859-1?Q?a?= =?ISO-8859-2?Q?_b?="));
+vmime/tests/parser/textTest.cpp:222:		VASSERT_EQ("8", "a b", DISPLAY_FORM(" a =?ISO-8859-1?Q?b?=  "));
+vmime/tests/parser/textTest.cpp:223:		VASSERT_EQ("9", "a b  ", DISPLAY_FORM(" \t  =?ISO-8859-1?Q?a?= b  "));
+vmime/tests/parser/textTest.cpp:226:		VASSERT_EQ("11", "a b c", DISPLAY_FORM("a =?ISO-8859-1?Q?b?= c"));
+vmime/tests/parser/textTest.cpp:227:		VASSERT_EQ("12", "a b c ", DISPLAY_FORM("a =?ISO-8859-1?Q?b?= c "));
+vmime/tests/parser/textTest.cpp:228:		VASSERT_EQ("13", "a b c ", DISPLAY_FORM(" a =?ISO-8859-1?Q?b?= c "));
+vmime/tests/parser/textTest.cpp:229:		VASSERT_EQ("14", "a b c d", DISPLAY_FORM("a =?ISO-8859-1?Q?b?= c =?ISO-8859-1?Q?d?= "));
+vmime/tests/parser/textTest.cpp:230:		VASSERT_EQ("15", "a b c d e", DISPLAY_FORM("a =?ISO-8859-1?Q?b?= c =?ISO-8859-1?Q?d?= e"));
+vmime/tests/parser/textTest.cpp:233:		VASSERT_EQ("16", "a b c d e", DISPLAY_FORM("=?ISO-8859-1?Q?a_b_?=c\n\t=?ISO-8859-1?Q?d_?=e"));
+macpro:lib pro$ 

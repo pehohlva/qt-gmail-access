@@ -1,0 +1,70 @@
+/// rotate -/ on console 
+
+#include <QtCore/QCoreApplication>
+#include <QTimer>
+#include <QTextStream>
+#include <QDebug>
+#include <QTextStream>
+///#include <iostream>
+///#include <cstdlib>
+///#include <string>
+
+/// network
+#include <QtNetwork/QHostAddress>
+#include <QtNetwork/QSslError>
+#include <QtNetwork/QSslSocket>
+/// cd /Users/pro/Desktop/Qt_project/GmailHand/
+/// /Users/pro/Desktop/Qt_project/GmailHand/
+
+void kleep(unsigned long nsec) {
+    timespec delay = {nsec / 1000000000, nsec % 1000000000};
+    pselect(0, NULL, NULL, NULL, &delay, NULL);
+}
+
+QString turn(int x) {
+    if (x == 1) {
+        return QString("-");
+    } else if (x == 2) {
+        return QString("/");
+    } else if (x == 3) {
+        return QString("|");
+    } else if (x == 4) {
+        return QString("\\");
+    } else {
+        return QString("*");
+    }
+}
+
+
+int main(int argc, char *argv[]) {
+    QCoreApplication app(argc, argv); 
+    int x = 500;
+    int stk = 0;
+    QTextStream sok(stdout);
+    for (int o = 0; o < x; o++) {
+        sok << "Nr." << o << "=" << QChar(o) << " / ";
+    }
+    sok << "\n";
+    sok << "\n";
+    sok.flush();
+    
+    
+    
+    int liner = 1000;
+    for (int j = 0; j < liner; j++) {
+
+
+        stk++;
+        QTextStream xc(stdout);
+        xc << "  wait:" << QChar(j) << "   " << turn(stk) << "\r";
+        xc.flush();
+        kleep(100000000);
+        if (stk == 5) {
+            stk = 0;
+        }
+
+    }
+
+    qDebug() << "line \n";
+  return 1;
+}

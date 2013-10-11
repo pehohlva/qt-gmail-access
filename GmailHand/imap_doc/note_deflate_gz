@@ -1,0 +1,236 @@
+
+
+
+// From qtsdk-2010.05/qt/src/network/access/qhttpnetworkreply.cpp
+bool ClientParser::gzipCheckHeader(QByteArray &content, int &pos)
+{
+    int method = 0; // method byte
+    int flags = 0;  // flags byte
+    bool ret = false;
+
+    // Assure two bytes in the buffer so we can peek ahead -- handle case
+    // where first byte of header is at the end of the buffer after the last
+    // gzip segment
+    pos = -1;
+    QByteArray &body = content;
+    int maxPos = body.size()-1;
+    if (maxPos < 1) {
+        return ret;
+    }
+
+    // Peek ahead to check the gzip magic header
+    if (body[0] != char(gz_magic[0]) ||
+        body[1] != char(gz_magic[1])) {
+        return ret;
+    }
+    pos += 2;
+    // Check the rest of the gzip header
+    if (++pos <= maxPos)
+        method = body[pos];
+    if (pos++ <= maxPos)
+        flags = body[pos];
+    if (method != Z_DEFLATED || (flags & RESERVED) != 0) {
+        return ret;
+    }
+
+    // Discard time, xflags and OS code:
+    pos += 6;
+    if (pos > maxPos)
+        return ret;
+    if ((flags & EXTRA_FIELD) && ((pos+2) <= maxPos)) { // skip the extra field
+        unsigned len =  (unsigned)body[++pos];
+        len += ((unsigned)body[++pos])<<8;
+        pos += len;
+        if (pos > maxPos)
+            return ret;
+    }
+    if ((flags & ORIG_NAME) != 0) { // skip the original file name
+        while(++pos <= maxPos && body[pos]) {}
+    }
+    if ((flags & COMMENT) != 0) {   // skip the .gz file comment
+        while(++pos <= maxPos && body[pos]) {}
+    }
+    if ((flags & HEAD_CRC) != 0) {  // skip the header crc
+        pos += 2;
+        if (pos > maxPos)
+            return ret;
+    }
+    ret = (pos < maxPos); // return failed, if no more bytes left
+    return ret;
+}
+
+// From qtsdk-2010.05/qt/src/network/access/qhttpnetworkreply.cpp
+int ClientParser::gunzipBodyPartially(QByteArray &compressed, QByteArray &inflated)
+{
+    int ret = Z_DATA_ERROR;
+    unsigned have;
+    unsigned char out[CHUNK];
+    int pos = -1;
+
+    if (!_initInflate) {
+        // check the header
+        if (!gzipCheckHeader(compressed, pos))
+            return ret;
+        // allocate inflate state
+        _inflateStrm.zalloc = Z_NULL;
+        _inflateStrm.zfree = Z_NULL;
+        _inflateStrm.opaque = Z_NULL;
+        _inflateStrm.avail_in = 0;
+        _inflateStrm.next_in = Z_NULL;
+        ret = inflateInit2(&_inflateStrm, -MAX_WBITS);
+        if (ret != Z_OK)
+            return ret;
+        _initInflate = true;
+        _streamEnd = false;
+    }
+
+    //remove the header.
+    compressed.remove(0, pos+1);
+
+    // expand until deflate stream ends
+    _inflateStrm.next_in = (unsigned char *)compressed.data();
+    _inflateStrm.avail_in = compressed.size();
+    do {
+        _inflateStrm.avail_out = sizeof(out);
+        _inflateStrm.next_out = out;
+        ret = inflate(&_inflateStrm, Z_NO_FLUSH);
+        switch (ret) {
+        case Z_NEED_DICT:
+            ret = Z_DATA_ERROR;
+            // and fall through
+        case Z_DATA_ERROR:
+        case Z_MEM_ERROR:
+            inflateEnd(&_inflateStrm);
+            _initInflate = false;
+            return ret;
+        }
+        have = sizeof(out) - _inflateStrm.avail_out;
+        inflated.append(QByteArray((const char *)out, have));
+     } while (_inflateStrm.avail_out == 0);
+    // clean up and return
+    if (ret <= Z_ERRNO || ret == Z_STREAM_END) {
+        inflateEnd(&_inflateStrm);
+        _initInflate = false;
+    }
+    _streamEnd = (ret == Z_STREAM_END);
+
+    return ret;
+}
+
+
+
+
+
+
+// From qtsdk-2010.05/qt/src/network/access/qhttpnetworkreply_p.h
+static const unsigned char gz_magic[2] = {0x1f, 0x8b}; // gzip magic header
+// gzip flag byte
+#define HEAD_CRC     0x02 // bit 1 set: header CRC present
+#define EXTRA_FIELD  0x04 // bit 2 set: extra field present
+#define ORIG_NAME    0x08 // bit 3 set: original file name present
+#define COMMENT      0x10 // bit 4 set: file comment present
+#define RESERVED     0xE0 // bits 5..7: reserved
+#define CHUNK 16384
+
+
+// From qtsdk-2010.05/qt/src/network/access/qhttpnetworkreply.cpp
+bool ClientParser::gzipCheckHeader(QByteArray &content, int &pos)
+{
+    int method = 0; // method byte
+    int flags = 0;  // flags byte
+    bool ret = false;
+
+    // Assure two bytes in the buffer so we can peek ahead -- handle case
+    // where first byte of header is at the end of the buffer after the last
+    // gzip segment
+    pos = -1;
+    QByteArray &body = content;
+    int maxPos = body.size()-1;
+    if (maxPos < 1) {
+        return ret;
+    }
+
+    // Peek ahead to check the gzip magic header
+    if (body[0] != char(gz_magic[0]) ||
+        body[1] != char(gz_magic[1])) {
+        return ret;
+    }
+    pos += 2;
+    // Check the rest of the gzip header
+    if (++pos <= maxPos)
+        method = body[pos];
+    if (pos++ <= maxPos)
+        flags = body[pos];
+    if (method != Z_DEFLATED || (flags & RESERVED) != 0) {
+        return ret;
+    }
+
+    // Discard time, xflags and OS code:
+    pos += 6;
+    if (pos > maxPos)
+        return ret;
+    if ((flags & EXTRA_FIELD) && ((pos+2) <= maxPos)) { // skip the extra field
+        unsigned len =  (unsigned)body[++pos];
+        len += ((unsigned)body[++pos])<<8;
+        pos += len;
+        if (pos > maxPos)
+            return ret;
+    }
+    if ((flags & ORIG_NAME) != 0) { // skip the original file name
+        while(++pos <= maxPos && body[pos]) {}
+    }
+    if ((flags & COMMENT) != 0) {   // skip the .gz file comment
+        while(++pos <= maxPos && body[pos]) {}
+    }
+    if ((flags & HEAD_CRC) != 0) {  // skip the header crc
+        pos += 2;
+        if (pos > maxPos)
+            return ret;
+    }
+    ret = (pos < maxPos); // return failed, if no more bytes left
+    return ret;
+}
+
+
+
+void ClientHandler::compressResponse(const QByteArray& uncompressed, QByteArray& deflated )
+{
+    deflated = qCompress(uncompressed);
+
+    // eliminate qCompress size on first 4 bytes and 2 byte header
+    deflated = deflated.right(deflated.size() - 6);
+    // remove qCompress 4 byte footer
+    deflated = deflated.left(deflated.size() - 4);
+
+    QByteArray header;
+    header.resize(10);
+    header[0] = 0x1f; // gzip-magic[0]
+    header[1] = 0x8b; // gzip-magic[1]
+    header[2] = 0x08; // Compression method = DEFLATE
+    header[3] = 0x00; // Flags
+    header[4] = 0x00; // 4-7 is mtime
+    header[5] = 0x00;
+    header[6] = 0x00;
+    header[7] = 0x00;
+    header[8] = 0x00; // XFL
+    header[9] = 0x03; // OS=Unix
+
+    deflated.prepend(header);
+
+    QByteArray footer;
+    quint32 crc = crc32(0L, Z_NULL, 0);
+    crc = crc32(crc, (const uchar*)uncompressed.data(), uncompressed.size());
+    footer.resize(8);
+    footer[3] = (crc & 0xff000000) >> 24;
+    footer[2] = (crc & 0x00ff0000) >> 16;
+    footer[1] = (crc & 0x0000ff00) >> 8;
+    footer[0] = (crc & 0x000000ff);
+
+    quint32 isize = uncompressed.size();
+    footer[7] = (isize & 0xff000000) >> 24;
+    footer[6] = (isize & 0x00ff0000) >> 16;
+    footer[5] = (isize & 0x0000ff00) >> 8;
+    footer[4] = (isize & 0x000000ff);
+
+    deflated.append(footer);
+}

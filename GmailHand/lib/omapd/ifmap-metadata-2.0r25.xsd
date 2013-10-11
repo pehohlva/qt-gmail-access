@@ -1,0 +1,276 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ifmap="http://www.trustedcomputinggroup.org/2010/IFMAP/2" xmlns="http://www.trustedcomputinggroup.org/2010/IFMAP-METADATA/2" targetNamespace="http://www.trustedcomputinggroup.org/2010/IFMAP-METADATA/2">
+<!-- Schema for IF-MAP Metadata for Network Security -->
+<!-- access-request-device is link metadata that associates an access-request identifier with a device identifier -->
+<xsd:import namespace="http://www.trustedcomputinggroup.org/2010/IFMAP/2" schemaLocation="ifmap-base-2.0r36.xsd"/>
+<xsd:element name="access-request-device">
+  <xsd:complexType>
+    <xsd:attributeGroup ref="ifmap:singleValueMetadataAttributes"/>
+  </xsd:complexType>
+</xsd:element>
+<!-- access-request-ip is link metadata that associates an access-request identifier with an ip-address identifier -->
+<xsd:element name="access-request-ip">
+  <xsd:complexType>
+    <xsd:attributeGroup ref="ifmap:singleValueMetadataAttributes"/>
+  </xsd:complexType>
+</xsd:element>
+<!-- access-request-mac is link metadata that associates an access-request identifier with a mac-address identifier -->
+<xsd:element name="access-request-mac">
+  <xsd:complexType>
+    <xsd:attributeGroup ref="ifmap:singleValueMetadataAttributes"/>
+  </xsd:complexType>
+</xsd:element>
+<!-- authenticated-as is link metadata that associates an access-request identifier with an identity identifier -->
+<xsd:element name="authenticated-as">
+  <xsd:complexType>
+    <xsd:attributeGroup ref="ifmap:singleValueMetadataAttributes"/>
+  </xsd:complexType>
+</xsd:element>
+<!-- authenticated-by is link metadata thatassociates an access-request identifier with the device identifier of the PDP that authenticated the access-request -->
+<xsd:element name="authenticated-by">
+  <xsd:complexType>
+    <xsd:attributeGroup ref="ifmap:singleValueMetadataAttributes"/>
+  </xsd:complexType>
+</xsd:element>
+<!-- capability is access-request metadata that names a collection of privileges assigned to an endpoint -->
+<xsd:element name="capability">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="administrative-domain" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="ifmap:multiValueMetadataAttributes"/>
+  </xsd:complexType>
+</xsd:element>
+<!-- device-attribute is link metadata that associates an access-request identifier with a device identifier and which includes information about the device such as its health -->
+<xsd:element name="device-attribute">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="ifmap:multiValueMetadataAttributes"/>
+  </xsd:complexType>
+</xsd:element>
+<!-- device-characteristic is link metadata that associates an access-request, ip-address, or mac-address identifier of an endpoint with the device identifier of the MAP Client publishing the metadata, which includes information about what kind of device is represented by the mac-address, ip-address, 
+	    or access-request -->
+<xsd:element name="device-characteristic">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="manufacturer" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="model" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="os" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="os-version" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="device-type" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="discovered-time" type="xsd:dateTime" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="discoverer-id" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="discovery-method" type="xsd:string" minOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="ifmap:multiValueMetadataAttributes"/>
+  </xsd:complexType>
+</xsd:element>
+<!-- device-ip is link metadata that associates a device identifier of a PDP with an IP address which it has authenticated -->
+<xsd:element name="device-ip">
+  <xsd:complexType>
+    <xsd:attributeGroup ref="ifmap:singleValueMetadataAttributes"/>
+  </xsd:complexType>
+</xsd:element>
+<!-- discovered-by is link metadata that associates an ip-address or mac-address identifier of an endpoint with the device identifier of a MAP Client that has noticed the endpoint on the network -->
+<xsd:element name="discovered-by">
+  <xsd:complexType>
+    <xsd:attributeGroup ref="ifmap:singleValueMetadataAttributes"/>
+  </xsd:complexType>
+</xsd:element>
+<!-- enforcement-report is link metadata between a device identifier of a PEP or flow controller and an ip-address or mac-address identifier of an endpoint, indicating an enforcement action in progress -->
+<xsd:element name="enforcement-report">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="enforcement-action" minOccurs="1" maxOccurs="1">
+	<xsd:simpleType>
+	  <xsd:restriction base="xsd:string">
+	    <xsd:enumeration value="block"/>
+	    <xsd:enumeration value="quarantine"/>
+	    <xsd:enumeration value="other"/>
+	  </xsd:restriction>
+	</xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="other-type-definition" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="enforcement-reason" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="ifmap:multiValueMetadataAttributes"/>
+  </xsd:complexType>
+</xsd:element>
+<!-- event is access-request, identity, ip-address, or mac-address metadata that describes activity of interest detected on the network -->
+<xsd:element name="event">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="discovered-time" type="xsd:dateTime" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="discoverer-id" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="magnitude" minOccurs="1" maxOccurs="1">
+	<xsd:simpleType>
+	  <xsd:restriction base="xsd:integer">
+	    <xsd:minInclusive value="0"/>
+	    <xsd:maxInclusive value="100"/>
+	  </xsd:restriction>
+	</xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="confidence" minOccurs="1" maxOccurs="1">
+	<xsd:simpleType>
+	  <xsd:restriction base="xsd:integer">
+	    <xsd:minInclusive value="0"/>
+	    <xsd:maxInclusive value="100"/>
+	  </xsd:restriction>
+	</xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="significance" minOccurs="1" maxOccurs="1">
+	<xsd:simpleType>
+	  <xsd:restriction base="xsd:string">
+	    <xsd:enumeration value="critical"/>
+	    <xsd:enumeration value="important"/>
+	    <xsd:enumeration value="informational"/>
+	  </xsd:restriction>
+	</xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="type" minOccurs="0" maxOccurs="1">
+	<xsd:simpleType>
+	  <xsd:restriction base="xsd:string">
+	    <xsd:enumeration value="p2p"/>
+	    <xsd:enumeration value="cve"/>
+	    <xsd:enumeration value="botnet infection"/>
+	    <xsd:enumeration value="worm infection"/>
+	    <xsd:enumeration value="excessive flows"/>
+	    <xsd:enumeration value="behavioral change"/>
+	    <xsd:enumeration value="policy violation"/>
+	    <xsd:enumeration value="other"/>
+	  </xsd:restriction>
+	</xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="other-type-definition" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="information" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="vulnerability-uri" type="xsd:anyURI" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="ifmap:multiValueMetadataAttributes"/>
+  </xsd:complexType>
+</xsd:element>
+<!-- ip-mac is link metadata that associates an ip-address identifier with a mac-address identifier and which includes optional DHCP lease information -->
+<xsd:element name="ip-mac">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="start-time" type="xsd:dateTime" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="end-time" type="xsd:dateTime" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="dhcp-server" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="ifmap:multiValueMetadataAttributes"/>
+  </xsd:complexType>
+</xsd:element>
+<!-- layer2-information is link metadata that associates an access-request identifier with the device identifier of the PEP through which the endpoint is accessing the network -->
+<xsd:element name="layer2-information">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="vlan" type="xsd:integer" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="vlan-name" type="xsd:integer" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="port" type="xsd:integer" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="administrative-domain" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="ifmap:multiValueMetadataAttributes"/>
+  </xsd:complexType>
+</xsd:element>
+<xsd:element name="location">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="location-information" minOccurs="1" maxOccurs="unbounded">
+	<xsd:complexType>
+	  <xsd:attribute name="type" type="xsd:string"/>
+	  <xsd:attribute name="value" type="xsd:string"/>
+	</xsd:complexType>
+      </xsd:element>
+      <xsd:element name="discovered-time" type="xsd:dateTime" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="discoverer-id" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="ifmap:multiValueMetadataAttributes"/>
+  </xsd:complexType>
+</xsd:element>
+<!-- request-for-investigation is link metadata that associates an ip-address or mac-address identifier with a device identifier representing a PDP that would like a Sensor to investigate the ip-address or mac-address -->
+<xsd:element name="request-for-investigation">
+  <xsd:complexType>
+    <xsd:attribute name="qualifier" type="xsd:string" use="optional"/>
+    <xsd:attributeGroup ref="ifmap:multiValueMetadataAttributes"/>
+  </xsd:complexType>
+</xsd:element>
+<!-- role is link metadata that associates an access-request identifier with an identity identifier and which names collections of privileges associated with the end-user -->
+<xsd:element name="role">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="administrative-domain" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="ifmap:multiValueMetadataAttributes"/>
+  </xsd:complexType>
+</xsd:element>
+<xsd:simpleType name="wlan-security-enum">
+  <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="open"/>
+    <xsd:enumeration value="wep"/>
+    <xsd:enumeration value="tkip"/>
+    <xsd:enumeration value="ccmp"/>
+    <xsd:enumeration value="bip"/>
+    <xsd:enumeration value="other"/>
+  </xsd:restriction>
+</xsd:simpleType>
+<xsd:complexType name="wlan-security-type">
+  <xsd:simpleContent>
+    <xsd:extension base="wlan-security-enum">
+      <xsd:attribute name="other-type-definition" type="xsd:string" use="optional"/>
+    </xsd:extension>
+  </xsd:simpleContent>
+</xsd:complexType>
+<!-- wlan-information is link metadata between an access- request and device, and indicates properties of the wireless LAN connection of the access-request -->
+<xsd:element name="wlan-information">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="ssid" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="ssid-unicast-security" minOccurs="1" maxOccurs="unbounded" type="wlan-security-type"/>
+      <xsd:element name="ssid-group-security" minOccurs="1" maxOccurs="1" type="wlan-security-type"/>
+      <xsd:element name="ssid-management-security" minOccurs="1" maxOccurs="unbounded" type="wlan-security-type"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="ifmap:singleValueMetadataAttributes"/>
+  </xsd:complexType>
+</xsd:element>
+<!-- unexpected-behavior is access-request, identity, ip- address, or mac-address metadata that describes activity of interest detected on the network -->
+<xsd:element name="unexpected-behavior">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="discovered-time" type="xsd:dateTime" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="discoverer-id" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+      <xsd:element name="information" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="magnitude" minOccurs="1" maxOccurs="1">
+	<xsd:simpleType>
+	  <xsd:restriction base="xsd:integer">
+	    <xsd:minInclusive value="0"/>
+	    <xsd:maxInclusive value="100"/>
+	  </xsd:restriction>
+	</xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="confidence" minOccurs="0" maxOccurs="1">
+	<xsd:simpleType>
+	  <xsd:restriction base="xsd:integer">
+	    <xsd:minInclusive value="0"/>
+	    <xsd:maxInclusive value="100"/>
+	  </xsd:restriction>
+	</xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="significance" minOccurs="1" maxOccurs="1">
+	<xsd:simpleType>
+	  <xsd:restriction base="xsd:string">
+	    <xsd:enumeration value="critical"/>
+	    <xsd:enumeration value="important"/>
+	    <xsd:enumeration value="informational"/>
+	  </xsd:restriction>
+	</xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="type" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="ifmap:multiValueMetadataAttributes"/>
+  </xsd:complexType>
+</xsd:element>
+</xsd:schema>

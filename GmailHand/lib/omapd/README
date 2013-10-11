@@ -1,0 +1,20 @@
+omapd is an open source implementation of the IF-MAP v1.1 specification
+published by the Trusted Computing Group [1].
+
+To build omapd, you will need a Qt development environment [2].  Initial
+development of omapd was built against Qt v4.5.2.  Development as of
+omapd-0.3.0 is using Qt v4.6.2, and minimum of Qt v4.6.0 is required because of
+the QXmlStream classes.  As of omapd-0.7.0, Qt v4.8 is required because of
+the QSsl::SecureProtocols constant, which makes it much easier to disable
+SSLv2.
+
+1. Change directory into the plugins/RAMHashTables directory, 
+   run qmake and make.
+2. Run qmake on the omapd.pro file, then run make.
+3. Create a server certificate, or use the certgen.sh script
+4. Run omapd
+
+References
+----------
+[1] http://www.trustedcomputinggroup.org/resources/tnc_ifmap_binding_for_soap_specification
+[2] http://qt.digia.com/Product

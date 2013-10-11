@@ -1,0 +1,5 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/qtopiamail">
+<file alias="mime.types">resources/mime.types</file>
+</qresource>
+</RCC>

@@ -1,0 +1,10 @@
+/Users/pro/project/version_sv
+
+/Users/pro/project/version_sv/GmailHand
+
+qmake -spec /usr/local/Qt4.8/mkspecs/macx-g++ -o Makefile GmailHand.pro
+
+
+http://qt-gmail-access.googlecode.com/svn/trunk/GmailHand/
+https://code.google.com/p/qt-gmail-access/
+http://qt-gmail-access.googlecode.com/svn/trunk/Gmailsend/

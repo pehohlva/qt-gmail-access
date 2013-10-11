@@ -1,0 +1,277 @@
+<?xml version="1.0" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:ifmap="http://www.trustedcomputinggroup.org/2006/IFMAP/1"
+  xmlns="http://www.trustedcomputinggroup.org/2006/IFMAP-METADATA/1"
+  targetNamespace="http://www.trustedcomputinggroup.org/2006/IFMAP-METADATA/1">
+
+	<xsd:import namespace="http://www.trustedcomputinggroup.org/2006/IFMAP/1" schemaLocation="ifmap-base-1.0v28.xsd"/>
+
+  <!-- Schema for IF-MAP Standard Metadata -->
+
+  <!-- MetadataType is the base type for IF-MAP metadata.
+       MetadataType defines the publisher-id and timestamp
+       attributes that are maintained by the IF-MAP server -->
+  <xsd:complexType name="MetadataType" abstract="true">
+    <xsd:attribute name="publisher-id"/>
+    <xsd:attribute name="timestamp" type="xsd:dateTime"/>
+  </xsd:complexType>
+
+  <!-- SingleValueMetadataType is the base type for
+       metadata that can have at most one value
+       for a particular identifier or link -->
+  <xsd:complexType name="SingleValueMetadataType"
+    abstract="true">
+    <xsd:complexContent>
+      <xsd:extension base="MetadataType">
+        <xsd:attribute name="cardinality"
+          default="singleValue">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:enumeration value="singleValue"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:attribute>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- MultiValueMetadataType is the base type for
+       metadata that may have multiple values for
+       a particular identifier or link -->
+  <xsd:complexType name="MultiValueMetadataType"
+    abstract="true">
+    <xsd:complexContent>
+      <xsd:extension base="MetadataType">
+        <xsd:attribute name="cardinality"
+          default="multiValue">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:enumeration value="multiValue"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:attribute>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- access-request-device is link metadata that
+       associates an access-request identifier with
+       a device identifier -->
+  <xsd:element name="access-request-device">
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="SingleValueMetadataType"/>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- access-request-ip is link metadata that
+       associates an access-request identifier with
+       an ip-address identifier -->
+  <xsd:element name="access-request-ip">
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="SingleValueMetadataType"/>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- access-request-mac is link metadata that
+       associates an access-request identifier with
+       a mac-address identifier -->
+  <xsd:element name="access-request-mac">
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="SingleValueMetadataType"/>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- authenticated-as is link metadata that
+       associates an access-request identifier with
+       an identity identifier -->
+  <xsd:element name="authenticated-as">
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="SingleValueMetadataType"/>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- authenticated-by is link metadata that
+       associates an access-request identifier with
+       the ip-address identifier of the PDP that
+       authenticated the access-request -->
+  <xsd:element name="authenticated-by">
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="SingleValueMetadataType"/>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- capability is access-request metadata that names
+       a collection of privileges assigned to an endpoint -->
+  <xsd:element name="capability">
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="MultiValueMetadataType">
+          <xsd:sequence>
+            <xsd:element name="name" type="xsd:string"
+              minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="administrative-domain"
+              type="xsd:string" minOccurs="0" maxOccurs="1"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- device-attribute is link metadata that associates
+       an access-request identifier with a device identifier
+       and which includes information about the device such
+       as its health -->
+  <xsd:element name="device-attribute">
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="MultiValueMetadataType">
+          <xsd:sequence>
+            <xsd:element name="name" type="xsd:string"
+              minOccurs="1" maxOccurs="1"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- event is access-request, identity, ip-address, or
+       mac-address metadata that describes activity of
+       interest detected on the network -->
+  <xsd:element name="event">
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="MultiValueMetadataType">
+          <xsd:sequence>
+            <xsd:element name="name" type="xsd:string"
+              minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="event-recorded-time"
+              type="xsd:dateTime" minOccurs="1"
+              maxOccurs="1"/>
+            <xsd:element name="magnitude" minOccurs="1"
+              maxOccurs="1">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:integer">
+                  <xsd:minInclusive value="0"/>
+                  <xsd:maxInclusive value="100"/>
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="confidence" minOccurs="1"
+              maxOccurs="1">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:integer">
+                  <xsd:minInclusive value="0"/>
+                  <xsd:maxInclusive value="100"/>
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="significance" minOccurs="1"
+              maxOccurs="1">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:enumeration value="critical"/>
+                  <xsd:enumeration value="important"/>
+                  <xsd:enumeration value="informational"/>
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="type" minOccurs="0"
+              maxOccurs="1">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:enumeration value="p2p"/>
+                  <xsd:enumeration value="cve"/>
+                  <xsd:enumeration value="botnet infection"/>
+                  <xsd:enumeration value="worm infection"/>
+                  <xsd:enumeration value="excessive flows"/>
+                  <xsd:enumeration value="behavioral change"/>
+                  <xsd:enumeration value="policy violation"/>
+                  <xsd:enumeration value="other"/>
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="other-type-definition"
+              type="xsd:string" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="information"
+              type="xsd:string" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="vulnerability-uri"
+              type="xsd:anyURI" minOccurs="0" maxOccurs="1"
+            />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- layer2-information is link metadata that
+       associates an access-request identifier with
+       the ip-address identifier of the PEP through
+       which the endpoint is accessing the network -->
+  <xsd:element name="layer2-information">
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="SingleValueMetadataType">
+          <xsd:sequence>
+            <xsd:element name="vlan" type="xsd:integer"
+              minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="port" type="xsd:integer"
+              minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="administrative-domain"
+              type="xsd:string" minOccurs="0" maxOccurs="1"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- ip-mac is link metadata that associates an
+       ip-address identifier with a mac-address identifier
+       and which includes optional DHCP lease information -->
+  <xsd:element name="ip-mac">
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="SingleValueMetadataType">
+          <xsd:sequence>
+            <xsd:element name="start-time"
+              type="xsd:dateTime" minOccurs="0"
+              maxOccurs="1"/>
+            <xsd:element name="end-time" type="xsd:dateTime"
+              minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="dhcp-server"
+              type="xsd:string" minOccurs="0" maxOccurs="1"
+            />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- role is link metadata that associates an
+       access-request identifier with an identity
+       identifier and which names collections of
+       privileges associated with the end-user -->
+  <xsd:element name="role">
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="MultiValueMetadataType">
+          <xsd:sequence>
+            <xsd:element name="administrative-domain"
+              type="xsd:string" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="name" type="xsd:string"
+              minOccurs="1" maxOccurs="1"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

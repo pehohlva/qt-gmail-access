@@ -1,0 +1,12 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/icon">
+<file alias="sendmail">pics/icons/14x14/sendmail.png</file>
+<file alias="getmail">pics/icons/16x16/mail_get.png</file>
+<file alias="flag_normal">pics/flag_normal.png</file>
+<file alias="flag_unread">pics/flag_unread.png</file>
+<file alias="flag_toget">pics/flag_toget.png</file>
+<file alias="flag_tosend">pics/flag_tosend.png</file>
+<file alias="flag_unfinished">pics/flag_unfinished.png</file>
+<file alias="flag_removed">pics/flag_removed.png</file>
+</qresource>
+</RCC>

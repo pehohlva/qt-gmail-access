@@ -1,0 +1,328 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="http://www.trustedcomputinggroup.org/2006/IFMAP/1"
+  targetNamespace="http://www.trustedcomputinggroup.org/2006/IFMAP/1">
+
+  <!-- AccessRequestType Identifier represents an endpoint
+       which is attempting to gain entry to the network-->
+  <xsd:complexType name="AccessRequestType">
+    <xsd:attribute name="administrative-domain" type="xsd:string"/>
+    <xsd:attribute name="name" type="xsd:string" use="required"/>
+  </xsd:complexType>
+
+  <!-- DeviceType Identifier represents a physical asset
+       which is attempting to gain entry to the network -->
+  <xsd:complexType name="DeviceType">
+    <xsd:choice>
+      <xsd:element name="aik-name" type="xsd:string"/>
+      <xsd:element name="name" type="xsd:string"/>
+    </xsd:choice>
+  </xsd:complexType>
+
+  <!-- IdentityType Identifier represents an end-user -->
+  <xsd:complexType name="IdentityType">
+    <xsd:attribute name="administrative-domain" type="xsd:string"/>
+    <xsd:attribute name="name" type="xsd:string" use="required"/>
+    <xsd:attribute name="type" use="required">
+      <xsd:simpleType>
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="aik-name"/>
+          <xsd:enumeration value="distinguished-name"/>
+          <xsd:enumeration value="dns-name"/>
+          <xsd:enumeration value="email-address"/>
+          <xsd:enumeration value="kerberos-principal"/>
+          <xsd:enumeration value="trusted-platform-module"/>
+          <xsd:enumeration value="username"/>
+          <xsd:enumeration value="sip-uri"/>
+          <xsd:enumeration value="tel-uri"/>
+          <xsd:enumeration value="other"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:attribute>
+    <xsd:attribute name="other-type-definition"
+      type="xsd:string"/>
+  </xsd:complexType>
+
+  <!-- IPAddressType Identifier represents a single IP address -->
+  <xsd:complexType name="IPAddressType">
+    <xsd:attribute name="administrative-domain" type="xsd:string"/>
+    <xsd:attribute name="value" type="xsd:string" use="required"/>
+    <xsd:attribute name="type">
+      <xsd:simpleType>
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="IPv4"/>
+          <xsd:enumeration value="IPv6"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:attribute>
+  </xsd:complexType>
+
+  <!-- MACAddressType Identifier represents an Ethernet MAC address -->
+  <xsd:complexType name="MACAddressType">
+    <xsd:attribute name="administrative-domain" type="xsd:string"/>
+    <xsd:attribute name="value" type="xsd:string" use="required"/>
+  </xsd:complexType>
+
+  <!-- MetadataListType is a container for metadata within
+       other elements -->
+  <xsd:complexType name="MetadataListType">
+    <xsd:sequence>
+      <xsd:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- all possible Identifiers -->
+  <xsd:complexType name="IdentifierType">
+    <xsd:sequence>
+      <xsd:choice>
+        <xsd:element name="access-request"
+          type="AccessRequestType"/>
+        <xsd:element name="identity" type="IdentityType"/>
+        <xsd:element name="ip-address" type="IPAddressType"/>
+        <xsd:element name="mac-address"
+          type="MACAddressType"/>
+        <xsd:element name="device" type="DeviceType"/>
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- LinkType is for association between two identifiers -->
+  <xsd:complexType name="LinkType">
+    <xsd:sequence>
+      <xsd:element name="identifier" type="IdentifierType"
+        minOccurs="2" maxOccurs="2"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- FilterType is a subset of XPath -->
+  <xsd:simpleType name="FilterType">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+
+  <!-- ValidationType is a base type that defines the
+       validation attribute that requests and responses
+       use to indicate what parts of the contained
+       XML have been validated -->
+  <xsd:complexType name="ValidationType" abstract="true">
+    <xsd:attribute name="validation" use="optional">
+      <xsd:simpleType>
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="None"/>
+          <xsd:enumeration value="BaseOnly"/>
+          <xsd:enumeration value="MetadataOnly"/>
+          <xsd:enumeration value="All"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:attribute>
+  </xsd:complexType>
+
+  <!-- PublishType is a base type for requests that add or
+       remove metadata -->
+  <xsd:complexType name="PublishType">
+    <xsd:sequence>
+      <xsd:choice minOccurs="1" maxOccurs="1">
+        <xsd:element name="identifier" type="IdentifierType"/>
+        <xsd:element name="link" type="LinkType"/>
+      </xsd:choice>
+      <xsd:element name="metadata" type="MetadataListType"
+        minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- DeleteType is the type for the delete element of
+       a publish request, and specifies which metadata
+       to delete. -->
+  <xsd:complexType name="DeleteType">
+    <xsd:sequence>
+      <xsd:choice minOccurs="1" maxOccurs="1">
+        <xsd:element name="identifier" type="IdentifierType"/>
+        <xsd:element name="link" type="LinkType"/>
+      </xsd:choice>
+    </xsd:sequence>
+    <xsd:attribute name="filter" type="FilterType"
+      use="optional"/>
+  </xsd:complexType>
+
+  <!-- PublishRequestType updates or deletes metadata -->
+  <xsd:complexType name="PublishRequestType">
+    <xsd:complexContent>
+      <xsd:extension base="ValidationType">
+        <xsd:sequence>
+          <xsd:choice minOccurs="1" maxOccurs="unbounded">
+            <xsd:element name="update" type="PublishType"/>
+            <xsd:element name="delete" type="DeleteType"/>
+          </xsd:choice>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- SearchRequestType queries the server for matching
+       metadata -->
+  <xsd:complexType name="SearchRequestType">
+    <xsd:complexContent>
+      <xsd:extension base="ValidationType">
+        <xsd:sequence>
+          <xsd:element name="identifier"
+            type="IdentifierType" minOccurs="1"
+            maxOccurs="1"/>
+        </xsd:sequence>
+        <xsd:attribute name="match-links" type="FilterType"/>
+        <xsd:attribute name="max-depth" type="xsd:integer"/>
+        <xsd:attribute name="max-size" type="xsd:integer"/>
+        <xsd:attribute name="result-filter"
+          type="FilterType"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- DeleteSearchRequestType is for removing subscriptions -->
+  <xsd:complexType name="DeleteSearchRequestType">
+    <xsd:attribute name="name" type="xsd:string" use="required"/>
+  </xsd:complexType>
+
+  <!-- SubscribeRequestType is for managing subscriptions -->
+  <xsd:complexType name="SubscribeRequestType">
+    <xsd:complexContent>
+      <xsd:extension base="ValidationType">
+        <xsd:sequence>
+          <xsd:choice minOccurs="1" maxOccurs="unbounded">
+            <xsd:element name="update">
+              <xsd:complexType>
+                <xsd:complexContent>
+                  <xsd:extension base="SearchRequestType">
+                    <xsd:attribute name="name"
+                      type="xsd:string" use="required"/>
+                  </xsd:extension>
+                 </xsd:complexContent>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="delete"
+              type="DeleteSearchRequestType"/>
+          </xsd:choice>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- PollRequestType is for polling for notification of
+       metadata changes that match subscriptions -->
+  <xsd:complexType name="PollRequestType">
+    <xsd:complexContent>
+      <xsd:extension base="ValidationType"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- PurgePublisherRequestType is for removing all metadata
+       published by a particular publisher -->
+  <xsd:complexType name="PurgePublisherRequestType">
+    <xsd:attribute name="publisher-id" type="xsd:string"/>
+  </xsd:complexType>
+
+  <!-- IdentiferResultType is for search or poll results showing
+       metadata attached to identifiers -->
+  <xsd:complexType name="IdentifierResultType">
+    <xsd:sequence>
+      <xsd:element name="identifier" type="IdentifierType"/>
+      <xsd:element name="metadata" type="MetadataListType"
+        minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- LinkResultType is for search or poll results showing
+       metadata attached to links -->
+  <xsd:complexType name="LinkResultType">
+    <xsd:sequence>
+      <xsd:element name="link" type="LinkType"/>
+      <xsd:element name="metadata" type="MetadataListType"
+        minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- SearchResultType contains the identifiers and links
+       along with associated metadata -->
+  <xsd:complexType name="SearchResultType">
+    <xsd:sequence>
+      <xsd:element name="identifierResult"
+        type="IdentifierResultType" minOccurs="0"
+        maxOccurs="unbounded"/>
+      <xsd:element name="linkResult" type="LinkResultType"
+        minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="name"/>
+  </xsd:complexType>
+
+  <!-- PollResultType contains a searchResult for each
+       subscription that had changes since the last poll -->
+  <xsd:complexType name="PollResultType">
+    <xsd:sequence>
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+        <xsd:element name="searchResult"
+          type="SearchResultType"/>
+        <xsd:element name="errorResult"
+          type="ErrorResultType"/>
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ErrorResultType indicates the cause of an error -->
+  <xsd:complexType name="ErrorResultType">
+    <xsd:sequence>
+      <xsd:element name="errorString" type="xsd:string"/>
+    </xsd:sequence>
+    <xsd:attribute name="errorCode" use="required">
+      <xsd:simpleType>
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="AccessDenied"/>
+          <xsd:enumeration value="Failure"/>
+          <xsd:enumeration value="InvalidIdentifier"/>
+          <xsd:enumeration value="InvalidIdentifierType"/>
+          <xsd:enumeration value="IdentifierTooLong"/>
+          <xsd:enumeration value="InvalidMetadata"/>
+          <xsd:enumeration value="InvalidMetadataListType"/>
+          <xsd:enumeration value="InvalidSchemaVersion"/>
+          <xsd:enumeration value="InvalidSessionID"/>
+          <xsd:enumeration value="MetadataTooLong"/>
+          <xsd:enumeration value="SearchResultsTooBig"/>
+          <xsd:enumeration value="SystemError"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:attribute>
+    <xsd:attribute name="name"/>
+  </xsd:complexType>
+
+  <!-- ResponseType encapsulates results from all the different
+       requests -->
+  <xsd:complexType name="ResponseType">
+    <xsd:complexContent>
+      <xsd:extension base="ValidationType">
+        <xsd:choice>
+          <xsd:element name="errorResult"
+            type="ErrorResultType"/>
+          <xsd:element name="pollResult"
+            type="PollResultType"/>
+          <xsd:element name="searchResult"
+            type="SearchResultType"/>
+          <xsd:element name="subscribeReceived"/>
+          <xsd:element name="publishReceived"/>
+          <xsd:element name="purgePublisherReceived"/>
+        </xsd:choice>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- top-level elements represent all the possible
+       requests and responses -->
+  <xsd:element name="publish" type="PublishRequestType"/>
+  <xsd:element name="search" type="SearchRequestType"/>
+  <xsd:element name="subscribe" type="SubscribeRequestType"/>
+  <xsd:element name="poll" type="PollRequestType"/>
+  <xsd:element name="purgePublisher" type="PurgePublisherRequestType"/>
+  <xsd:element name="response" type="ResponseType"/>
+
+  <!-- new-session, attach-session, session-id and publisher-id are elements used in SOAP envelope headers for session and publisher ID management -->
+  <xsd:element name="new-session" type="xsd:string" nillable="true"/>
+  <xsd:element name="attach-session" type="xsd:string"/>
+  <xsd:element name="session-id" type="xsd:string"/>
+  <xsd:element name="publisher-id" type="xsd:string"/>
+</xsd:schema>

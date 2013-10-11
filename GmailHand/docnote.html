@@ -1,0 +1,242 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+
+code snip
+
+//
+// C++ Implementation: Get Mail as search result by subject & date since imap.
+//
+// Description:
+// Target to having a console app to filter & get mail to insert on drupal as new node.
+//
+// Author: Peter Hohl <pehohlva@gmail.com>,    19.9.2013
+// http://www.freeroad.ch/
+// Copyright: See COPYING file that comes with this distribution
+
+
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <pre>
+
+    siped code.
+
+    //// /Users/pro/project/GmailHand/
+    ///   qmake -spec /usr/local/Qt4.8/mkspecs/macx-g++ -o Makefile GmailHand.pro
+    /// attivita viene
+    /// enum State { Connesso , Autentificazione ,Listato , Disconnesso , Errore , LeggiUnaMail  };
+    ////qDebug() << "1 Net_StarterImap-clock:" << __FUNCTION__;
+
+
+       /// Server_Letter 
+        /// riconoscere la prima Lettera ///
+        //// QByteArray QString::toLatin1() 
+        qDebug() << "------------------------------------------";
+        qDebug() << "S:" << line;
+        qDebug() << "------------------------------------------";
+        else if (line.contains("* CAPABILITY", Qt::CaseInsensitive) && SERVERLETTER == "C") {
+            /// register CAPABILITY from server 
+            SetState(Net_StarterImap::ServerListDocCapacity);
+        } else if (line.contains("OK Thats", Qt::CaseInsensitive) && line.contains(SENDCOMAND, Qt::CaseInsensitive)) {
+            Current_Letter = "A";
+            SetState(Net_StarterImap::Autentificazione);
+            QByteArray ba;
+            ba.append('\0');
+            ba.append(username.toUtf8());
+            ba.append('\0');
+            ba.append(password.toUtf8());
+            QByteArray encoded = ba.toBase64();
+            encoded.prepend("AUTHENTICATE PLAIN ");
+            SendToServer(encoded, true); //// send user & pass AUTHENTICATE
+        } else if (line.contains("OK", Qt::CaseInsensitive) &&
+                line.contains(SENDCOMAND, Qt::CaseInsensitive)) {
+            Current_Letter = "D";
+            qDebug() << "SUCESSFUL AUTH :-) helo imap  ";
+            SetState(Net_StarterImap::AutentificazioneUtente_Success);
+            emit Message_Display(line);
+            SendToServer("LIST \"\" \"*\"", true);
+            q_Maildirlist.clear();
+        } else if (line.contains("* LIST ", Qt::CaseInsensitive)) {
+            q_Maildirlist.append(line);
+        } else if (line.contains("OK Success", Qt::CaseInsensitive)) {
+            encoded__Maildirlist = q_Maildirlist;
+            q_Maildirlist.clear();
+            SetState(Net_StarterImap::MailDirsRegister);
+            /// (\HasNoChildren \Junk) "/" "[Gmail]/Spam" 
+            //// search mail [Gmail]/Spam select \"/\" \"INBOX\"
+            /// SEARCH X-GM-RAW \"has:attachment in:unread\"
+            SendToServer("SELECT INBOX", true);
+        } else if (line.contains("BAD", Qt::CaseInsensitive) or
+                line.contains("AUTH BAD", Qt::CaseInsensitive)) {
+            SetState(Net_StarterImap::Errore);
+            socket->deleteLater();
+            emit Message_Display(line);
+            emit Exit_Close();
+            qDebug() << "ERROR Disconnect:Net_StarterImap::Errore";
+        } else {
+
+            qDebug() << "Unregister line.." << SENDCOMAND;
+        }
+
+
+
+/* comand to read one mail ? 
+                  /// FETCH 1 full
+                        /// FETCH 2:* FLAGS
+                        /// FETCH 1 body[text]
+                 * /// FETCH 1 (BODY[])
+                 */
+
+
+    QStringList letter;
+    letter << "A" << "B" << "b" << "C" << "D" << "E" << "F" << "G" << "H" << "I" << "J" << "K" << "L" << "M" << "N" << "O"
+            << "P" << "Q" << "R" << "S" << "T" << "U" << "V" << "W" << "Y" << "*";
+    // A = 65 / 
+
+    for (int i = 0; i < letter.size(); ++i) {
+        QString line = QString(letter.at(i).toLocal8Bit());
+        QChar first = line.at(0);
+        if (first.isLetter()) {
+            qDebug() << "letter:" << first << "=" << first.unicode();
+        } else {
+            qDebug() << "letter:" << first << "=" << first.unicode();
+        }
+    }
+
+
+
+
+
+New State: 0 
+------------------------------------------ 
+S: "* OK Gimap ready for requests from 62.167.40.188 w51if6584031eee.220
+" 
+------------------------------------------ 
+New State: 0 
+------------------------------------------ 
+C: "C01 CAPABILITY
+" 
+------------------------------------------ 
+------------------------------------------ 
+S: "* CAPABILITY IMAP4rev1 UNSELECT IDLE NAMESPACE QUOTA ID XLIST CHILDREN X-GM-EXT-1 XYZZY SASL-IR AUTH=XOAUTH AUTH=XOAUTH2 AUTH=PLAIN AUTH=PLAIN-CLIENTTOKEN
+" 
+------------------------------------------ 
+New State: 5 
+------------------------------------------ 
+S: "C01 OK Thats all she wrote! w51if6584031eee.220
+" 
+------------------------------------------ 
+New State: 1 
+------------------------------------------ 
+C: "A002 AUTHENTICATE PLAIN *encodeddata_user_pass*
+" 
+------------------------------------------ 
+------------------------------------------ 
+S: "* CAPABILITY IMAP4rev1 UNSELECT IDLE NAMESPACE QUOTA ID XLIST CHILDREN X-GM-EXT-1 UIDPLUS COMPRESS=DEFLATE ENABLE MOVE CONDSTORE ESEARCH
+" 
+------------------------------------------ 
+New State: 5 
+------------------------------------------ 
+S: "A002 OK ******** (Success)
+" 
+------------------------------------------ 
+SUCESSFUL AUTH :-) helo imap   
+New State: 2 
+------------------------------------------ 
+C: "A003 LIST "" "*"
+" 
+------------------------------------------ 
+------------------------------------------ 
+S: "* LIST (\HasNoChildren) "/" "INBOX"
+" 
+------------------------------------------ 
+------------------------------------------ 
+S: "* LIST (\Noselect \HasChildren) "/" "[Gmail]"
+" 
+------------------------------------------ 
+------------------------------------------ 
+S: "* LIST (\HasNoChildren \Drafts) "/" "[Gmail]/Bozze"
+" 
+------------------------------------------ 
+------------------------------------------ 
+S: "* LIST (\HasNoChildren \Trash) "/" "[Gmail]/Cestino"
+" 
+------------------------------------------ 
+------------------------------------------ 
+S: "* LIST (\HasNoChildren) "/" "[Gmail]/Draft"
+" 
+------------------------------------------ 
+------------------------------------------ 
+S: "* LIST (\HasNoChildren \Important) "/" "[Gmail]/Importanti"
+" 
+------------------------------------------ 
+------------------------------------------ 
+S: "* LIST (\HasNoChildren \Sent) "/" "[Gmail]/Posta inviata"
+" 
+------------------------------------------ 
+------------------------------------------ 
+S: "* LIST (\HasNoChildren \Junk) "/" "[Gmail]/Spam"
+" 
+------------------------------------------ 
+------------------------------------------ 
+S: "* LIST (\HasNoChildren \Flagged) "/" "[Gmail]/Speciali"
+" 
+------------------------------------------ 
+------------------------------------------ 
+S: "* LIST (\HasNoChildren \All) "/" "[Gmail]/Tutti i messaggi"
+" 
+------------------------------------------ 
+------------------------------------------ 
+S: "A003 OK Success
+" 
+------------------------------------------ 
+
+
+
+
+* CAPABILITY IMAP4rev1 UNSELECT IDLE NAMESPACE QUOTA ID XLIST
+ CHILDREN X-GM-EXT-1 UIDPLUS COMPRESS=DEFLATE ENABLE MOVE CONDSTORE ESEARCH
+
+https://developers.google.com/gmail/imap_extensions
+
+
+/* 
+ * unicode letter nr.
+ letter: 'A' = 65 
+letter: 'B' = 66 
+letter: 'C' = 67 
+letter: 'D' = 68 
+letter: 'E' = 69 
+letter: 'F' = 70 
+letter: 'G' = 71 
+letter: 'H' = 72 
+letter: 'I' = 73 
+letter: 'J' = 74 
+letter: 'K' = 75 
+letter: 'L' = 76 
+letter: 'M' = 77 
+letter: 'N' = 78 
+letter: 'O' = 79 
+letter: 'P' = 80 
+letter: 'Q' = 81 
+letter: 'R' = 82 
+letter: 'S' = 83 
+letter: 'T' = 84 
+letter: 'U' = 85 
+letter: 'V' = 86 
+letter: 'W' = 87 
+letter: 'Y' = 89 
+letter: 'Z' = 90 
+letter: '*' = 42 
+ */
+
+
+        </pre>
+    </body>
+</html>

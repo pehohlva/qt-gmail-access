@@ -1,0 +1,213 @@
+
+
+#define _PROGRAM_NAME_ "Mail console Reader di Peter Hohl"
+#define _PROGRAM_NAME_DOMAINE_ "freeroad.ch"
+#define _ORGANIZATION_NAME_ "PPK-Webprogramm"
+
+
+/Users/pro/project/version_sv/GmailHand/handshake.txt
+
+
+
+http://forums.smartertools.com/threads/imap-uid-more-than-int-32-bits-bug.38704/
+
+Client: "T500 UID FETCH 11799 (body.peek[header])
+
+Server on  Incomming_debug  : "* 2596 FETCH (UID 11799 BODY[HEADER] {2057}
+Delivered-To: ppkciz@gmail.com
+Received: by 10.223.173.201 with SMTP id q9csp353540faz; Thu, 26 Sep 2013
+ 02:00:49 -0700 (PDT)
+X-Received: by 10.15.43.206 with SMTP id x54mr729214eev.79.1380186048230; Thu,
+ 26 Sep 2013 02:00:48 -0700 (PDT)
+Return-Path: <Comunicazione@rsi.ch>
+Received: from liberatv2.nine.ch (liberatv2.nine.ch. [5.148.172.33]) by
+ mx.google.com with ESMTP id b1si524909eep.137.1969.12.31.16.00.00; Thu, 26
+ Sep 2013 02:00:48 -0700 (PDT)
+Received-SPF: fail (google.com: domain of Comunicazione@rsi.ch does not
+ designate 5.148.172.33 as permitted sender) client-ip=5.148.172.33;
+Authentication-Results: mx.google.com; spf=hardfail (google.com: domain of
+ Comunicazione@rsi.ch does not designate 5.148.172.33 as permitted sender)
+ smtp.mail=Comunicazione@rsi.ch
+Received: by liberatv2.nine.ch (Postfix) id 5822516366B; Thu, 26 Sep 2013
+ 09:00:46 +0000 (UTC)
+Delivered-To: info@liberatv.ch
+Received: from smtp1.rsi.ch (smtp1.rsi.ch [146.159.132.10]) by
+ liberatv2.nine.ch (Postfix) with ESMTP id 44893163543; Thu, 26 Sep 2013
+ 09:00:46 +0000 (UTC)
+Received: from unknown (HELO cas.media.int) ([10.157.128.8]) by
+ data2.begia-vir0001.csp-net.ch with ESMTP; 26 Sep 2013 11:00:45 +0200
+Received: from MSCS-BECHU-0026.media.int ([10.157.128.14]) by
+ MSCS-BECHU-0052.media.int ([10.157.128.8]) with mapi id 14.02.0318.004; Thu,
+ 26 Sep 2013 11:00:44 +0200
+From: "Comunicazione RSI (RSI)" <Comunicazione@rsi.ch>
+To: "Comunicazione RSI (RSI)" <Comunicazione@rsi.ch>
+Subject: Comunicato stampa: IL PONTE sabato 28 settembre
+Thread-Topic: Comunicato stampa: IL PONTE sabato 28 settembre
+Thread-Index: Ac66luFdt2i7vkNeQ2asUcxvEnI1/w==
+Date: Thu, 26 Sep 2013 09:00:43 +0000
+Message-ID: <9356FEBDF6AD6C4B893B13E2BFF2173614B22CD4@mscs-bechu-0026.media.int>
+Accept-Language: de-CH, en-US
+Content-Language: it-IT
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator: 
+x-originating-ip: [146.159.127.74]
+Content-Type: multipart/mixed;
+ boundary="_007_9356FEBDF6AD6C4B893B13E2BFF2173614B22CD4mscsbechu0026me_"
+MIME-Version: 1.0
+
+)
+
+void Net_StarterImap::ReadMailBody(const QString chunk) {
+    //// wake on CursorPos
+    if (CursorPos == 0) {
+        return;
+    } else {
+        if (chunk.contains(_CHUNK_MAIL_STOP_, Qt::CaseSensitive)) {
+            //// capture header 
+            QString subject, from, date, uid, mime;
+            QRegExp messageID("Message-ID: +(.*)");
+            QRegExp subjectMatch("Subject: +(.*)");
+            QRegExp fromMatch("From: +(.*)");
+            QRegExp dateMatch("Date: +(.*)");
+            QRegExp mimeMatch("MIME-Version: +(.*)");
+            ///// 
+            int cursor_stop = 200;
+            QStringList mail_line = CursorMail.split(QRegExp("[\r\n]"), QString::SkipEmptyParts);
+            for (int j = 0; j < mail_line.length(); j++) {
+                if (subjectMatch.indexIn(mail_line[j]) != -1) {
+                    subject = check_Subject(subjectMatch.cap(1));
+                } else if (dateMatch.indexIn(mail_line[j]) != -1) {
+                    date = dateMatch.cap(1);
+                    qDebug() << "date in :" << date;
+                    QDateTime mailfrom = extractDate(date);
+                    qDebug() << "redate in :" << mailfrom;
+                } else if (fromMatch.indexIn(mail_line[j]) != -1) {
+                    from = fromMatch.cap(1);
+                } else if (messageID.indexIn(mail_line[j]) != -1) {
+                    uid = messageID.cap(1);
+                    uid.replace("<", "");
+                    uid.replace(">", "");
+                } else if (mimeMatch.indexIn(mail_line[j]) != -1) {
+                    mime = mimeMatch.cap(1);
+                    /// read only next 10 line!!
+                    cursor_stop = j + 5;
+                }
+                if (j > cursor_stop) {
+                    qDebug() << "STOP read at line:" << j;
+                    mail_line.clear();
+                }
+            }
+
+            qDebug() << "message uid " << uid << " subject:" << subject;
+            if (!uid.isEmpty()) {
+                QString filecurs = QString("%1new%2.eml").arg(_APPSCACHE_).arg(uid.trimmed());
+                if (write_file(filecurs, CursorMail)) {
+                    qDebug() << "writeln ok:" << filecurs;
+                } else {
+                    ///// MailContainer.insert(CursorPos, CursorMail);
+                }
+            }
+            qDebug() << "run:" << CursorMail.size() << "/" << CursorPos << "/" << __FUNCTION__;
+            CursorMail.clear();
+            CursorPos++;
+            NextBody(CursorPos);
+        } else {
+            CursorMail.append(chunk);
+        }
+    }
+}
+
+/* 
+ * unicode letter nr.
+ letter: 'A' = 65 
+letter: 'B' = 66 
+letter: 'C' = 67 
+letter: 'D' = 68 
+letter: 'E' = 69 
+letter: 'F' = 70 
+letter: 'G' = 71 
+letter: 'H' = 72 
+letter: 'I' = 73 
+letter: 'J' = 74 
+letter: 'K' = 75 
+letter: 'L' = 76 
+letter: 'M' = 77 
+letter: 'N' = 78 
+letter: 'O' = 79 
+letter: 'P' = 80 
+letter: 'Q' = 81 
+letter: 'R' = 82 
+letter: 'S' = 83 
+letter: 'T' = 84 
+letter: 'U' = 85 
+letter: 'V' = 86 
+letter: 'W' = 87 
+letter: 'Y' = 89 
+letter: 'Z' = 90 
+letter: '*' = 42 
+ */
+
+
+: ("Server:* OK Gimap ready for requests from 188.60.43.162 a46if15970528eei.95
+", "Client:C001 CAPABILITY
+", "Server:* CAPABILITY IMAP4rev1 UNSELECT IDLE NAMESPACE QUOTA ID XLIST CHILDREN X-GM-EXT-1 XYZZY SASL-IR AUTH=XOAUTH AUTH=XOAUTH2 AUTH=PLAIN AUTH=PLAIN-CLIENTTOKEN
+", "Server:C001 OK Thats all she wrote! a46if15970528eei.95
+", "Client:A002 AUTHENTICATE PLAIN *encodeddata_user_pass*
+", "Server:* CAPABILITY IMAP4rev1 UNSELECT IDLE NAMESPACE QUOTA ID XLIST CHILDREN X-GM-EXT-1 UIDPLUS COMPRESS=DEFLATE ENABLE MOVE CONDSTORE ESEARCH
+", "Server:A002 OK username@gmail.com Peter Spencer authenticated (Success)
+", "Client:L001 LIST "" "*"
+", "Server:* LIST (\HasNoChildren) "/" "INBOX"
+", "Server:* LIST (\Noselect \HasChildren) "/" "[Gmail]"
+", "Server:* LIST (\HasNoChildren \Drafts) "/" "[Gmail]/Bozze"
+", "Server:* LIST (\HasNoChildren \Trash) "/" "[Gmail]/Cestino"
+", "Server:* LIST (\HasNoChildren) "/" "[Gmail]/Draft"
+", "Server:* LIST (\HasNoChildren \Important) "/" "[Gmail]/Importanti"
+", "Server:* LIST (\HasNoChildren \Sent) "/" "[Gmail]/Posta inviata"
+", "Server:* LIST (\HasNoChildren \Junk) "/" "[Gmail]/Spam"
+", "Server:* LIST (\HasNoChildren \Flagged) "/" "[Gmail]/Speciali"
+", "Server:* LIST (\HasNoChildren \All) "/" "[Gmail]/Tutti i messaggi"
+", "Server:L001 OK Success
+", "Client:M002 SELECT INBOX
+", "Server:* FLAGS (\Answered \Flagged \Draft \Deleted \Seen NonJunk Junk)
+", "Server:* OK [PERMANENTFLAGS (\Answered \Flagged \Draft \Deleted \Seen NonJunk Junk \*)] Flags permitted.
+", "Server:* OK [UIDVALIDITY 1] UIDs valid.
+", "Server:* 5 EXISTS
+", "Server:* 0 RECENT
+", "Server:* OK [UIDNEXT 202] Predicted next UID.
+", "Server:* OK [HIGHESTMODSEQ 66770]
+", "Server:M002 OK [READ-WRITE] INBOX selected. (Success)
+", "Client:U501 FETCH 1 (BODY[])
+", "Client:U501 FETCH 2 (BODY[])
+", "Client:U501 FETCH 3 (BODY[])
+", "Client:U501 FETCH 4 (BODY[])
+", "Client:U501 FETCH 5 (BODY[])
+") 
+
+
+save mail as eml 
+
+
+iterate mail: 1 
+writeln ok: "/Users/pro/.GMaildir/new1.eml" 
+iterate mail: 2 
+writeln ok: "/Users/pro/.GMaildir/new2.eml" 
+iterate mail: 3 
+writeln ok: "/Users/pro/.GMaildir/new3.eml" 
+iterate mail: 4 
+writeln ok: "/Users/pro/.GMaildir/new4.eml" 
+iterate mail: 5 
+writeln ok: "/Users/pro/.GMaildir/new5.eml" 
+stop: Resume 
+
+
+
+QHostAddress getHostIp() {
+	QNetworkInterface iface = QNetworkInterface::interfaceFromName(INTERFACE);
+	QList<QNetworkAddressEntry> entries = iface.addressEntries();
+	if (!entries.isEmpty()) {
+		QNetworkAddressEntry entry = entries.first();
+		QHostAddress ip = entry.ip();
+		return ip;
+	}
+return (QHostAddress::Null);
+}

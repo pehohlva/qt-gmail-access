@@ -1,0 +1,5 @@
+This directory contains utilities that might be useful to parties interested 
+in toying with or deploying real-world IF-MAP solutions.
+
+dhcpd.conf - An example ISC DHCP IF-MAP enabled configuration.
+publish-ip-mac.pl - A helper script for ISC DHCP IF-MAP integration.
