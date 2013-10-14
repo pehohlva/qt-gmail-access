@@ -228,12 +228,15 @@ namespace ReadMail {
             dir.mkpath(path);
         return path;
     }
+    
 
     StreamMail::StreamMail()
     : d(new QBuffer()) {
         d->open(QIODevice::ReadWrite);
         start();
     }
+
+    //// only imap client use this to save on disk mail /// readable from os client mail
 
     bool StreamMail::PutOnEml(const QString emlfile, QString& s_title, bool field) {
         //// Q_UNUSED(emlfile);
@@ -353,7 +356,7 @@ namespace ReadMail {
     }
 
     bool StreamMail::LoadFile(const QString file) {
-         ////qFatal(" unable to read ... ");
+        ////qFatal(" unable to read ... ");
         bool filled = false;
         if (clear()) {
 
@@ -365,27 +368,20 @@ namespace ReadMail {
                     //// read line by line 
                     if (f->isReadable()) {
                         linenr = -1;
-                        ///qDebug() << "######## size" << d->data().size() << "\n";
                         while (!f->atEnd()) {
                             linenr++;
                             QByteArray crk = f->read(76);
                             d->write(crk);
-                            
                         }
                         f->close();
                         d->write(QByteArray("\n--\n--\n--\n--"));
-                        /////qDebug() << d->data() << "\n";
-                        ///// qFatal(" unable to read ... ");
                     }
                 } else {
                     qDebug() << "######## file errors:" << f->errorString() << "\n";
-                    ////f.errorString()
                 }
             }
         }
-        ////d->seek(0);
-        //// write extra line on this case only by buffer.... mail
-        //// qDebug() << "######## d->bytesAvailable():" << d->bytesAvailable()  << " chunkbb:"  << linenr << "\n";
+
         if (d->bytesAvailable() > 23) {
             filled = true;
         }

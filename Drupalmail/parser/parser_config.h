@@ -17,12 +17,21 @@
 #include <QtCore>
 #include <QCoreApplication>
 #include <QMap>
+#include <QtGlobal>
 #include "mail_handler.h"
 #include "mime_standard.h"
 #include "kcodecs.h"
+#include "parser_utils.h"
+#include <QTextDocument>
 
+#ifndef QT_NO_EMIT
+# define emit
+#endif
+///// Q_ASSERT_X()
 #define _BOUNDARY_MAXL_  110 /// rcf say 70
-#define _IMAIL_MAXL_  76
+#define _IMAIL_MAXL_  100
+
+#define _IMAIL_LARGE_  76
 
 
 const int MAX_NR_ATTACMENT  = 66;
@@ -33,8 +42,9 @@ const int MAX_NR_ATTACMENT  = 66;
 #define QUOTEDCHAR \
              QChar(22) /// unicode 22 "
 
-
-
+#define WORD2000APOQUOTE \
+             QByteArray("##39#183##") /// word quote 
+/// #
 
 #define __NULLDATA__ \
              QString(QChar('*')) /// unicode 62
@@ -56,6 +66,9 @@ const int MAX_NR_ATTACMENT  = 66;
 
 #define _READMAILTMPDIR_ \
              QString("%1/.GMaildir/").arg(QDir::homePath())
+
+#define _TESTDOCDIR_ \
+             QString("%1/doc_test/").arg(QDir::currentPath())
 
 #define __RUNBOUNDARY__ \
              QRegExp("boundary[\\S'](.*)[\\s]",Qt::CaseInsensitive)
@@ -233,8 +246,7 @@ letter: 'W' = 87
 letter: 'Y' = 89 
 letter: 'Z' = 90 
 letter: '*' = 42 
+ * space == 32!
  */
-
-
 #endif	/* PARSER_CONFIG_H */
 

@@ -11,6 +11,8 @@
 #ifndef MIME_STANDARD_H
 #define	MIME_STANDARD_H
 
+#define _IMAIL_MAXL_  100
+
 #include <QHash>
 #include <QString>
 #include <QBuffer>
@@ -39,6 +41,12 @@
 #include <QMetaType>
 #include <QImage>
 
+#include "parser_utils.h"
+#include "parser_config.h"
+
+
+
+
 class Qmailf;
 
 /// 6 okt. 2013 save on svn 
@@ -65,26 +73,7 @@ MyClass *p1 = VPtr<MyClass>::asPtr(v);
  *  MMime::MimeTypes help;
  */
 
-namespace Utils {
-    
-      static const char CarriageReturn_ = '\015';
-      static const char LineFeed_ = '\012';
-     QByteArray search_byline(QByteArray chunk , QByteArray key);
-     QString _partmd5(const QByteArray xml, int position);
-     QString token(QString str, QChar c1, QChar c2, int *index);
-     /// QChar tonicode == caret    "name"  return name or |name| return name 
-     /// caret is unicode char separator to take inside;
-     QByteArray token( QByteArray text , int caret ,  int aftercaret = 0 );
-     QString _stripcore(QString x);
-     QByteArray _RX_resolver(const QRegExp rx, QVariant x);
-     QString _format_string76(QString s);
-     bool _write_file(const QString fullFileName, const QString chunk);
-     QStringList _multipart_resolver(QString x);
-     QByteArray _reformat_html(const QByteArray in);
-     bool _writebin_tofile(const QString xfile, const QByteArray chunk);
-     int _distance_position(const int a, const int b);
 
-}
 
 
 
@@ -273,9 +262,9 @@ namespace MMime {
             mimeTypes.insert("oda", "application/oda");
             mimeTypes.insert("ogg", "application/ogg");
             mimeTypes.insert("old", "application/x-trash");
-            
+
             mimeTypes.insert("odt", "application/vnd.oasis.opendocument.text");
-            
+
             mimeTypes.insert("oza", "application/x-oz-application");
             mimeTypes.insert("p7r", "application/x-pkcs7-certreqresp");
             mimeTypes.insert("pac", "application/x-ns-proxy-autoconfig");
@@ -465,32 +454,32 @@ namespace MMime {
 class Qmailf {
 public:
 
-    Qmailf(int id) : chunk(""), mime("txt"), file("file.txt"), ext("txt"), uuid(id),is_inline(false) {
+    Qmailf(int id) : chunk(""), mime("txt"), file("file.txt"), ext("txt"), uuid(id), is_inline(false), debug_level(1) {
 
     }
     //// all chunk is to BASE64 transformed 
+
     void SetChunk(const QByteArray& x) {
         chunk = x;
-        ////qDebug() << "Set chunk.:"; 
-        ///qDebug() << chunk; 
-        /////qDebug() << ":End."; 
     }
     /// set mime automatic 
     /// todo filename resolver from header && id from inline image 
-    void SetMeta(const QString x , const QString xmime ) {
+
+    void SetMeta(const QString x, const QString xmime) {
         meta_header = x;
         mime = xmime;
         MMime::MimeTypes help;
-        /////mime = help.Contenttype_Resolver(x);
         ext = help.MimeFromContent(xmime);
         QString def(QString("default_m_%1.%2").arg(uuid).arg(ext));
         file = def;
     }
     /// no make file or db  take the chunk from mail and send at the right place
-    void SetInline(bool x, QString contenentid ) {
+
+    void SetInline(bool x, QString contenentid) {
         is_inline = x;
         uidinlinename = contenentid;
     }
+
     void SetFile(const QString dfile) {
         MMime::MimeTypes fmime;
         QFileInfo fi(dfile);
@@ -502,11 +491,25 @@ public:
     QByteArray Chunk() {
         return chunk;
     }
+    QByteArray Contenent() {
+        return QByteArray::fromBase64(chunk);
+    }
 
     QString Mime() {
         return mime;
     }
     
+    QString InlineImageHandler( const QString name ) {
+        if (name == uidinlinename) {
+            return EmbeddedImage();
+        } else {
+            return QString();
+        }
+    }
+    
+    
+    
+
     bool isValidImage() {
         QImage *imgd = new QImage();
         return imgd->loadFromData(QByteArray::fromBase64(chunk.simplified()));
@@ -515,36 +518,63 @@ public:
     int Uid() {
         return uuid;
     }
+    
+    bool TestWriteln(int mode = 1);
 
     QString Filename() {
         return file;
     }
+    //// html inline embedded image if image on html
+    QString EmbeddedImage();
 
     void Info() {
-        QByteArray text = QByteArray::fromBase64(chunk);
-        qDebug() << "Content-Type:" << Mime() << " - " << Filename()  << " ...";
-        //// qDebug() << "Meta:" << meta_header;
-        if ( Mime().startsWith("text/")  ) {
-           qDebug() << "Body first 76 chunk decoded:" << text.mid(0, 76).simplified(); 
-        } else if ( Mime().startsWith("image/") ) { 
-            QImage *imgd = new QImage();
-            bool isit = imgd->loadFromData(QByteArray::fromBase64(chunk.simplified()));
-            if (isit) {
-                qDebug() << "QImage valid data...";
+        if (debug_level > 0 && debug_level < 4) {
+            QTextStream out(stdout, QIODevice::WriteOnly);
+            QString str("*");
+            out << str.fill('.',_IMAIL_MAXL_) << "\n";
+            QByteArray text = QByteArray::fromBase64(chunk);
+            out << "Content-Type:" << Mime() << " - " << Filename() << " - " << txt_charset << "\n";
+            //// qDebug() << "Meta:" << meta_header;
+            if (Mime().startsWith("text/")) {
+                TestWriteln(1);
+                out << "Body first 76 chunk decoded:" << text.mid(0, 76).simplified() << "\n";
+            } else if (Mime().startsWith("image/")) {
+                QImage *imgd = new QImage();
+                bool isit = imgd->loadFromData(QByteArray::fromBase64(chunk.simplified()));
+                if (isit) {
+                    TestWriteln(0);
+                    out << "QImage valid data..." << "\n";
+                } else {
+                    //// out << chunk;
+                    out << "Error, NO QImage valid data..." << "\n";
+                }
+
             } else {
-                qDebug() << chunk;
-                qDebug() << "Error, NO QImage valid data...";
+                /// pdf doc word ecc...
+                TestWriteln(0);
             }
+            out << "Attachment  size base64 encodet:" << text.size() << "\n";
+
+
+
+            text.clear();
+            out.flush();
             
-        } else {
-           qDebug() << "Body size:" << text.size(); 
         }
-        
-        
-        text.clear();
     }
+    
+    void SetTextChartset(const QByteArray chart ) {
+        txt_charset = chart;
+    }
+    
+    QByteArray Chartset() {
+        return txt_charset;
+    }
+    
+    
 private:
     QByteArray chunk; // base64 encoded or other meta_heade having info
+    QByteArray txt_charset;
     QString mime;
     QString uidinlinename;
     QString meta_header; /// meta info  to create a file or o drupal node 
@@ -552,6 +582,7 @@ private:
     bool is_inline;
     QString ext;
     int uuid;
+    int debug_level;
 };
 
 typedef QMap<int, QVariant> Attach_File_Map;
@@ -582,6 +613,7 @@ struct ICmail {
     QString root_cmd;
     QVariant tmp;
     QVariant txt;
+    QVariant xhtml;
     QMap<int, QVariant> alist;
 
     operator QVariant() const {
@@ -606,18 +638,16 @@ inline QDataStream& operator>>(QDataStream& in, ICmail& mail) {
     in >> mail.date;
     return in;
 }
-
 /*
-
   << mail.txt << ",\n"
   << mail.html << ",\n"
  */
 inline QDebug &operator <<(QDebug debug, const ICmail &mail) {
     debug.nospace() << "ICmail{start(\n"
             << mail.from << ",\n"
-            << mail.subject << ",\nContent-Transfer-Encoding:"
+            << mail.subject << ",\nDate:"
             << mail.date << "\n,"
-            << mail.multipart << "\n,\nRoot cmd Content-Type:\n"
+            << mail.multipart << "\n,\nRoot Header:\n"
             << mail.root_cmd << ")end}\n";
     return debug.space();
 }

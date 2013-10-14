@@ -49,11 +49,7 @@
 
 
 
-static QString fastmd5(const QByteArray xml) {
-    QCryptographicHash formats(QCryptographicHash::Md5);
-    formats.addData(xml);
-    return QString(formats.result().toHex().constData());
-}
+
 
 const QChar newline_br = QChar(10);
 

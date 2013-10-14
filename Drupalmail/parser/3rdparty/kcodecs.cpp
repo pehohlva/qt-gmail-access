@@ -180,7 +180,10 @@ void MCodecs::quotedPrintableEncode(const QByteArray& in, QByteArray& out, bool 
 
 QByteArray MCodecs::quotedPrintableDecode(const QByteArray & in) {
     QByteArray out;
-    quotedPrintableDecode(in, out);
+    QByteArray chunk = in;
+    chunk.replace(QByteArray("=\n\r"),QByteArray());
+    chunk.replace(QByteArray("=\n"),QByteArray());
+    quotedPrintableDecode(chunk, out);
     return out;
 }
 
