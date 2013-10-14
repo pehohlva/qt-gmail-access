@@ -36,6 +36,15 @@ LIBS += -framework CoreFoundation
 LIBS += -framework IOKit
 }
 
+INCLUDEPATH += ../tidylib
+DEPENDPATH += ../tidylib
+INCLUDEPATH += ../tidylib/include
+DEPENDPATH += ../tidylib/include
+LIBS += ../tidylib/libtidy.a
+
+
+
+
  MOC_DIR =  .moc
  OBJECTS_DIR =  .obj
  UI_DIR =  .ui
@@ -48,6 +57,8 @@ HEADERS += drupal/drupal_journalist.h \
            imap/net_imap_standard.h \
            imap/net_starterimap.h \
            parser/mail_handler.h \
+           parser/parser_utils.h \
+           parser/tidy_clean.h \
            parser/mime_standard.h \
            parser/parser_config.h \
            parser/parser_eml.h \
@@ -57,6 +68,8 @@ SOURCES += main.cpp \
            drupal/drupal_journalist.cpp \
            imap/net_imap_standard.cpp \
            parser/mime_standard.cpp \
+           parser/parser_utils.cpp \
+           parser/tidy_clean.cpp \
            imap/net_starterimap.cpp \
            parser/mail_handler.cpp \
            parser/parser_eml.cpp \
