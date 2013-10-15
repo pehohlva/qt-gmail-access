@@ -16,6 +16,7 @@
 
 #include <QMainWindow>
 #include <QMessageBox>
+ #include <QTextStream>
 #include <QtGui>
 #include <QStringList>
 #include "mailformat.h"
@@ -48,8 +49,6 @@ private slots:
     void on_attachment_cmd_pressed();
     void mail_send();
     void IncommingMessage(QString txt);
-    //// void SmsinErrors(const QList<QSslError);
-
     void on_actionExport_to_odp_triggered(bool checked);
 
 private:

@@ -34,8 +34,21 @@
 #include <QTextCodec>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
+#include <QTextDocumentWriter>
 
 #include "mime_type.h"
+
+#define __TESTWRITEMAIL__ \
+             QString("%1/Downloads/").arg(QDir::homePath())
+
+#define _ODTFORMAT_ \
+             QString("%1mail_text_sender.odt").arg(__TESTWRITEMAIL__)
+
+namespace Utils {
+
+    QString _partmd5(const QByteArray xml, int position);
+
+}
 
 inline bool fwriteutf8(QString fullFileName, QString xml) {
     if (fullFileName.contains("/", Qt::CaseInsensitive)) {
@@ -95,9 +108,9 @@ public:
         a_tomail = t;
     }
 
-    void SetFromTo(QString f, QString t) {
+    void SetFromTo(QString f, QString tomail) {
         a_frommail = f;
-        a_tomail = t;
+        a_tomail = tomail;
     }
 
     /* return header body attachment ecc ..  */
@@ -108,22 +121,23 @@ public:
     /// make null all attachment & rawmail inside!!
 
     void Clear() {
-        Attachmail.clear();
         Rawmail.clear();
     }
-
+    //// call AppendAttachment bevore SetMessage 
+    bool AppendAttachment(QFileInfo filepath);
     void SetMessage(const QString Subject, const QTextDocument *doc);
 
     bool Valid() {
         return true;
     }
 
-    bool AppendAttachment(QFileInfo filepath);
+
 
 
 private:
 
-
+    QString _chunkAttachment(const QString appendfile);
+    QString _inlineImage(QImage image, const QString endname);
     QString ComposeHeader(const QString Subject, QString CC = QString("")); /// 0
     QString ComposeTxtPlain(QString txt); /// 1
     QString ComposeHtml(QString html); /// 2
@@ -131,13 +145,14 @@ private:
 
     QString Format_String(QString s);
     /// attachment
-    QString encodeQP(QString s);
+    /// QString encodeQP(QString s); // all base64 encodet
     QString a_frommail;
     QString a_tomail;
     QString now;
     QString Rawmail;
     QString Attachmail;
     QString UniqueKeyInlineImage;
+    QString UniqueKeyTexttPlainHtml;
     QString UniqueKeyAttachment;
     qint64 unixtime;
     QStringList imagelist;

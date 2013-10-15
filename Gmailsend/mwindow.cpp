@@ -12,6 +12,7 @@
 //
 #include "mwindow.h"
 #include "ui_mwindow.h"
+#include <QTextStream>
 
 MWindow::MWindow(QWidget *parent) :
 QMainWindow(parent), to_current_file(""), ui(new Ui::MWindow) {
@@ -23,6 +24,9 @@ QMainWindow(parent), to_current_file(""), ui(new Ui::MWindow) {
     }
     if (!setter.value("Passwords").toString().isEmpty()) {
         ui->passwordg->setText(setter.value("Passwords").toString());
+    }
+    if (!setter.value("Mailto").toString().isEmpty()) {
+        ui->mailtotext->setText(setter.value("Mailto").toString());
     }
     attachment_item.clear();
     IncommingMessage(QString("Wakeup...."));
@@ -40,9 +44,11 @@ void MWindow::UpdateMail() {
     QApplication::processEvents();
     QString username = ui->usernameg->text();
     QString passw = ui->passwordg->text();
+    QString recivermail = ui->mailtotext->text();
     QString betreff = ui->subject_text->text();
     setter.setValue("UserName", username);
     setter.setValue("Passwords", passw);
+    setter.setValue("Mailto", recivermail);
     /// subject_text
     rawmail.SetFromTo(ui->usernameg->text(), ui->mailtotext->text());
     rawmail.Clear();
@@ -56,12 +62,19 @@ void MWindow::UpdateMail() {
     rawmail.SetMessage(betreff, ui->Editmail->document()); /// Editmail
     this->setCursor(Qt::ArrowCursor);
     IncommingMessage(QString("Wakeup...."));
+    
+    const QString chunk_mail = rawmail.FullChunkMail();
+    fwriteutf8(QString("%1debugmail_me.txt").arg(__TESTWRITEMAIL__),chunk_mail);
+    fwriteutf8(QString("%1debugmail_me.eml").arg(__TESTWRITEMAIL__),chunk_mail);
+    
+    qDebug() << "### rawmail " << rawmail.FullChunkMail();
+    
 
 }
 
 void MWindow::mail_send() {
-    qDebug() << "Mail send:" << __FUNCTION__; /// disconnected
-    //// IncommingMessage(QString("Disconnected.... from remote server..."));
+    ////qDebug() << "Mail send:" << __FUNCTION__; /// disconnected
+    IncommingMessage(QString("Disconnected.... from remote server..."));
     smtpserver->deleteLater();
     rawmail.Clear();
     attachment_item.clear();
@@ -81,6 +94,15 @@ void MWindow::on_sendmailcmd_clicked() {
     QString username = ui->usernameg->text();
     QString passw = ui->passwordg->text();
     const QString chunk_mail = rawmail.FullChunkMail();
+    QTextStream out(stdout, QIODevice::WriteOnly);
+    QString str("*");
+    ////out << str.fill('.', 80) << "\n";
+    ///// out << chunk_mail << "\n";
+    ////out << str.fill('.', 80) << "\n";
+    ////out.flush();
+    ///// return;
+
+
     QMessageBox msgBox;
     QPushButton *sendbuttun = msgBox.addButton(tr("Send mail %1").arg(InfoHumanSize_human(chunk_mail.size())), QMessageBox::ActionRole);
     QPushButton *abortButton = msgBox.addButton(QMessageBox::Abort);
@@ -100,10 +122,9 @@ void MWindow::on_sendmailcmd_clicked() {
     }
     if (msgBox.clickedButton() == abortButton) {
         // connect
-        qDebug() << "sendmail noooo....";
+        /////// qDebug() << "sendmail noooo....";
         rawmail.Clear();
-        attachment_item.clear();
-        ui->listattachment->clear();
+        on_removeattachment_button_clicked();
     }
 
 }
@@ -158,6 +179,7 @@ void MWindow::on_actionAttachment_triggered() {
 void MWindow::on_removeattachment_button_clicked() {
     attachment_item.clear();
     ui->listattachment->clear();
+    /////UpdateMail();
 }
 
 MWindow::~MWindow() {

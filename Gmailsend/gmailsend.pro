@@ -14,7 +14,7 @@ TEMPLATE = app
 DESTDIR	+= ./
 
 
-CONFIG +=   warn_on \
+CONFIG +=   warn_off \
             qt \
             silent \
             thread 

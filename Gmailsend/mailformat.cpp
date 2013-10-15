@@ -13,165 +13,251 @@
 
 #include "mailformat.h"
 
+namespace Utils {
+
+    QString _partmd5(const QByteArray xml, int position) {
+        QCryptographicHash formats(QCryptographicHash::Md5);
+        QString found = QString("FilePosition=%1").arg(position);
+        formats.addData(xml);
+        formats.addData(xml);
+        return QString(formats.result().toHex().constData());
+    }
+
+}
+
+static inline QString _format_string76(QString s) {
+    ///
+    QString repair = "";
+    qint64 o = 0;
+    for (int i = 0; i < s.size(); ++i) {
+        o++;
+        repair.append(s.at(i));
+        if (o == 76) {
+            o = 0;
+            repair.append(QString("\n"));
+        }
+    }
+    return repair;
+}
+
 MailFormat::MailFormat() {
     now = QString(QTime::currentTime().toString("h:mm:ss "));
     a_frommail = "frommail@example.org";
     a_tomail = "sendermail@example.org";
     QDateTime now = QDateTime::currentDateTime();
     unixtime = now.toMSecsSinceEpoch();
-    qDebug() << "boundarykey:" << unixtime;
-    Rawmail = "";
-    sendhost = QString("gmail.com");
+    //// qDebug() << "boundarykey:" << unixtime;
     imagelist.clear();
-    UniqueKeyInlineImage = QString("pic-%1-pic").arg(unixtime);
-    UniqueKeyAttachment = QString("att-%1-att").arg(unixtime);
+    Rawmail = "";
+    QString str("*");
+    sendhost = QString("gmail.com");
+    
+    /// check if download dir exist __TESTWRITEMAIL__ 
+    
+    const QString path = __TESTWRITEMAIL__;
+        QDir dir;
+        if (!dir.exists(path))
+            dir.mkpath(path);
+        
+    UniqueKeyAttachment = QString("006_%1").arg(unixtime);
+    UniqueKeyInlineImage = QString("005_%1").arg(unixtime);
+    UniqueKeyTexttPlainHtml = QString("000_%1").arg(unixtime);
+
+    UniqueKeyTexttPlainHtml.append(str.fill(QChar('T'), 55 - UniqueKeyTexttPlainHtml.size()));
+    UniqueKeyAttachment.append(str.fill(QChar('A'), 55 - UniqueKeyAttachment.size()));
+    UniqueKeyInlineImage.append(str.fill(QChar('I'), 55 - UniqueKeyInlineImage.size()));
+}
+
+QString MailFormat::_chunkAttachment(const QString fi) {
+    QFileInfo localfile(fi);
+    QByteArray blob;
+    QFile local_file(fi);
+    const QString extension = localfile.suffix().toLower();
+    QString xchunk;
+    if (local_file.open(QIODevice::ReadOnly)) {
+        blob = local_file.readAll();
+        QString reformat_blob = QString(blob.toBase64().constData());
+        xchunk.append(Format_String(reformat_blob));
+        xchunk.append("\r\n");
+    } else {
+        blob = QByteArray("Error unable to open file!!");
+        QString blob0 = QString(blob.toBase64().constData());
+        xchunk.append(Format_String(blob0));
+        xchunk.append("\r\n");
+    }
+    
+    int maxsizefile = qMax(xchunk.size(),blob.size());
+    
+    MimeTypes question;
+    QString mimcurrent = question.value(extension);
+    if ( mimcurrent.size() < 3   ) {
+        mimcurrent = QString("application/%1").arg(extension);
+    }
+    QString parts = ""; ///  2 line break before
+    parts.append(QString("--%1\r\n").arg(UniqueKeyAttachment));
+    parts.append(QString("Content-type: %1;\n").arg(mimcurrent));
+    parts.append(QString("\tname=\"%1\"\r\n").arg(localfile.fileName()));
+     parts.append(QString("Content-Description: %1\r\n").arg(localfile.fileName()));
+    parts.append("Content-disposition: attachment;");
+    parts.append(QString("\tfilename=\"%1\";  size=%2;\r\n").arg(localfile.fileName()).arg(QString::number(maxsizefile)));
+    parts.append("Content-Transfer-Encoding: base64\r\n");
+    parts.append("\r\n");
+    parts.append(xchunk);
+    
+    
+    
+    /* Content-Type: application/pdf;
+	name="COMUNICATO STAMPA POMERIGGIO CORSI Mendrisio.pdf"
+Content-Description: COMUNICATO STAMPA POMERIGGIO CORSI Mendrisio.pdf
+Content-Disposition: attachment;
+	filename="COMUNICATO STAMPA POMERIGGIO CORSI Mendrisio.pdf"; size=243370;
+	creation-date="Tue, 15 Oct 2013 07:17:38 GMT";
+	modification-date="Tue, 15 Oct 2013 07:11:50 GMT"
+Content-Transfer-Encoding: base64 */
+    
+    
+    
+
+    
+    local_file.close();
+    return parts;
 }
 
 bool MailFormat::AppendAttachment(QFileInfo filepath) {
-    QFile local_file(filepath.absoluteFilePath());
-    const QString extension = filepath.suffix().toLower();
-    MimeTypes question;
-    QString mimeactual = question.value(extension);
-    QString parts = ""; ///  2 line break before
-    if (local_file.open(QIODevice::ReadOnly)) {
-        QByteArray blob = local_file.readAll();
-        QString reformat_blob = QString(blob.toBase64().constData());
+
+    ////qDebug() << "AppendAttachment:" << filepath.absoluteFilePath();
+
+    if (filepath.exists()) {
         attachmentlist += filepath.absoluteFilePath();
-        parts.append(QString("--%1\r\n").arg(UniqueKeyAttachment));
-        parts.append(QString("Content-type: %1;").arg(mimeactual));
-        parts.append(QString("  name=\"%1\"\r\n").arg(filepath.fileName()));
-        parts.append("Content-disposition: attachment; \n");
-        parts.append(QString("  filename=\"%1\"\r\n").arg(filepath.fileName()));
-        parts.append("Content-Transfer-Encoding: base64\r\n");
-        parts.append("\r\n");
-        parts.append(Format_String(reformat_blob));
-        parts.append("\r\n");
-        Attachmail.append(parts);
-        local_file.close();
         return true;
     }
     return false;
-    /*
-     * Content-type: image/png; name="Schermata 2013-08-27 a 10.45.59.png"
-       Content-disposition: attachment;
-        filename="Schermata 2013-08-27 a 10.45.59.png"
-        Content-transfer-encoding: base64
-     */
-
-    ////target append on Attachmail;
 }
 
 QString MailFormat::ComposeTxtPlain(QString txt) {
-    qDebug() << "boundarykey:" << unixtime;
-    QString parts = ""; ///  2 line break before
-    parts.append(QString("--%1\r\n").arg(unixtime));
+    /// qDebug() << "boundarykey:" << UniqueKeyTexttPlainHtml;
+    QByteArray chunk = QByteArray(txt.toAscii()).toBase64();
+    QString base64data = QString(chunk.constData());
+
+    QString parts = "\r\n"; ///  2 line break before
+    parts.append(QString("--%1\r\n").arg(UniqueKeyTexttPlainHtml));
     parts.append("Content-type: text/plain; charset=utf-8\r\n");
-    parts.append("Content-Transfer-Encoding: quoted-printable\r\n");
+    parts.append("Content-Transfer-Encoding: base64\r\n");
     parts.append("\r\n");
-    parts.append(encodeQP(txt));
+    parts.append(Format_String(base64data));
     parts.append("\r\n");
-    /// if next html having inline image
-    if (imagelist.size() > 0) {
-        parts.append(QString("--%1\r\n").arg(unixtime));
-        parts.append(QString("Content-Type: multipart/related;\n    boundary=\"%1\"\r\n").arg(UniqueKeyInlineImage));
-    }
     return parts;
     ////
+    /*if (imagelist.size() > 0) {
+        parts.append(QString("--%1\r\n").arg(unixtime));
+        parts.append(QString("Content-Type: multipart/related;\n    boundary=\"%1\"\r\n").arg(UniqueKeyInlineImage));
+    }*/
 }
 
 QString MailFormat::ComposeHtml(QString html) {
-    //// <img src="myimage" />
-    QString parts = ""; ///  2 line break before
-    if (imagelist.size() > 0) {
-        parts.append(QString("--%1\r\n").arg(UniqueKeyInlineImage));
-    } else {
-        parts.append(QString("--%1\r\n").arg(unixtime));
-    }
+
+    QByteArray chunk = QByteArray(html.toAscii()).toBase64();
+    QString base64data = QString(chunk.constData());
+
+    QString parts = "\r\n"; ///  2 line break before
+    parts.append(QString("--%1\r\n").arg(UniqueKeyTexttPlainHtml));
     parts.append("Content-type: text/html; charset=utf-8\r\n");
-    parts.append("Content-Transfer-Encoding: quoted-printable\r\n");
+    parts.append("Content-Transfer-Encoding: base64\r\n");
     parts.append("\r\n");
-    parts.append(encodeQP(html));
+    parts.append(Format_String(base64data));
     parts.append("\r\n");
+    parts.append(QString("--%1--\r\n").arg(UniqueKeyTexttPlainHtml));
     return parts;
     ////
 }
 
 QString MailFormat::ComposeHeader(const QString Subject, QString CC) {
     QString header = "";
-    qDebug() << "boundarykey:" << unixtime;
     QString agent = QString("User-Agent: QTMacMail (Macintosh; Intel Mac OS X 10.8; rv:17.0)\r\n");
 
     //// QString strRestored(QByteArray::fromBase64(asSaved));
     QString cores;
     cores.append(Subject);
-
-    ////const QString marebello = QString(QString::number(unixtime));
-    ///// qDebug() << "marebellomarebellomarebellomarebellomarebello:" << marebello;
-
-    /* line 1 */
     header.append(QString("From:\"%1\" <%1>\r\n").arg(a_frommail));
     /* line 2 */
     header.append(QString("Reply-To:\"%1\" <%1>\r\n").arg(a_frommail));
     /* line 3 subject  */
     header.append(QString("Subject: =?utf-8?B?%1?=\r\n").arg(cores.toLatin1().toBase64().constData())); /// encoding text ????
-    /* line 4 */
     header.append("X-Powered-BY: Peter Hohl autor\r\n");
     header.append("X-Mailer: Freeroad Libs (0.0.1)\r\n");
-    /////X-Powered-BY: OTRS - Open Ticket Request System (http://otrs.org/)
-    ////
-
-    header.append(QString("To:\"%1\" <%1>\r\n").arg(a_frommail));
+    header.append(QString("To:\"%1\" <%1>\r\n").arg(a_tomail));
     if (!CC.isEmpty()) {
         /* line 5 */
         header.append(QString("Cc:\"%1\" <%1>\r\n").arg(CC));
     }
+    header.append("X-MS-Has-Attach: yes\r\n");
+    header.append("X-MS-TNEF-Correlator:\r\n");
     //// header.append(QString("Cc:\"%1\" <%1>\r\n").arg(marebello));
     /* line 6 */
-    header.append("MIME-Version: 1.0\r\n");
+    
 
     /*
     Content-Type: multipart/mixed;
-        boundary="------------030605040005010602040201"
-X-OriginalArrivalTime: 16 Sep 2013 15:24:43.0315 (UTC) FILETIME=[DE618030:01CEB2F0]
-     * */
+        boundary="_009_9356FEBDF6AD6C4B893B13E2BFF2173614B0C14Emscsbegia0022me_"
+MIME-Version: 1.0
 
-    if (attachmentlist.size() > 0) {
-        header.append(QString("Content-Type: multipart/mixed;\n    boundary=\"%1\"\r\n").arg(UniqueKeyAttachment));
-        header.append(QString("\n--%1\r\n").arg(UniqueKeyAttachment));
-    }
+--_009_9356FEBDF6AD6C4B893B13E2BFF2173614B0C14Emscsbegia0022me_
+Content-Type: multipart/related;
+        boundary="_008_9356FEBDF6AD6C4B893B13E2BFF2173614B0C14Emscsbegia0022me_";
+        type="multipart/alternative"
+
+--_008_9356FEBDF6AD6C4B893B13E2BFF2173614B0C14Emscsbegia0022me_
+Content-Type: multipart/alternative;
+        boundary="_000_9356FEBDF6AD6C4B893B13E2BFF2173614B0C14Emscsbegia0022me_" */
+
+    /* UniqueKeyAttachment = QString("006_%1").arg(unixtime);
+    UniqueKeyInlineImage = QString("005_%1").arg(unixtime);
+    UniqueKeyTexttPlainHtml = QString("000_%1").arg(unixtime);
+     */
+
 
 
     /* line 7 */
     QDateTime now = QDateTime::currentDateTime();
     QString date_nz = now.toString("dd.MM.yyyy hh:ss");
-    header.append(QString("Content-Type: multipart/alternative; boundary=\"%1\"\r\n").arg(unixtime));
-    header.append(QString("Note:%1\r\n").arg(date_nz));
-    header.append("This is a MIME encoded message. Note boundary is a unix time stamp to check date sending composing. \r\n");
+    /// quello che chiude tutto
+    header.append(QString("Content-Type: multipart/mixed;\r\n\tboundary=\"%1\";\r\n").arg(UniqueKeyAttachment));
+    ////header.append(QString("Note:%1\r\n").arg(date_nz));
+    ///header.append("This is a MIME encoded message. Unix Time on boundary. \r\n");
+    header.append("MIME-Version: 1.0\r\n");
+    header.append("\r\n");
     ///// header.append(QString("-\"%1\"-\r\n").arg( marebello  ));
+    header.append(QString("--%1\r\n").arg(UniqueKeyAttachment));
+    header.append(QString("Content-Type: multipart/related;\r\n\tboundary=\"%1\";\r\n").arg(UniqueKeyInlineImage));
+    header.append(QString("type=\"multipart/alternative\"\r\n"));
     header.append("\r\n");
-    header.append("\r\n");
-    //////header.append("--%1\r\n").arg(boundarykey);
-    /*
-     Date: Sun, 15 Sep 2013 07:28:50 -0700 (PDT)
-From: Filippo Giani <filippo@giani.ch>
-Reply-To: Filippo Giani <filippo@giani.ch>
-Subject: punto situazione
-To: Peter Hohl <pehohlva@gmail.com>
-Cc: "marco.bazzi@liberatv.ch" <marco.bazzi@liberatv.ch>
-MIME-Version: 1.0
-Content-Type: multipart/alternative; boundary="1837502048-1903744228-1379263064=:76005"
-     */
-
+    header.append(QString("--%1\r\n").arg(UniqueKeyInlineImage));
+    header.append(QString("Content-Type: multipart/alternative;\r\n\tboundary=\"%1\";\r\n").arg(UniqueKeyTexttPlainHtml));
+    /// text now 
     return header;
 }
 /// public
 
 void MailFormat::SetMessage(const QString Subject, const QTextDocument *doc) {
     /// target to make Rawmail!!!
-    qDebug() << "boundarykey:" << unixtime;
+    //// qDebug() << "boundarykey:" << unixtime;
+    bool insert = false;
     QString txt = doc->toPlainText();
-    txt.replace("\n", "\r\n");
-    txt.replace("\n.", "\n=2E");
+    QDateTime now = QDateTime::currentDateTime();
+    qint64  istime = now.toMSecsSinceEpoch();
+    const QString messageasdoc = __TESTWRITEMAIL__ + QString("MailMessage_%1.odt")
+            .arg( QString::number(istime));
+    
+    
+    
+    QTextDocumentWriter writer(messageasdoc);
+    if (writer.write(doc)) {
+        // append attachment 
+        insert = true;
+        ////// qDebug() << "ODT written ok:" << _ODTFORMAT_;
+    }
+
+
     /// extract resource image from html and convert cid:name
     /// append image attachmenent inline
     QString xhtml = doc->toHtml("utf-8");
@@ -183,15 +269,15 @@ void MailFormat::SetMessage(const QString Subject, const QTextDocument *doc) {
         QTextFrame *childFrame = it.currentFrame();
         QTextBlock para = it.currentBlock();
         if (childFrame) {
-            qDebug() << "### childFrame ok ";
+            ////qDebug() << "### childFrame ok ";
         } else if (para.isValid()) {
-            qDebug() << "### para.isValid() ok ";
+            //// qDebug() << "### para.isValid() ok ";
             QTextBlockFormat ParentBl = para.blockFormat();
             QTextBlock::iterator de;
             for (de = para.begin(); !(de.atEnd()); ++de) {
                 QTextFragment fr = de.fragment();
                 if (fr.isValid()) {
-                    qDebug() << "### fr.fragment() ok ";
+                    //////  qDebug() << "### fr.fragment() ok ";
                     QTextCharFormat TXTCh = fr.charFormat();
                     QTextImageFormat Pics = TXTCh.toImageFormat();
                     ////QTextTableFormat Tabl = TXTCh.toTableFormat();
@@ -199,7 +285,7 @@ void MailFormat::SetMessage(const QString Subject, const QTextDocument *doc) {
                     if (Pics.isValid() && !Pics.name().isEmpty()) {
                         QString name = Pics.name();
                         imagelist += name; //// search after on html code
-                        qDebug() << "### Pics.isValid  ok " << name;
+                       /////  qDebug() << "### Pics.isValid  ok " << name;
                         int w = 0;
                         int h = 0;
                         if (Pics.height() > 0) {
@@ -219,102 +305,147 @@ void MailFormat::SetMessage(const QString Subject, const QTextDocument *doc) {
     /// fix inline image ///
     for (int i = 0; i < imagelist.size(); ++i) {
         QString name = QString(imagelist.at(i).toLocal8Bit().constData());
-        QString qt_name = name;
-        qt_name.prepend(QString("part_%1").arg(i));
-        qt_name.append(QString("@%1").arg(sendhost));
-        xhtml.replace(QString("src=\"%1\"").arg(name), QString("src=\"cid:%1\"  alt=\"Image pos %1\"").arg(qt_name));
+        const QString endname = Utils::_partmd5(name.toAscii(), i) + QString(".png");
+        QString srcinsert = QString("src=\"cid:%1\"  alt=\"Image pos %2\"").arg(endname).arg(i);
+        ///// qDebug() << "### on list" << name;
+        /////  qDebug() << "### on src" << srcinsert;
+        xhtml.replace(QString("src=\"%1\"").arg(name), srcinsert);
     }
-    xhtml.replace("\n", "\r\n");
-    xhtml.replace("\n.", "\n=2E");
 
     Rawmail = "";
     Rawmail.append(ComposeHeader(Subject));
-
-
-
-
-
     Rawmail.append(ComposeTxtPlain(txt));
     Rawmail.append(ComposeHtml(xhtml));
+    Rawmail.append("\r\n");
+    // append inline image from html! here 
+    Rawmail.append(Place_Inline_Image(doc)); /// Place_Inline_Image
+    Rawmail.append(QString("--%1--\r\n").arg(UniqueKeyInlineImage));
+    Rawmail.append("\r\n");
+    //// loop attachment file if having!!!
+    /* QStringList imagelist;
+    QStringList attachmentlist; */
 
-    // append inline image from html!
-    Rawmail.append(Place_Inline_Image(doc));
-
-    Rawmail.append(QString("--%1--\r\n").arg(unixtime));
-    if (attachmentlist.size() > 0) {
-        Rawmail.append(Attachmail);
-        Rawmail.append(QString("--%1--\r\n").arg(UniqueKeyAttachment));
+    //// end mail here 
+    QString basetextfile = _chunkAttachment(messageasdoc);
+    Rawmail.append(basetextfile);
+    /// attachment 
+    for (int x = 0; x < attachmentlist.size(); ++x) {
+        QString namefileabsolute = QString(attachmentlist.at(x).toLocal8Bit().constData());
+        QString base64attach = _chunkAttachment(namefileabsolute);
+        Rawmail.append(base64attach);
     }
-    /// close two format
-
-
+    ///// last line from mail 
+    Rawmail.append(QString("--%1--\r\n").arg(UniqueKeyAttachment));
+    //// Rawmail.append("\r\n");
 }
 
 QString MailFormat::Place_Inline_Image(const QTextDocument *doc) {
 
     QString code = "";
     if (imagelist.size() < 1) {
+        QImage imageg;
+        //// load a dummy placeholder to close tag mixed
+        QString nameg = QString(":/images/image-x-generic.png");
+        const QString endnameg = Utils::_partmd5(nameg.toAscii(), 999) + QString(".png");
+        QFile file(nameg);
+        if (file.open(QFile::ReadOnly)) {
+            imageg.loadFromData(file.readAll());
+            if (!imageg.isNull()) {
+                return _inlineImage(imageg, endnameg);
+            }
+        }
         return code;
     }
     // iterate QStringList imagelist;
 
     for (int i = 0; i < imagelist.size(); ++i) {
-        QString name = QString(imagelist.at(i).toLocal8Bit().constData());
-        qDebug() << "### QImage code inline append  load ok :-)  " << name;
-        // vvv  Copy pasted mostly from Qt =================
-        // http://qtcocoon.googlecode.com/svn/trunk/Tools_OpenDocument_Editor/patch_qt4.5_OO/qtextodfwriter.cpp
         QImage image;
-        if (name.startsWith(QLatin1String(":/"))) // auto-detect resources
-            name.prepend(QLatin1String("qrc"));
-        QUrl url = QUrl::fromEncoded(name.toUtf8());
-        const QVariant data = doc->resource(QTextDocument::ImageResource, url);
-        if (data.type() == QVariant::Image) {
-            image = qvariant_cast<QImage>(data);
-        } else if (data.type() == QVariant::ByteArray) {
-            image.loadFromData(data.toByteArray());
+        QString name = QString(imagelist.at(i).toLocal8Bit().constData());
+        const QString endname = Utils::_partmd5(name.toAscii(), i) + QString(".png");
+        int biteloadetmodus = 0;
+
+        if (biteloadetmodus == 0) {
+            // try to load direct as normal file
+            QFile file(name);
+            if (file.open(QFile::ReadOnly)) {
+                image.loadFromData(file.readAll());
+                if (!image.isNull()) {
+                    biteloadetmodus = 1;
+                }
+            }
+        }
+        //// qDebug() << "###  biteloadetmodus 1   " << biteloadetmodus;
+        if (biteloadetmodus != 1) {
+            QUrl url0 = QUrl::fromEncoded(name.toUtf8());
+            ////qDebug() << "###  load qurl  " << url0;
+            const QVariant data1 = doc->resource(QTextDocument::ImageResource, url0);
+            if (data1.type() == QVariant::Image) {
+                image = qvariant_cast<QImage>(data1);
+            } else if (data1.type() == QVariant::ByteArray) {
+                image.loadFromData(data1.toByteArray());
+            }
         }
         if (!image.isNull()) {
+            biteloadetmodus = 1;
+        }
+        ////qDebug() << "###  biteloadetmodus 2   " << biteloadetmodus;
+        // vvv  Copy pasted mostly from Qt =================
+        // http://qtcocoon.googlecode.com/svn/trunk/Tools_OpenDocument_Editor/patch_qt4.5_OO/qtextodfwriter.cpp
+
+
+        if (biteloadetmodus != 1) {
+            if (name.startsWith(QLatin1String(":/"))) {
+                name.prepend(QLatin1String("qrc"));
+            }
+            QUrl url = QUrl::fromEncoded(name.toUtf8());
+            ////qDebug() << "###  load qurl  " << url;
+            const QVariant data = doc->resource(QTextDocument::ImageResource, url);
+            if (data.type() == QVariant::Image) {
+                image = qvariant_cast<QImage>(data);
+            } else if (data.type() == QVariant::ByteArray) {
+                image.loadFromData(data.toByteArray());
+            }
+        }
+
+        if (!image.isNull()) {
             //// make all png from name!!!!
-            qDebug() << "### QImage load ok :-)  " << name;
-            QBuffer imageBytes;
-            QImageWriter imageWriter(&imageBytes, "jpg");
-            imageWriter.setFormat("jpg");
-            imageWriter.setQuality(90);
-            imageWriter.setText("Author", "QT Mailchunker");
-            imageWriter.write(image);
-            QString qt_name = name;
-            qt_name.prepend(QString("part_%1").arg(i));
-            qt_name.append(QString("@%1").arg(sendhost));
-            QString human_name_image = name;
-            human_name_image.append(QString("_%1.jpeg").arg(unixtime));
-            /*
-             Content-Type: image/jpeg; x-mac-type="0"; x-mac-creator="0";
- name="Naret23.jpeg"
-Content-Transfer-Encoding: base64
-Content-ID: <part1.09020004.01010006@gmail.com>
-Content-Disposition: inline;
- filename="Naret23.jpeg"
-             */
-
-            QString reformat_img = QString(imageBytes.data().toBase64().constData());
-            code.append(QString("--%1\r\n").arg(UniqueKeyInlineImage));
-            code.append(QString("Content-type: image/jpeg; x-mac-type=\"0\"; x-mac-creator=\"0\"; \n"));
-            code.append(QString("    name=\"%1\"\r\n").arg(human_name_image));
-            code.append("Content-Transfer-Encoding: base64\r\n");
-            code.append(QString("Content-ID: <%1> \r\n").arg(qt_name));
-            code.append(QString("Content-Disposition: inline;\n  filename=\"%1\" \r\n").arg(human_name_image));
-            code.append("\r\n");
-            code.append(Format_String(reformat_img));
-            code.append("\r\n");
-
+            ////qDebug() << "### QImage load ok :-) not isNull  " << name;
+            const QString newoneimage = _inlineImage(image, endname);
+            code.append(newoneimage);
+        } else {
+            /////qDebug() << "### QImage load  isNull bad!  bad! bad! bad! bad! bad! bad! bad! :-( " << name;
+            ////qDebug() << "### QImage load  isNull bad!  bad! bad! bad! bad! bad! bad! bad! :-( " << endname;
         }
 
     }
-    /// close section
-    code.append(QString("--%1--\r\n").arg(UniqueKeyInlineImage));
-
+    //// qDebug() << "### inline code " << code;
     return code;
 
+}
+
+QString MailFormat::_inlineImage(QImage image, const QString endname) {
+
+    QString code;
+    if (!image.isNull()) {
+        QBuffer imageBytes;
+        QImageWriter imageWriter(&imageBytes, "png");
+        imageWriter.setFormat("png");
+        imageWriter.setQuality(90);
+        imageWriter.setText("Author", "QT Mailchunker");
+        imageWriter.write(image);
+        // load as chunk base 64
+        QString reformat_img = QString(imageBytes.data().toBase64().constData());
+        code.append(QString("--%1\r\n").arg(UniqueKeyInlineImage));
+        code.append(QString("Content-type: image/png; x-mac-type=\"0\"; x-mac-creator=\"0\"; \n"));
+        code.append(QString("\tname=\"%1\"\r\n").arg(endname));
+        code.append("Content-Transfer-Encoding: base64\r\n");
+        code.append(QString("Content-ID: <%1> \r\n").arg(endname));
+        code.append(QString("Content-Disposition: inline;\n\tfilename=\"%1\" \r\n").arg(endname));
+        code.append("\r\n");
+        code.append(Format_String(reformat_img));
+        code.append("\r\n");
+    }
+    return code;
 }
 
 QString MailFormat::Format_String(QString s) {
@@ -333,6 +464,7 @@ QString MailFormat::Format_String(QString s) {
     return repair;
 }
 
+/* 
 QString MailFormat::encodeQP(QString s) {
     for (int i = 0; i < s.size(); i++) {
         int c = s.at(i).unicode();
@@ -349,5 +481,5 @@ QString MailFormat::encodeQP(QString s) {
     }
     return s;
 }
-
+ */
 

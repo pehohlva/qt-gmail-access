@@ -346,10 +346,17 @@ public:
         mimeTypes.insert("xyz", "chemical/x-xyz");
         mimeTypes.insert("Z", "application/x-compress");
         mimeTypes.insert("zip", "application/zip");
+        mimeTypes.insert("odt", "application/vnd.oasis.opendocument.text");
     };
 
     QString value(QString key) {
-        return mimeTypes.value(key);
+        //// application/
+        QString mimex(mimeTypes.value(key));
+        if (mimex.size() < 3) {
+            return QString("application/%1").arg(key).simplified();
+        } else {
+            return mimex;
+        }
     };
 
     void insert(QString key, QString value) {
