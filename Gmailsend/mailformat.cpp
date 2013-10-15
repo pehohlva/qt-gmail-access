@@ -59,9 +59,9 @@ MailFormat::MailFormat() {
         if (!dir.exists(path))
             dir.mkpath(path);
         
-    UniqueKeyAttachment = QString("006_%1").arg(unixtime);
-    UniqueKeyInlineImage = QString("005_%1").arg(unixtime);
-    UniqueKeyTexttPlainHtml = QString("000_%1").arg(unixtime);
+    UniqueKeyAttachment = QString("_003_%1").arg(unixtime);
+    UniqueKeyInlineImage = QString("_002_%1").arg(unixtime);
+    UniqueKeyTexttPlainHtml = QString("_000_%1").arg(unixtime);
 
     UniqueKeyTexttPlainHtml.append(str.fill(QChar('T'), 55 - UniqueKeyTexttPlainHtml.size()));
     UniqueKeyAttachment.append(str.fill(QChar('A'), 55 - UniqueKeyAttachment.size()));
