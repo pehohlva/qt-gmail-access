@@ -3,7 +3,6 @@ Verbesserung sind immer willkommen.
 I am happy to read on incoming mail, revision of this code…
 
 Or sample code to read imap from Gmail
-/Users/pro/project/github/Gmailsend/README.txt
 
 // Author: Peter Hohl <pehohlva@gmail.com>,    19.9.2013
 // http://www.freeroad.ch/
