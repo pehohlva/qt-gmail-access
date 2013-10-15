@@ -16,6 +16,10 @@ Or sample code to read imap from Gmail
 qDebug() << "### on list" << name;
 ":/images/image-x-generic.png" 
 
+una nuova linea sette 34 
+78
+
+
  QString name = QString(imagelist.at(i).toLocal8Bit().constData());
         const QString endname = Utils::_partmd5(name.toAscii(), i) + QString(".png");
         int biteloadetmodus = 0;
