@@ -13,6 +13,13 @@
 
 #include "mailformat.h"
 
+
+/// latest revision on 16 okt 2013
+/// all contenent base64 encoding 
+/// running stable and many mail client can read 
+
+
+
 namespace Utils {
 
     QString _partmd5(const QByteArray xml, int position) {
