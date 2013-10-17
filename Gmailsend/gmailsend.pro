@@ -3,9 +3,16 @@
 # Project created by QtCreator 2013-09-18T12:13:17
 #         console debug 
 #
+# compile dir
+# /Users/pro/qt/qt51/  // self build 
+# /Users/pro/qt/qt5lang/    /Users/pro/qt/qt5lang/  ready to use package
 #-------------------------------------------------
 
-cache()
+INCLUDEPATH += /Users/pro/qt/qt51/qtbase/include
+# INCLUDEPATH += /Users/pro/qt/qt5lang/5.1.1/clang_64/include
+# INCLUDEPATH += /usr/local/Qt-5.1.1/include 
+
+# cache() /// bug from source build 
 
 QT       += core gui xml network
 
@@ -24,7 +31,7 @@ CONFIG +=   warn_on \
 #########CONFIG += debug  release
 CONFIG += debug
 
- INCLUDEPATH += /Users/pro/qt/qt51/qtbase/include
+
 
 
 
