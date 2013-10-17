@@ -10,13 +10,18 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#include <QFileDialog>
 #include "mwindow.h"
 #include "ui_mwindow.h"
 #include <QTextStream>
 
 MWindow::MWindow(QWidget *parent) :
-QMainWindow(parent), to_current_file(""), ui(new Ui::MWindow) {
+QMainWindow(parent), ui(new Ui::MWindow) {
     ui->setupUi(this);
+    to_current_file = QString();
+    ////Qt::WindowFlags flagsme = Qt::WindowMaximizeButtonHint;
+    //// https://codereview.qt-project.org/#patch,sidebyside,20806,1,src/plugins/platforms/cocoa/qcocoawindow.mm
+    //// setWindowFlags( flagsme );
     ui->usernameg->setText(QString("username@gmail.com"));
     ui->passwordg->setText(QString("password"));
     if (!setter.value("UserName").toString().isEmpty()) {
@@ -231,5 +236,8 @@ bool MWindow::fileSaveAs() {
 }
 
 void MWindow::on_actionExport_to_odp_triggered(bool checked) {
-    fileSaveAs();
+    if (checked) {
+        fileSaveAs();
+    }
+    
 }
