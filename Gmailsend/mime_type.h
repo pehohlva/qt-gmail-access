@@ -18,6 +18,19 @@
 #include <QHash>
 #include <QString>
 
+
+/* Testo	.odt	application/vnd.oasis.opendocument.text
+Database	.odb	application/vnd.oasis.opendocument.database
+Foglio di calcolo	.ods	application/vnd.oasis.opendocument.spreadsheet
+Presentazione	.odp	application/vnd.oasis.opendocument.presentation
+Disegno	.odg	application/vnd.oasis.opendocument.graphics
+Grafico	.odc	application/vnd.oasis.opendocument.chart
+Formula	.odf	application/vnd.oasis.opendocument.formula
+Immagine	.odi	application/vnd.oasis.opendocument.image
+Modello di documento	.odm	application/vnd.oasis.opendocument.text-master*/
+
+
+
 class MimeTypes {
 public:
 

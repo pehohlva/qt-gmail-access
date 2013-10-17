@@ -5,7 +5,9 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml xmlpatterns network
+cache()
+
+QT       += core gui xml network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -14,15 +16,19 @@ TEMPLATE = app
 DESTDIR	+= ./
 
 
-CONFIG +=   warn_off \
+CONFIG +=   warn_on \
             qt \
             silent \
             thread 
 
-#########CONFIG += debug
-CONFIG += release
+#########CONFIG += debug  release
+CONFIG += debug
+
+ INCLUDEPATH += /Users/pro/qt/qt51/qtbase/include
 
 
+
+## CONFIG-=app_bundle
 
 SOURCES += main.cpp\
         mwindow.cpp \

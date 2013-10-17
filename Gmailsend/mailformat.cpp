@@ -136,7 +136,7 @@ bool MailFormat::AppendAttachment(QFileInfo filepath) {
 
 QString MailFormat::ComposeTxtPlain(QString txt) {
     /// qDebug() << "boundarykey:" << UniqueKeyTexttPlainHtml;
-    QByteArray chunk = QByteArray(txt.toAscii()).toBase64();
+    QByteArray chunk = QByteArray(txt.toLocal8Bit()   ).toBase64();
     QString base64data = QString(chunk.constData());
 
     QString parts = "\r\n"; ///  2 line break before
@@ -156,7 +156,7 @@ QString MailFormat::ComposeTxtPlain(QString txt) {
 
 QString MailFormat::ComposeHtml(QString html) {
 
-    QByteArray chunk = QByteArray(html.toAscii()).toBase64();
+    QByteArray chunk = QByteArray(html.toLocal8Bit()).toBase64();
     QString base64data = QString(chunk.constData());
 
     QString parts = "\r\n"; ///  2 line break before
@@ -305,7 +305,7 @@ void MailFormat::SetMessage(const QString Subject, const QTextDocument *doc) {
     /// fix inline image ///
     for (int i = 0; i < imagelist.size(); ++i) {
         QString name = QString(imagelist.at(i).toLocal8Bit().constData());
-        const QString endname = Utils::_partmd5(name.toAscii(), i) + QString(".png");
+        const QString endname = Utils::_partmd5(name.toLocal8Bit(), i) + QString(".png");
         QString srcinsert = QString("src=\"cid:%1\"  alt=\"Image pos %2\"").arg(endname).arg(i);
         ///// qDebug() << "### on list" << name;
         /////  qDebug() << "### on src" << srcinsert;
@@ -346,7 +346,7 @@ QString MailFormat::Place_Inline_Image(const QTextDocument *doc) {
         QImage imageg;
         //// load a dummy placeholder to close tag mixed
         QString nameg = QString(":/images/image-x-generic.png");
-        const QString endnameg = Utils::_partmd5(nameg.toAscii(), 999) + QString(".png");
+        const QString endnameg = Utils::_partmd5(nameg.toLocal8Bit(), 999) + QString(".png");
         QFile file(nameg);
         if (file.open(QFile::ReadOnly)) {
             imageg.loadFromData(file.readAll());
@@ -361,7 +361,7 @@ QString MailFormat::Place_Inline_Image(const QTextDocument *doc) {
     for (int i = 0; i < imagelist.size(); ++i) {
         QImage image;
         QString name = QString(imagelist.at(i).toLocal8Bit().constData());
-        const QString endname = Utils::_partmd5(name.toAscii(), i) + QString(".png");
+        const QString endname = Utils::_partmd5(name.toLocal8Bit(), i) + QString(".png");
         int biteloadetmodus = 0;
 
         if (biteloadetmodus == 0) {

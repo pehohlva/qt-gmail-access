@@ -3,6 +3,9 @@
  <author>Peter Hohl</author>
  <class>MWindow</class>
  <widget class="QMainWindow" name="MWindow">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -18,7 +21,13 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>MWindow</string>
+   <string>GMailSend</string>
+  </property>
+  <property name="statusTip">
+   <string>Cosa succede</string>
+  </property>
+  <property name="inputMethodHints">
+   <set>Qt::ImhHiddenText|Qt::ImhNoAutoUppercase|Qt::ImhPreferLowercase|Qt::ImhPreferNumbers</set>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_2">
