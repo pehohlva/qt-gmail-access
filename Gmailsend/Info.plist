@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+<plist version="0.9">
+<dict>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>CFBundleIconFile</key>
+	<string>dmail.icns</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleGetInfoString</key>
+	<string>Created by Qt/QMake</string>
+	<key>CFBundleSignature</key>
+	<string>!Rch</string>
+	<key>CFBundleExecutable</key>
+	<string>gmailsend</string>
+	<key>CFBundleIdentifier</key>
+	<string>Peter Hohl</string>
+	<key>NOTE</key>
+	<string>www.freeroad.ch</string>
+</dict>
+</plist>

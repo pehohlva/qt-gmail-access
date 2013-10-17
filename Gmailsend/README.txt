@@ -6,6 +6,7 @@ I am happy to read on incoming mail, revision of this code…
 
 
 qmake -spec /usr/local/Qt4.8/mkspecs/macx-g++ -o Makefile gmailsend.pro
+http://iconverticons.com/online/  icon make 
 
 
 depndency from this app 

@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+        <file>dmail.icns</file>
         <file>images/format-indent-more.png</file>
         <file>images/format-justify-center.png</file>
         <file>images/format-justify-fill.png</file>

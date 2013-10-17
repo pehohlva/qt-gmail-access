@@ -189,7 +189,7 @@ QString MailFormat::ComposeHeader(const QString Subject, QString CC) {
     /* line 2 */
     header.append(QString("Reply-To:\"%1\" <%1>\r\n").arg(a_frommail));
     /* line 3 subject  */
-    header.append(QString("Subject: =?utf-8?B?%1?=\r\n").arg(cores.toLatin1().toBase64().constData())); /// encoding text ????
+    header.append(QString("Subject: =?utf-8?B?%1?=\r\n").arg(cores.toUtf8().toBase64().constData())); /// encoding text ????
     header.append("X-Powered-BY: Peter Hohl autor\r\n");
     header.append("X-Mailer: Freeroad Libs (0.0.1)\r\n");
     header.append(QString("To:\"%1\" <%1>\r\n").arg(a_tomail));

@@ -2,7 +2,7 @@
 #
 # Project created by QtCreator 2013-09-18T12:13:17
 #         console debug 
-#
+# /Users/pro/project/github/Gmailsend/
 # compile dir
 # /Users/pro/qt/qt51/  // self build 
 # /Users/pro/qt/qt5lang/    /Users/pro/qt/qt5lang/  ready to use package
@@ -14,6 +14,11 @@ INCLUDEPATH += /Users/pro/qt/qt51/qtbase/include
 
 # cache() /// bug from source build 
 
+
+
+
+
+
 QT       += core gui xml network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -21,6 +26,14 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = gmailsend
 TEMPLATE = app
 DESTDIR	+= ./
+
+macx {
+ICON = dmail.icns
+QMAKE_INFO_PLIST = Info.plist
+QMAKE_INFO_PLIST_OUT = gmailsend.app/Contents/Info.plist
+}
+
+
 
 
 CONFIG +=   warn_on \
