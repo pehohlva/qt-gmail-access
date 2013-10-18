@@ -1,0 +1,152 @@
+
+
+    QTextStream out(stdout);
+    QString str('*');
+    out << str.fill('*', _IMAIL_WIDTH_) << "\n";
+
+    out << "Rec:" << Filter::lineonPos(QString("From:"), header) << "\n";
+    out << "Rec:" << Filter::lineonPos(QString("To:"), header) << "\n";
+    out << "Rec:" << Filter::lineonPos(QString("Return-Path:"), header) << "\n";
+    out << header.size() << "\n s." << header.size() << "\n";
+
+    out << str.fill('*', _IMAIL_WIDTH_) << "\n";
+    out.flush();
+
+
+
+
+
+
+ //// Server ready talk to him;
+            /// first line incomming after connect or untagged line beginning "*"
+            /// EXAMPLE "* OK Gimap ready for requests"  "* LIST" ecc.
+            if (ch_status == 42) {
+                STEPS = CONNECTION_LIVE;
+                Untagged_Line(biteline);
+                if (line.contains("* OK Gimap ready for requests", Qt::CaseInsensitive)) {
+                    Current_Letter = "C";
+                    STEPS = CAPABILITY_WAIT;
+                    SendToServer("CAPABILITY", true);
+                }
+            }
+
+            ///// important read next line !!!!!
+
+            /// Letter C after capacity send //// C001 OK Thats all she wrote! r1if4988682eeo.216
+            if (in_status == 67 && line.contains("OK", Qt::CaseInsensitive)) {
+                STEPS = AUTHENTICATION_SEND_WAIT;
+                Current_Letter = "A";
+                QByteArray ba;
+                ba.append('\0');
+                ba.append(username.toUtf8());
+                ba.append('\0');
+                ba.append(password.toUtf8());
+                QByteArray encoded = ba.toBase64();
+                encoded.prepend("AUTHENTICATE PLAIN ");
+                _cmd->SetComand(Imap_Cmd::IMAP_SendLogin);
+                SendToServer(encoded, true);
+
+            }/// from A
+            else if (in_status == 64643 && line.contains("OK", Qt::CaseInsensitive) &&
+                    line.contains(username, Qt::CaseInsensitive)) {
+                ////compress deflate
+                if (_cmd->isCAPABILITY("DEFLATE")) {
+                    Current_Letter = "Z"; // 90
+                    sendcmd = 0;
+                    STEPS = DEFLATE_SEND_WAIT;
+                    //// Talk = NO_ACTIVE wait the ok!
+                    /////  From this point on, everything is compressed before being
+                    ///// encrypted.
+                    SendToServer("COMPRESS DEFLATE", true);
+                } else {
+                    //// exit tmp
+                    qFatal("Capacity deflate to incomming ");
+                }
+
+            }/// deflate success or auth 
+            else if (in_status == 242334324290 && line.contains("OK", Qt::CaseInsensitive) && STEPS == DEFLATE_SEND_WAIT) {
+                Talk = DEFLATE_TALK;
+                //// send compressed list!
+                sendcmd = 0;
+                Current_Letter = "L";
+                SendToServer("LIST \"\" \"*\"", true);
+            }/// Letter A after capacity send 
+            else if (in_status == 65 && line.contains("OK", Qt::CaseInsensitive)) {
+                /// back from AUTHENTICATION_SEND_WAIT 
+                STEPS = AUTHENTICATION__SUCCESS; /// pass & user is ok
+                /// save user e pass here if like
+                q_Maildirlist.clear();
+                sendcmd = 0;
+                Current_Letter = "L";
+                _cmd->SetComand(Imap_Cmd::IMAP_Login_Ok);
+                emit Message_Display(line);
+                /// send a list comand to know message total on all maildir && maildir name 
+                STEPS = LISTCOMAND_SEND_WAIT;
+                SendToServer("LIST \"\" \"*\"", true);
+            }//// letter L
+            else if (in_status == 76 && line.contains("OK", Qt::CaseInsensitive)) {
+                Current_Letter = "G"; /// M SELECT INBOX
+                /// UID SEARCH RECENT  / SEARCH X-GM-EXT-1 SUBJECT \"FW\"
+                /////SendToServer("SEARCH ANSWERED", true);
+                STEPS = INBOX_COUNT_SEND_WAIT;
+                SendToServer("SELECT INBOX", true);
+            }/// letter G  begin to search if having pending search comand 
+            else if (in_status == 71 && line.contains("OK", Qt::CaseInsensitive)) {
+                Current_Letter = "S";
+                //// ui UID SEARCH * SEARCH 11766 11767 11770 11772 11774 
+                ///  11777 11779 11781 11784 11795 11797 11799 11805 11806 11807 11810
+                QDateTime now = QDateTime::currentDateTime();
+                QDateTime lastday = now.addDays(before);
+                const QString searchsince = lastday.toString("dd-MMM-yyyy");
+                sendcmd = 100;
+                QByteArray searchw("UID SEARCH SUBJECT ");
+                QString nummero = QString("\"%1\"").arg(query);
+                searchw.append(nummero.toLatin1());
+                searchw.append(" SINCE "); ///" (BODY[])"
+                searchw.append(searchsince);
+                ///// searchw.append(" ON INBOX");
+                //// UID SEARCH SUBJECT \"foto\" SINCE 20-Sep-2013
+                STEPS = SEARCH_RESULT_SEND_WAIT;
+                CursorGetPoint = 0;
+                SendToServer(searchw, true);
+            }///  letter S  back from search mail 
+            else if (in_status == 83 && line.startsWith("S101 OK SEARCH completed")) {
+                MailUIDResult finder_uid = _cmd->getUidSearch();
+                out << str.fill('*', _IMAIL_WIDTH_) << "\n";
+                out << "Search Results Total:" << finder_uid.size() << "\n";
+                out << str.fill('*', _IMAIL_WIDTH_) << "\n";
+                out.flush();
+                /// imap_microsleep(100000);
+                if (finder_uid.size() > 0) {
+                    GetMailUI(finder_uid.value(1)); /// go to the first item from search 
+                } else {
+                    Resume(__LINE__); /// no search results go to await next comand 
+                }
+            }/// letter M  select from inbox code 
+            else if (in_status == 77 && line.contains("OK", Qt::CaseInsensitive) &&
+                    line.contains("(Success)", Qt::CaseInsensitive)) {
+                qDebug() << "-------not implemented grep from mail inbox!!!  " << TotalMail;
+                if (TotalMail > 0) {
+                    sendcmd = 500;
+                    Current_Letter = "U";
+                    readchunk = true;
+                    //// NextBody(1);
+                    //// Resume(__LINE__);
+                } else {
+                    ///  Resume(__LINE__);
+                }
+                Resume(__LINE__); /// wait this action 
+            }/// letter U  select from inbox finisch code 
+            else if (in_status == 85 && line.contains("OK", Qt::CaseInsensitive) &&
+                    line.contains("Success", Qt::CaseInsensitive)) {
+                qDebug() << "-------end mail get..";
+                Resume(__LINE__); /// wait this action 
+            } else {
+                /* 
+                out << str.fill('*', _IMAIL_WIDTH_) << "\n";
+                out << "Wait your comand.....\n";
+                out << str.fill('*', _IMAIL_WIDTH_) << "\n";
+                out.flush();
+                 */
+
+            }

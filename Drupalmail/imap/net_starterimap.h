@@ -13,6 +13,8 @@
 
 #include <QtNetwork/QSslSocket>
 #include "net_imap_standard.h"
+#include "client_session.h"
+
 /// network
 #include <QtNetwork/QHostAddress>
 #include <QtNetwork/QSslError>
@@ -36,13 +38,17 @@ typedef QMap<int, QString> Qmail_List;
 
 class Net_StarterImap : public QObject {
     Q_OBJECT
+    Q_ENUMS(CURRENTHANDLE)
+    Q_PROPERTY(CURRENTHANDLE steps READ CURRENTHANDLE WRITE set_steps)
 
 public:
     explicit Net_StarterImap(QObject *parent = 0);
     void SearchWord(QString w, const int day = -1);
+    void SetQuery( const QString word );
+    void PreparetoClose();
     void Connect(const QString user, const QString password);
     void ReConnect();
-    QByteArray compress_byte(const QByteArray& uncompressed );
+    ///// QByteArray compress_byte(const QByteArray& uncompressed );
 
     enum GETACTIONCURSOR {
         MAILNONE = 0,
@@ -54,29 +60,40 @@ public:
         IMAP_Cunnk_Incomming
     };
     
+    
         enum Compressor {
         NO_ACTIVE = 0,
         DEFLATE_TALK
     };
 
     enum CURRENTHANDLE {
-        CONNECTION_LIVE = 0,
-        AUTHENTICATION__SUCCESS, //  AUTHENTICATION
-        AUTHENTICATION_SEND_WAIT,
-        CAPABILITY_WAIT,
-        LISTCOMAND_SEND_WAIT,
-        DEFLATE_SEND_WAIT,
-        INBOX_COUNT_SEND_WAIT,
-        SEARCH_RESULT_SEND_WAIT,
-        UNKNOWSTATUS,
-        YCSDHFIFISDFAIS
+        CONNECTION_LIVE = 99,
+        AUTHENTICATION_SUCCESS = 2, //  AUTHENTICATION
+        AUTHENTICATION_SEND_WAIT = 1,
+        CAPABILITY_WAIT = 5,
+        LISTCOMAND_SEND_WAIT = 55,
+        DEFLATE_SEND_WAIT =  404,
+        WAITFETCHMAIL_LONGCHUNK = 500,
+        INBOX_COUNT_SEND_WAIT = 6,
+        SEARCH_RESULT_SEND_WAIT = 20,
+        UNKNOWSTATUS = 100,
+        CONNECT_0 =0,
+        CONNECTION_STOP_ERROR = 101
     };
-
+    CURRENTHANDLE step() const { return STEPS; } 
+    QByteArray steps() const { return STEP.toByteArray(); }
+    void set_steps(CURRENTHANDLE value) { STEPS = value; }
+    void create_steps(CURRENTHANDLE value , QVariant v) {
+        set_steps(value);
+        STEP = v;
+        //// create_steps(CURRENTHANDLE,QVariant())
+    }
 
 
 signals:
     void Progress(int);
     void Exit_Close();
+    void Next_Standby();
     void Message_Display(const QString msg);
 
 public slots:
@@ -86,6 +103,12 @@ public slots:
     void Incomming_data();
     void Incomming_mailstream();
     void OnDisconnected();
+    
+    
+protected:
+    void _auth_login();
+    
+    
 private:
 
 
@@ -118,10 +141,10 @@ private:
     Imap_Cmd *_cmd;
     GETACTIONCURSOR maction;
     CURRENTHANDLE STEPS;
+    QVariant STEP;
     quint16 CursorUID_Get;
     int CursorGetPoint;
     Compressor Talk;
-    IMail *CMail;
     ReadMail::StreamMail *in_socket;
     int before; /// back day ?? to search 
 
