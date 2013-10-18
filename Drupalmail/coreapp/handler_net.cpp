@@ -21,7 +21,7 @@ QObject(parent) {
     if (get) {
         imap = new Net_StarterImap(this);
         imap->SearchWord(QString("lugano"), -1);
-        imap->Connect(QString("ppkciz@gmail.com"), QString("popopi89"));
+        imap->Connect(QString("hjkhhkhhkhkh@gmail.com"), QString("dftvgbhnjbhgvfrdecfv"));
         connect(imap, SIGNAL(Exit_Close()), this, SLOT(Close_Imap()));
         connect(imap, SIGNAL(Next_Standby()), this, SLOT(NextComand()));
         connect(imap, SIGNAL(Progress(int)), this, SLOT(Init_Parse(int)));
