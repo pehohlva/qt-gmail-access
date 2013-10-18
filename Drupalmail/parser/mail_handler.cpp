@@ -197,7 +197,7 @@ namespace ReadMail {
     }
 
     static QString decodeWordSequence(const QString str) {
-        const QByteArray faketmp = str.toAscii();
+        const QByteArray faketmp = str.toLocal8Bit();
         return decodeWordSequence(faketmp);
     }
 
@@ -228,124 +228,64 @@ namespace ReadMail {
             dir.mkpath(path);
         return path;
     }
-    
 
     StreamMail::StreamMail()
     : d(new QBuffer()) {
         d->open(QIODevice::ReadWrite);
         start();
     }
+    //// read only header 
 
-    //// only imap client use this to save on disk mail /// readable from os client mail
-
-    bool StreamMail::PutOnEml(const QString emlfile, QString& s_title, bool field) {
-        //// Q_UNUSED(emlfile);
-        updateStatus();
+    QString StreamMail::HeaderMail() {
+        QByteArray out; ////  ////onlyMETAHEADER = QByteArray();
+        int cursor = 0;
         start();
-
-        QTextCodec *codecx;
-        codecx = QTextCodec::codecForMib(106);
-
-        if (DISKSPACE != Ok) {
-            /// activate warning!!
-            return false;
-        }
-        QFileInfo info_file_eml(emlfile);
-        if (field) {
-            return WriteOnFile(emlfile);
-        }
-
-        //////  s_title = "arriva...";
-
-        quint16 cursor = 0;
-        const quint16 totline = size_line(); /// line tot on chunk 
-        bool canread_body, firstnull_found = false;
-        QByteArray body_part;
-        QTextStream doc(&body_part);
-        QRegExp subjectMatch("Subject: +(.*)");
-        QByteArray onlyMETAHEADER = QByteArray();
         while (d->canReadLine()) {
             QByteArray chunk = d->readLine();
             ///// const QString t_line = QString(chunk.constData()); //// decodeWordSequence(chunk);
-            const QByteArray searchnull = chunk.simplified();
+            const QByteArray cline = chunk.simplified();
             cursor++;
-            /// range from line first and last 
-            if (cursor > 1 && cursor < totline) {
-                doc << cursor << ") " << chunk; /// save all 
-
-                if (searchnull.isEmpty() && !firstnull_found) {
-                    firstnull_found = true;
-                    canread_body = true;
-                }
-                if (!firstnull_found) {
-                    onlyMETAHEADER.append(chunk);
-                    ///// HEADER PARTS!!!!!!!///// HEADER PARTS!!!!!!!///// HEADER PARTS!!!!!!!
-                }
-
-            } //// not read after this line!
+            if (!cline.isEmpty()) {
+                out.append(cline);
+                out.append("\n\r");
+                continue;
+            }
+            if (cline.isEmpty()) {
+                start();
+                break;
+            }
         }
-
-        doc.flush();
-        BODY_PART = body_part; /// decoded 
         start();
-
-        QString clean_header = decodeWordSequence(onlyMETAHEADER);
-        onlyMETAHEADER.clear();
-        //// now can parse this header 
-        quint16 lastposition = 0;
-        QString Hbody_debug, real_line = "";
+        QString useline;
+        bool readc = false;
+        QString clean_header = decodeWordSequence(out); //// utf subject clean
+        //// here handle Subject on 2 or more line!!!
         QStringList h_lines = clean_header.split(QRegExp("(\\r\\n)|(\\n\\r)|\\r|\\n"), QString::SkipEmptyParts);
         for (int i = 0; i < h_lines.size(); ++i) {
-            const QString line = QString(h_lines.at(i).toAscii().constData());
-            QChar fchar(line.at(0));
-            if (subjectMatch.indexIn(line) != -1) {
-                s_title = QString("Subject:") + subjectMatch.cap(1).simplified(); /// Subject
-            }
-            if (fchar.isUpper()) {
-                ////Hbody_debug.append(QString("!%1!: ").arg(fchar.unicode()));
-                Hbody_debug.append(line.simplified());
-                if (real_line.size() > 0) {
-                    Hbody_debug.insert(lastposition, real_line.simplified());
-                    real_line = "";
-                } else {
-                    ////Hbody_debug.append("\n\r");
+            const QString line = QString(h_lines.at(i).simplified());
+            if (!line.isEmpty()) {
+                QChar fchar(line.at(0));
+                int ucharkc = fchar.unicode();
+                if ( line.indexOf(QChar(':'), 0) !=-1 ) {
+                    readc = false;
                 }
-                lastposition = (Hbody_debug.length() - 2);
-                Hbody_debug.append("\n\r");
-            }
-            if (fchar.unicode() == 32 || fchar.unicode() == 9) {
-                real_line.append(QString(" - "));
-                ////real_line.append(QString("_____%1!: ").arg(fchar.unicode()));
-                real_line.append(line.simplified());
-                ///// real_line.prepend(QString("!%1!").arg(fchar.unicode()));
+                if (Filter::headerfilter(line) && !readc) {
+                    readc = true;
+                    useline.append("\n");
+                }
+                if (readc) {
+                    useline.append(line);
+                    useline.append(" ");
+                    continue;
+                }
             }
         }
-        const QString sepheader = _READMAILTMPDIR_ + QString("%1.mailheader.txt").arg(info_file_eml.completeBaseName()); //+".header"; /// debug header 
-        bool headerOK = write_file(sepheader, Hbody_debug);
-
-        if (info_file_eml.exists() && headerOK) {
-            return true;
-        }
-
-
-        QFile f(emlfile); /// sepheader
-        if (f.open(QFile::WriteOnly | QFile::Text)) {
-            QTextStream sw(&f);
-            sw.setCodec(codecx);
-            sw << body_part;
-            f.close();
-            //// continue here to handle header & body part 
-            //  to extract after all chunk ist saved on file
-            if (headerOK) {
-                return true;
-            } else {
-                return false;
-            }
-
-
-        }
-        return false;
+        return useline;
     }
+
+
+    //// only imap client use this to save on disk mail /// readable from os client mail
+
 
     bool StreamMail::clear() {
         /// remove all chunk inside
@@ -451,10 +391,15 @@ namespace ReadMail {
             /// activate warning!!
             return false;
         }
-
         start();
         if (f.open(QFile::WriteOnly)) {
-            uint bi = f.write(d->readAll());
+            uint bi;
+            if (_COMPRESSCACHEFILE_ == 1) {
+                QByteArray compressed = Utils::compress_byte_gz(d->readAll());
+                bi = f.write(compressed);
+            } else {
+                bi = f.write(d->readAll());
+            }
             f.close();
             start();
             return bi > 0 ? true : false;
@@ -530,11 +475,10 @@ namespace ReadMail {
         return result;
 #elif !defined(Q_OS_WIN)
         struct statfs stats;
-
         statfs(partitionPath.toLocal8Bit(), &stats);
         unsigned long long bavail = ((unsigned long long) stats.f_bavail);
         unsigned long long bsize = ((unsigned long long) stats.f_bsize);
-        qDebug() << "bavail DISK:" << bytesToSize(bavail * bsize);
+        qDebug() << "Local DISK:" << bytesToSize(bavail * bsize);
         return ((bavail * bsize) > boundary);
 #else
         // MS recommend the use of GetDiskFreeSpaceEx, but this is not available on early versions

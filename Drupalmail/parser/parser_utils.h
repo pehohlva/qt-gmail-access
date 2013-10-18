@@ -19,18 +19,25 @@ namespace Utils {
     static const char CarriageReturn_ = '\015';
     static const char LineFeed_ = '\012';
 
-    QString cleanDocFromChartset(const QByteArray chartset , QByteArray chunk );
+    QString cleanDocFromChartset(const QByteArray chartset, QByteArray chunk);
+    int dateswap(const QString format, uint unixtime);
+    QString date_imap_format(const qint64 unixtime);
     
+    QString utf8loadfromfile(const QString file);
+
     QByteArray strip_tags(QByteArray istring);
     QByteArray unicode_tr(QByteArray istring);
+
+    QString InfoHumanSize(qint64 x);
 
     QString testDocAttachmentDir(QString file = "");
     QString fastmd5(const QByteArray xml);
     QByteArray search_byline(QByteArray chunk, QByteArray key);
     /// signature md5 from a mail slice & position from document
     QString _partmd5(const QByteArray xml, int position);
-    QString token(QString str, QChar c1, QChar c2, int *index);
+    //// QString token(QString str, QChar c1, QChar c2, int index);
     QString token(QString text, int unicode);
+    QString token(QString text, int unicode, int endchars);
     QString quotecheck(QString str);
     /// QChar tonicode == caret    "name"  return name or |name| return name 
     /// caret is unicode char separator to take inside;
@@ -44,6 +51,17 @@ namespace Utils {
     QByteArray _reformat_html(const QByteArray in);
     bool _writebin_tofile(const QString xfile, const QByteArray chunk);
     int _distance_position(const int a, const int b);
+    QByteArray compress_byte_gz(const QByteArray& uncompressed);
+    QByteArray deflate_gz(const QByteArray chunk);
+    bool gzipCheckHeader(QByteArray &content, int &pos);
+
+}
+
+
+namespace Filter {
+
+    bool headerfilter(QString line);
+    QString lineonPos(const QString need, QString chunk);
 
 }
 

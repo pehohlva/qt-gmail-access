@@ -39,4 +39,9 @@ bool Qmailf::TestWriteln(int mode ) {
         return Utils::_format_string76(isrc);
     }
 
-
+/*  QString Qmailf::EmbeddedImage() {
+        QString base64data = QString(chunk.constData());
+        QString isrc = QString("data:%1;base64,").arg( Mime() );
+        isrc.append(base64data);
+        return Utils::_format_string76(isrc);
+    }*/

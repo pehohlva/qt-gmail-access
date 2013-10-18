@@ -111,7 +111,7 @@ bool QTidy::SetUp_Xhtml_Mail(const QByteArray chartset) {
     QString newoneconfiglist = tidiconfigfile.join("\n");
     ok = tidy_file_set_config(newoneconfiglist); /* _TIDYCONF_ */
     if (ok) {
-        QByteArray configfileti = _TIDYCONF_.toAscii();
+        QByteArray configfileti = _TIDYCONF_.toLocal8Bit();
         status = tidyLoadConfig(doc, configfileti.data()); /* http://ch2.php.net/manual/de/function.tidy-load-config.php */
         if (status !=-1) {
             return true;
@@ -152,8 +152,8 @@ bool QTidy::CleanTidy(QString inputfile, QString outfile) {
     int rc = -1;
     int base = -1;
     int status = 0;
-    QByteArray infile = inputfile.toAscii();
-    QByteArray outfi = outfile.toAscii();
+    QByteArray infile = inputfile.toLocal8Bit();
+    QByteArray outfi = outfile.toLocal8Bit();
     ctmbstr htmlfil = infile.data(); /* incomming file entra */
     ctmbstr outputfil = outfi.data();
     rc = tidyParseFile(doc, htmlfil);

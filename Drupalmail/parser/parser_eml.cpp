@@ -20,7 +20,7 @@
 namespace ReadMail {
 
     Parser::Parser(QObject *parent, const QString file)
-    : QObject(), wi_line(76), str("*"), debug_level(2) {
+    : QObject(), wi_line(76), str("*"), debug_level(0) {
         //// check free space disk unix mac
         _d = new StreamMail(); /// QBuffer file to rotate and read simple line by line... 
         QTextStream out(stdout, QIODevice::WriteOnly);
@@ -64,10 +64,13 @@ namespace ReadMail {
     }
 
     void Parser::Start_Read() {
+        connect(this, &Parser::ReadyToRead, this, &Parser::PushRead);
+        connect(this, &Parser::HandleMail, &IMailFormat::mailshow);
+
         QTextStream out(stdout, QIODevice::WriteOnly);
         QString str("*");
-        out << "Handle:" << __FUNCTION__ << ":" << __LINE__ << "\n";
-        out.flush();
+       //// out << "Handle:" << __FUNCTION__ << ":" << __LINE__ << "\n";
+        ////out.flush();
         _d->start(); //// seek zero
         int cursor = 0;
         QByteArray onlyMETAHEADER, afterMETAHEADER, realyFullMail = QByteArray(_FILESTARTER_);
@@ -205,7 +208,7 @@ namespace ReadMail {
         //// QString::KeepEmptyParts
         QStringList h_lines = clean_header.split(QRegExp("(\\r\\n)|(\\n\\r)|\\r|\\n"), QString::SkipEmptyParts);
         for (int i = 0; i < h_lines.size(); ++i) {
-            const QString const_line = QString(h_lines.at(i).toAscii().constData());
+            const QString const_line = QString(h_lines.at(i).toLocal8Bit().constData());
             QChar fchar(const_line.at(0));
 
             if (fchar.isUpper()) {
@@ -313,7 +316,7 @@ namespace ReadMail {
             field_h.insert(QString("Received").toLower(), allsender);
         }
 
-        Mheader = body_decoded.toAscii();
+        Mheader = body_decoded.toLocal8Bit();
         ICmail mail;
 
         //// mail.transferencoding = HeaderField("Content-Transfer-Encoding");
@@ -321,6 +324,7 @@ namespace ReadMail {
         mail.md5 = Utils::fastmd5(Mfull);
         mail.sender = HeaderField("Sender");
         mail.from = HeaderField("From");
+        mail.from = QString(Utils::token(mail.from.toLatin1(), QChar('<').unicode(), QChar('>').unicode()).constData()).toLower();
         mail.to = HeaderField("To");
         mail.subject = HeaderField("Subject");
 
@@ -331,12 +335,6 @@ namespace ReadMail {
         mail.boundary_list = GetMailKey();
         //// qDebug() << "in " << mail.boundary_list;
         int TxtBinary = Get_MultipartMime(mail);
-        /// if TxtBinary > 0 //// signal here ....
-        if (TxtBinary > 101) {
-            /// compose image attachment converter ecc... on class mail 
-            TxtBinary = PaintEnd(mail);
-        }
-
 
 
         if (debug_level > 0 && debug_level < 4) {
@@ -346,7 +344,12 @@ namespace ReadMail {
             out.flush();
         }
 
-
+        /// if TxtBinary > 0 //// signal here ....
+        if (TxtBinary > 0) {
+            /// compose image attachment converter ecc... on class mail 
+            TxtBinary = PaintEnd(mail);
+            emit ReadyToRead(TxtBinary);
+        }
 
     }
 
@@ -354,7 +357,7 @@ namespace ReadMail {
         QTextStream out(stdout, QIODevice::WriteOnly);
         QString str('*');
 
-        out << "Handle:" << __FUNCTION__ << ":" << __LINE__ << "\n";
+       //////// out << "Handle:" << __FUNCTION__ << ":" << __LINE__ << "\n";
 
         bool is_valid = true;
         int Tiper = -1;
@@ -397,7 +400,7 @@ namespace ReadMail {
             }
             Tiper = CaptureText(qmail, 0);
         }
-        out << "Handle:" << __FUNCTION__ << ":" << __LINE__ << "\n";
+        ////////out << "Handle:" << __FUNCTION__ << ":" << __LINE__ << "\n";
         out.flush();
         return Tiper;
     }
@@ -451,8 +454,8 @@ namespace ReadMail {
         int rendering = mode;
         QTextStream out(stdout);
         QString str('*');
-        out << "Handle:" << __FUNCTION__ << ":" << __LINE__ << "\n";
-        out.flush();
+        ////out << "Handle:" << __FUNCTION__ << ":" << __LINE__ << "\n";
+        ////out.flush();
         if (mode == 0) {
             return -1; /// text only mail not handle here now
         }
@@ -484,7 +487,7 @@ namespace ReadMail {
             ////out << "Search: key:" << keyend <<  " at:" << atend << "\n";
             /////out.flush();
             if (atend != -1) {
-                out << "Last Found:(" << atend << ") key:" << key << "\n";
+               //// out << "Last Found:(" << atend << ") key:" << key << "\n";
                 out << str.fill('.', _IMAIL_MAXL_) << "\n";
                 out.flush();
                 int Position = doc_top;
@@ -495,18 +498,18 @@ namespace ReadMail {
                     Position = Mfull_A.indexOf(keybe, Position + 2);
                     if (Position != -1) {
                         Coordinate << Position;
-                        out << "Found:" << Position << " key:(" << keybe << ")  " << loop << "\n";
-                        out.flush();
+                        ////out << "Found:" << Position << " key:(" << keybe << ")  " << loop << "\n";
+                        ////out.flush();
                     } else {
                         Position = -1;
                         Coordinate << atend;
-                        out << str.fill('.', _IMAIL_MAXL_) << "\n";
+                        ////out << str.fill('.', _IMAIL_MAXL_) << "\n";
                         out.flush();
                         QSet<int> cooset = QSet<int>::fromList(Coordinate); /// make all position unique
                         QList<int> coordinate_clean = cooset.toList(); /// make all position unique
                         qSort(coordinate_clean.begin(), coordinate_clean.end());
-                        qDebug() << "coordinate cl-> " << coordinate_clean << "\n";
-                        out << "Composing.....start  key:" << key << "\n";
+                       //// qDebug() << "coordinate cl-> " << coordinate_clean << "\n";
+                        ////out << "Composing.....start  key:" << key << "\n";
                         const int fulllen = coordinate_clean.size();
                         int i = -1;
                         /// scan down all key result
@@ -517,8 +520,8 @@ namespace ReadMail {
                                 if (coordinate_clean.at(i) != coordinate_clean.at(thenext)) {
                                     int start = coordinate_clean.at(i);
                                     int stop = coordinate_clean.at(thenext);
-                                    out << "value:" << start << ":" << stop << "\n";
-                                    out.flush();
+                                    ////out << "value:" << start << ":" << stop << "\n";
+                                    ////out.flush();
                                     int result = SliceBodyPart(start, stop, qmail);
                                     if (result < 0) {
                                         if (debug_level > 0 && debug_level < 4) {
@@ -540,253 +543,7 @@ namespace ReadMail {
             }
         }
         out.flush();
-        return rendering;
-    }
-
-    /// 6 okt. 2013 save on svn  super method function to get the first boundary an his part 
-
-    int Parser::OOLDCaptureText(ICmail& qmail, const int mode) const {
-        ///  const int recpos = pos - range;
-        int rendering = mode;
-        const int sizeMfull = Mfull_A.size();
-        const int sizeHheader = Mheader.size();
-        const int beginontop = Mfull_A.indexOf("multipart/", 0);
-        /////take_slice(beginontop,76,"beginontop found multipart....");
-        QTextStream out(stdout);
-        QString str('*');
-
-        QStringList keyheaderlist = GetMailKey();
-        QStringList full_list = GetMailKey(true);
-        QStringList current_bound;
-        if (mode != 100) {
-            return -1;
-        }
-        bool swapdocmode = false;
-        const int modelist = keyheaderlist.size();
-        const int modelistfull = full_list.size();
-        int checksize = qMax(modelistfull, modelist);
-        if (checksize == 0) {
-            QString hdemsgerrorep = QString("Unable to find key boundary!");
-            if (debug_level > 1 && debug_level < 4) {
-                out << str.fill('.', _IMAIL_MAXL_) << "\n";
-                out << hdemsgerrorep << "  \n";
-                out << str.fill('.', _IMAIL_MAXL_) << "\n";
-                out.flush();
-            }
-            /// play_error_str(hdemsgerrorep);
-            return -1;
-        }
-
-        if (modelist != modelistfull) {
-            swapdocmode = true;
-            //// possible error 
-            if (full_list.size() > 0) {
-                const QString testkey = QString("--%1").arg(QString(full_list.at(0)));
-                int checkerpos = Mfull_A.indexOf(testkey, 0);
-                if (checkerpos == -1) {
-                    QString hdemsgerrorep1 = QString("Unable to find key boundary = {%1} ! Check yourself from mail.").arg(testkey);
-                    if (debug_level > 1 && debug_level < 4) {
-                        out << str.fill('.', _IMAIL_MAXL_) << "\n";
-                        out << hdemsgerrorep1 << "  \n";
-                        out << str.fill('.', _IMAIL_MAXL_) << "\n";
-                        out.flush();
-                    }
-                    /// play_error_str(QString("Warning! Try to load a null field on:%1").arg(__FUNCTION__));
-                    return -1;
-                }
-
-            }
-            current_bound = GetMailKey(true);
-            if (debug_level > 0 && debug_level < 4) {
-                out << "Search on FULLDOC.... different result as header only...\n";
-                out.flush();
-            }
-        } else {
-            if (debug_level > 0 && debug_level < 4) {
-                out << "Search on AFTER HEADER.... on header same result as full .... \n";
-                out.flush();
-            }
-            current_bound = GetMailKey();
-        }
-        /*
-         QStringList keyheaderlist = GetMailKey();
-        QStringList full_list = GetMailKey(true);
-         */
-        const int chunkmiles = sizeMfull;
-        /// end from file having _FILECLOSER_ chars must having!!!
-        const int LASTPOSITIONFROMMAIL = Mfull_A.indexOf(_FILECLOSER_, 0);
-        if (LASTPOSITIONFROMMAIL == -1) {
-            if (debug_level > 0 && debug_level < 4) {
-                out << "App Error _FILECLOSER_ Not found!\n";
-                out.flush();
-            }
-            /// play_error_str(QString("Parser Error _FILECLOSER_ Not found! key on last position!"));
-            return -1;
-        } else {
-            if (debug_level > 2 && debug_level < 4) {
-                out << str.fill('|', _IMAIL_MAXL_) << "\n";
-                out << "First init position on doc:" << beginontop << "\n";
-                out << "Last position on doc:" << LASTPOSITIONFROMMAIL << "\n";
-                out << "Max position on doc:" << chunkmiles << "\n";
-                out << str.fill('|', _IMAIL_MAXL_) << "\n"; /// sizeMfull
-            }
-        }
-
-        int maxPosi, minPosi, Position, Lenght = 0;
-        int Posstartsa, Posstartsb = 0;
-        int EndPositionDoc_a, EndPositionDoc_b = -10;
-        int Lastpresentkey = 1;
-        //// /Users/pro/project/version_sv/GmailHand/
-        //// marker this point init trouble ...
-        QString msg_e, keya, keyb;
-        bool is_singlemode = true;
-        const int modelistcurrent = current_bound.size();
-        if (modelistcurrent == 1) {
-            is_singlemode = true;
-            keya = QString(current_bound.at(0));
-            msg_e = QString("Working on key A.");
-            EndPositionDoc_a = Mfull_A.indexOf(QString("--%1--").arg(keya), beginontop);
-            Lastpresentkey = qMax(EndPositionDoc_a, beginontop);
-        } else if (modelistcurrent == 2) {
-            is_singlemode = false;
-            keya = QString(current_bound.at(0));
-            keyb = QString(current_bound.at(1));
-            msg_e = QString("Working on key A-B.");
-            EndPositionDoc_a = Mfull_A.indexOf(QString("--%1--").arg(keya), beginontop);
-            EndPositionDoc_b = Mfull_A.indexOf(QString("--%1--").arg(keyb), beginontop);
-            Lastpresentkey = qMax(EndPositionDoc_a, EndPositionDoc_b);
-        }
-        ////take_slice(Lastpresentkey,22,"last key ALL");
-        /// qFatal(qPrintable(QString("Work progress STOP at:%1").arg(__LINE__)));
-
-        if (keya.isEmpty()) {
-            if (debug_level > 0 && debug_level < 4) {
-                out << "App Error on key Not found!\n";
-                out.flush();
-            }
-            return -1;
-        }
-        if (debug_level > 2 && debug_level < 4) {
-            out << "KeyA:" << keya << " stop on:" << EndPositionDoc_a << "\n";
-            out << "KeyB:" << keyb << " stop on:" << EndPositionDoc_b << "\n";
-            out << "Max deep down stop on:" << Lastpresentkey << "\n";
-            out << msg_e << " init scan on document mail....\n";
-            out << str.fill('-', _IMAIL_MAXL_) << "\n";
-            out.flush();
-        }
-        QList<int> List_a;
-        QList<int> List_b;
-        /////qFatal(qPrintable(QString("Work progress STOP at:%1").arg(__LINE__)));
-        Position = 0;
-
-        ////  slice A quick
-        do {
-            Position = Position + 2;
-            const int ScanPos = Position;
-            Posstartsa = Mfull_A.indexOf(QString("--%1").arg(keya), ScanPos);
-            if (Posstartsa != -1) {
-                List_a.append(Posstartsa);
-                const int diff = QString("--%1").arg(keya).length();
-                take_slice(Posstartsa, diff, QString("register as A>%1 search.... ").arg(keya).toAscii());
-                Position = Posstartsa + 2;
-            } else {
-                Position = -1;
-            }
-            out.flush();
-        } while (Position != -1);
-        //// close job here!
-        if (EndPositionDoc_a != -1) {
-            List_a.append(Lastpresentkey);
-            List_a.append(Mfull_A.size());
-        }
-        //// next key if exist
-        if (!keyb.isEmpty()) {
-            Position = 0;
-            ////  slice B quick
-            do {
-                Position = Position + 2;
-                const int ScanPos = Position;
-                Posstartsb = Mfull_A.indexOf(QString("--%1").arg(keyb), ScanPos);
-                if (Posstartsb != -1) {
-                    List_b.append(Posstartsb);
-                    const int diff = QString("--%1").arg(keyb).length();
-                    take_slice(Posstartsb, diff, QString("register as B>%1 search.... ").arg(keyb).toAscii());
-                    Position = Posstartsb + 2;
-                } else {
-                    Position = -1;
-                }
-                out.flush();
-            } while (Position != -1);
-            /// close job
-            if (EndPositionDoc_b != -1) {
-                List_b.append(Lastpresentkey);
-                List_b.append(Mfull_A.size());
-            }
-
-        }
-
-        if (debug_level > 0 && debug_level < 4) {
-            QString header("Component list start...");
-            out << header << str.fill('*', 76 - header.size()) << "\n";
-            out.flush();
-        }
-
-
-        int result = -1;
-        out.flush();
-        for (int i = 0; i < (List_a.size() / 2); ++i) {
-            /// _diff_record 
-            int start = i;
-            int stop = i + 1;
-            int start_x = List_a.at(start);
-            int end_x = List_a.at(stop);
-            if (start_x != end_x) {
-                qmail.tmp = QVariant(keya);
-                result = SliceBodyPart(start_x, end_x, qmail);
-                if (result == -1) {
-                    if (debug_level > 0 && debug_level < 4) {
-                        out << "Error on SliceBodyPart  {" << start_x << ") e.(" << end_x << ") status:" << result << " key:" << keya << "\n";
-                        out.flush();
-                    }
-                } else {
-                    rendering++;
-                }
-            }
-
-        }
-        for (int i = 0; i < (List_b.size() / 2); ++i) {
-            /// _diff_record 
-            int start = i;
-            int stop = i + 1;
-            int start_x = List_b.at(start);
-            int end_x = List_b.at(stop);
-            if (start_x != end_x) {
-                qmail.tmp = QVariant(keyb);
-                ////out << "SliceBodyPart B." << i << " s. {" << start_x << ") e.(" << end_x << ") status:" << stop << "\n";
-                result = SliceBodyPart(start_x, end_x, qmail);
-                if (result == -1) {
-                    if (debug_level > 0 && debug_level < 4) {
-                        out << "Error on SliceBodyPart  {" << start_x << ") e.(" << end_x << ") status:" << result << " key:" << keyb << "\n";
-                        out.flush();
-                    }
-                }
-            }
-
-        }
-
-        if (debug_level > 0 && debug_level < 4) {
-            QString footer("Component list end...");
-            out << str.fill('.', _IMAIL_MAXL_) << "\n";
-            out << footer << str.fill('*', _IMAIL_MAXL_ - footer.size()) << "\n";
-            out.flush();
-        }
-
-        ////qDebug() << "List A " << List_a << "\n";
-        ///qDebug() << "List B " << List_b << "\n";
-
-        ///// qFatal(qPrintable(QString("Work progress STOP at:%1").arg(__LINE__)));
-        /////qFatal("SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN SCAN");
-        return mode;
+        return rendering; /// size of numer size by html 
     }
 
     /*
@@ -922,7 +679,7 @@ namespace ReadMail {
         tmp.prepend("\n\r");
         const QByteArray dtype = Utils::search_byline(tmp, QByteArray("Content-Type:"));
         QByteArray scharset = QByteArray(QString(Utils::_RX_resolver(_CHARTSETMM_,
-                QVariant(tmp)).constData()).toAscii()).simplified().toLower();
+                QVariant(tmp)).constData()).toLocal8Bit()).simplified().toLower();
         QByteArray sinline, sname, sX_Attachment_Id;
         QByteArray okattname = "-";
 
@@ -985,9 +742,9 @@ namespace ReadMail {
 
             out.flush();
         }
-        
-        
-        
+
+
+
 
         //// debug line
         ///// return 0;
@@ -1033,11 +790,11 @@ namespace ReadMail {
                     sizemeta.append("\n\r");
                     continue;
                 }
-                if (lc.startsWith(endkey.toAscii().simplified())) {
+                if (lc.startsWith(endkey.toLocal8Bit().simplified())) {
                     gobuild = false;
                     break;
                 }
-                if (lc.startsWith(startkey.toAscii().simplified())) {
+                if (lc.startsWith(startkey.toLocal8Bit().simplified())) {
                     gobuild = false;
                     break;
                 }
@@ -1075,7 +832,7 @@ namespace ReadMail {
                     is_BASE64 == 0 && dtype == "text/plain") {
                 /// word special bad 
                 //////chunk.replace("&#8217;",WORD2000APOQUOTE);
-                
+
                 ready = Makedecoder(scharset, chunk, 0);
             } else if (is_BASE64 == 1 && dtype == "text/html" ||
                     is_BASE64 == 1 && dtype == "text/plain") {
@@ -1085,16 +842,16 @@ namespace ReadMail {
             }
             /// for better find image inline if having
             if (is_BASE64 != 1 && dtype == "text/html") {
-                ////QByteArray w200(ready.toAscii());
-                
-                
+                ////QByteArray w200(ready.toLocal8Bit());
+
+
                 ///ready = QString(w200.simplified().data());
             }
 
             /// convert is not!
             if (is_BASE64 != 1) {
                 is_BASE64 = 1;
-                ready = QString(ready.toAscii().toBase64().constData());
+                ready = QString(ready.toLocal8Bit().toBase64().constData());
             }
             int uidfile = start;
             if (dtype == "text/html" && sname == "no") {
@@ -1122,7 +879,7 @@ namespace ReadMail {
                 } else {
                     attachment->SetInline(false, "");
                 }
-                attachment->SetChunk(ready.toAscii());
+                attachment->SetChunk(ready.toLocal8Bit());
                 attachment->Info();
                 /////out << "Prepare Meta:type:" << dtype << "|chartset" << scharset << "|encoding:" << encoding << "|inline:" << sinline << "|filename:" << sname << "|id:" << sX_Attachment_Id << "\n";
                 QMap<int, QVariant> att_files;
@@ -1161,6 +918,10 @@ namespace ReadMail {
         return QString();
     }
 
+    void Parser::PushRead(int x) {
+        qDebug() << "Mail html tot. size:" << x;
+    }
+
     int Parser::PaintEnd(ICmail& qmail) {
         int responder = -1;
         QMap<int, QVariant> allattach;
@@ -1185,11 +946,11 @@ namespace ReadMail {
             if (image_is_inline.startsWith("cid:")) {
                 /// insert image here on replace
                 QString keypic = image_is_inline.mid(4, image_is_inline.size() - 4);
-                QString xcode = _pic_inline(qmail.alist,keypic);
+                QString xcode = _pic_inline(qmail.alist, keypic);
                 int positionins = iPosition; /// (image_is_inline.size() - 2);
-                OriginalFromClassHTML.insert(positionins,QString(" data=\"pic:%1\" ").arg(keypic));
-                if ( !xcode.isEmpty() ) {
-                   OriginalFromClassHTML.replace(image_is_inline,xcode);
+                OriginalFromClassHTML.insert(positionins, QString(" data=\"pic:%1\" ").arg(keypic));
+                if (!xcode.isEmpty()) {
+                    OriginalFromClassHTML.replace(image_is_inline, xcode);
                 }
             }
 
@@ -1197,28 +958,23 @@ namespace ReadMail {
         }
         QString uhtml = OriginalFromClassHTML;
         /// clean  wait base 
-         ///QString uhtml = Utils::cleanDocFromChartset(mhtml->Chartset(),chunk);
+        ///QString uhtml = Utils::cleanDocFromChartset(mhtml->Chartset(),chunk);
         ///// QByteArray codex = Utils::unicode_tr(mhtml->Contenent());
         //////out << mhtml->Chartset() << "|out...\n";
-        
-        
+
+
         /// tidy must make letter to unicode
         /// convertet to utf8 +++ inline image if having
         /////mhtml->SetTextChartset(QByteArray("utf-8"));
-        mhtml->SetChunk(uhtml.toAscii().toBase64());
+        mhtml->SetChunk(uhtml.toLocal8Bit().toBase64());
         mhtml->TestWriteln(1);
         /// write to root html format...
-        qmail.xhtml = QVariant(uhtml.toAscii().toBase64());
+        qmail.xhtml = QVariant(uhtml.toLocal8Bit().toBase64());
         //// reinseret the data html  back in to mail structure ....
         QVariant v = VPtr<Qmailf>::asQVariant(mhtml);
-        qmail.alist.insert(mhtml->Uid(),v);
-        
-        out << "Xhtml Size:" <<  uhtml.size() << "\n";
-        out << str.fill('.', _IMAIL_MAXL_) << "\n";
-        out.flush();
-
-
-        return responder;
+        qmail.alist.insert(mhtml->Uid(), v);
+        HandleMail(qmail);
+        return uhtml.size();
     }
 
 

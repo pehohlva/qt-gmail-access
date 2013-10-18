@@ -79,6 +79,12 @@ MyClass *p1 = VPtr<MyClass>::asPtr(v);
 
 namespace MMime {
 
+
+
+
+
+
+
     /// full list http://www.iana.org/assignments/media-types
     /// better job to make on sqlite or on xml format on net ..
     /// and sort by prioryti of usage 
@@ -454,7 +460,7 @@ namespace MMime {
 class Qmailf {
 public:
 
-    Qmailf(int id) : chunk(""), mime("txt"), file("file.txt"), ext("txt"), uuid(id), is_inline(false), debug_level(1) {
+    Qmailf(int id) : chunk(""), mime("txt"), file("file.txt"), ext("txt"), uuid(id), is_inline(false), debug_level(0) {
 
     }
     //// all chunk is to BASE64 transformed 
@@ -491,6 +497,7 @@ public:
     QByteArray Chunk() {
         return chunk;
     }
+
     QByteArray Contenent() {
         return QByteArray::fromBase64(chunk);
     }
@@ -498,17 +505,14 @@ public:
     QString Mime() {
         return mime;
     }
-    
-    QString InlineImageHandler( const QString name ) {
+
+    QString InlineImageHandler(const QString name) {
         if (name == uidinlinename) {
             return EmbeddedImage();
         } else {
             return QString();
         }
     }
-    
-    
-    
 
     bool isValidImage() {
         QImage *imgd = new QImage();
@@ -518,7 +522,7 @@ public:
     int Uid() {
         return uuid;
     }
-    
+
     bool TestWriteln(int mode = 1);
 
     QString Filename() {
@@ -531,7 +535,7 @@ public:
         if (debug_level > 0 && debug_level < 4) {
             QTextStream out(stdout, QIODevice::WriteOnly);
             QString str("*");
-            out << str.fill('.',_IMAIL_MAXL_) << "\n";
+            out << str.fill('.', _IMAIL_MAXL_) << "\n";
             QByteArray text = QByteArray::fromBase64(chunk);
             out << "Content-Type:" << Mime() << " - " << Filename() << " - " << txt_charset << "\n";
             //// qDebug() << "Meta:" << meta_header;
@@ -559,19 +563,19 @@ public:
 
             text.clear();
             out.flush();
-            
+
         }
     }
-    
-    void SetTextChartset(const QByteArray chart ) {
+
+    void SetTextChartset(const QByteArray chart) {
         txt_charset = chart;
     }
-    
+
     QByteArray Chartset() {
         return txt_charset;
     }
-    
-    
+
+
 private:
     QByteArray chunk; // base64 encoded or other meta_heade having info
     QByteArray txt_charset;
@@ -621,6 +625,12 @@ struct ICmail {
     }
 };
 
+
+
+
+
+
+
 /// todo a textstream for console to insert chort info from this mail
 
 inline QDataStream& operator<<(QDataStream& out, const ICmail& mail) {
@@ -638,20 +648,42 @@ inline QDataStream& operator>>(QDataStream& in, ICmail& mail) {
     in >> mail.date;
     return in;
 }
+
 /*
   << mail.txt << ",\n"
   << mail.html << ",\n"
  */
 inline QDebug &operator <<(QDebug debug, const ICmail &mail) {
-    debug.nospace() << "ICmail{start(\n"
-            << mail.from << ",\n"
-            << mail.subject << ",\nDate:"
-            << mail.date << "\n,"
-            << mail.multipart << "\n,\nRoot Header:\n"
-            << mail.root_cmd << ")end}\n";
+    
+    const int attachment_long_size = mail.alist.size();
+    
+    debug.nospace() << "\nNew Mail{Soggetto: "
+            << mail.subject << ",\nFrom:"
+            << mail.from << ",\nTotAttachment:nr.("
+            << attachment_long_size << ") Date:"
+            << mail.date << "}\n";
     return debug.space();
 }
 Q_DECLARE_METATYPE(ICmail);
+
+
+
+namespace IMailFormat {
+
+    static void mailshow(ICmail mail_class) {
+
+        qDebug() << mail_class;
+
+    }
+
+
+}
+
+
+
+
+
+
 //// qRegisterMetaTypeStreamOperators<ICmail>("ICmail");
 //// qRegisterMetaType<ICmail>("ICmail");
 #endif	/* MIME_STANDARD_H */

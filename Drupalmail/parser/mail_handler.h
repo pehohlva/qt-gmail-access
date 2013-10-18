@@ -204,6 +204,8 @@ namespace ReadMail {
         enum Status {
             Ok, OutOfSpace
         };
+        
+        QString HeaderMail();
 
         ~StreamMail() {
             d->close();
@@ -217,15 +219,13 @@ namespace ReadMail {
         bool LoadFile(const QString file);
 
         bool LoadLongFile(const QString file);
-
-        bool WriteOnFile(const QString file);
+        bool WriteOnFile(const QString file );
 
         const quint16 size_line();
         /// save current stream inside here from remote imap to on eml format file 
         /// inside variable can parse...
         /// or data from filled by QBuffer
-        bool PutOnEml(const QString emlfile, QString& s_title, bool field = false);
-
+        
         QBuffer *device() {
             return d; /// device().write()
         }

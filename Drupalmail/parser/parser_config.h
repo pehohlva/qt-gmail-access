@@ -33,7 +33,7 @@
 
 #define _IMAIL_LARGE_  76
 
-
+const int _COMPRESSCACHEFILE_  = 1;
 const int MAX_NR_ATTACMENT  = 66;
 
 #define APOSSIMPLE \
@@ -115,17 +115,18 @@ X-Attachment-Id: ii_1419f1d6df51ba5b
 
 
 typedef QMap<QString, QString> Mail_Field_Format;
+const QByteArray _FILESTARTER_ = "***LOCK***";
 #ifdef Q_WS_MAC
 const QString multipartchunk = " ##end##";
-const QByteArray _FILESTARTER_ = "LOCK***TOP_TOS***";
 const QByteArray _FILECLOSER_ = "\n\rLOCK***LAS_TOS***\n\r";
 #else
 const QString multipartchunk = " ##grepend##";
+
 const QByteArray _FILECLOSER_ = "\n\rLOCK***LAS_WIN***\n\r";
 #endif
 const QString PHPMAILERFROMSERVER = "#MOUNTBODY#";
 #define MINIMUMHEADERLENGTH 76
-#define MINIMUMBODYLENGTH 10
+#define MINIMUMBODYLENGTH 11
 static const int MINFULMAIL_LENGTH = (MINIMUMBODYLENGTH + MINIMUMHEADERLENGTH);
 typedef QPair<int, int> DocSlice;
 

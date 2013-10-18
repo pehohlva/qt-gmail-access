@@ -20,6 +20,7 @@ namespace ReadMail {
 
     /// class to handle eml file on full email format
     /// use NetBean to follow function and class  by CTRL window or apple key and click
+    /// search debug_level int and set to 1 or 2 max 5 to see result detail...
 
     class Parser : public QObject {
         Q_OBJECT
@@ -56,12 +57,17 @@ namespace ReadMail {
     signals:
       ////void errorOnParse( QString errorMsg );
       /////void play_error_str( QString msg );
-    
+    //// connect(this, &Parser::ReadyToRead, this, &Parser::PushRead);
+    /// new signal on qt 5.1 
+    //// http://zchydem.enume.net/2012/05/17/qt5-new-signal-and-slot-syntax/ 
+    void ReadyToRead(int len );
+    void HandleMail( ICmail mailclass );
 
     public slots:
-        
+        void PushRead(int x );
         
     private slots:
+        
         
     protected:
         
