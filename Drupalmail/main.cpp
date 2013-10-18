@@ -11,6 +11,7 @@
 #include <QCoreApplication>
 #include "net_starterimap.h"
 #include "parser_eml.h"
+#include "coreapp/handler_net.h"
 
 // qmake -spec /usr/local/Qt4.8/mkspecs/macx-g++ -o Makefile Drupalmail.pro
 // /Users/pro/project/github/Drupalmail/
@@ -20,28 +21,20 @@ const int liwi = 44;
 
 int main(int argc, char *argv[]) {
     QCoreApplication app(argc, argv); //renamed the a to app
+    QLocale::setDefault(QLocale::English); /// date format mail this is only console or lib! app
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
     QStringList localip;
     QTextCodec *codecx;
     codecx = QTextCodec::codecForMib(106);
     QTextStream out(stdout);
     out.setCodec(codecx);
-    /// get the sample change file eml
-    QFileInfo feml("sample.eml");
-    QByteArray xml;
-    QString str("*");
-    out << str.fill('A', liwi) << "\n";
+    Handler_Net *netapp = new Handler_Net();
+    QObject::connect(netapp, SIGNAL(Full_Quit()),&app, SLOT(quit()));
 
-     if (feml.exists()) {
-        out << "Parse File:" << feml.absoluteFilePath() << "\n";
-    } else {
-        out << "Warming file not found:" << feml.absoluteFilePath() << "\n";
-    }
-    out << str.fill('B', liwi) << "\n";
-    out.flush();
     //// only parse mail this 
-    ReadMail::Parser read_mail(feml.absoluteFilePath());
+    /////ReadMail::Parser *read_mail = new ReadMail::Parser(0,feml.absoluteFilePath());
     //// only parse mail this 
-    QTimer::singleShot(500, &app, SLOT(quit()));
+    //// QTimer::singleShot(100000000, &app, SLOT(quit()));
     return app.exec();
 }
 
