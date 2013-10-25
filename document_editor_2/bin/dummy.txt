@@ -1,1 +1,48 @@
 .
+
+otool -L OasisEdit.app/Contents/MacOs/OasisEdit
+OasisEdit.app/Contents/MacOs/OasisEdit:
+	/usr/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.5)
+	/Users/pro/qt/qt5lang/5.1.1/clang_64/lib/QtPrintSupport.framework/Versions/5/QtPrintSupport (compatibility version 5.1.0, current version 5.1.1)
+	/System/Library/Frameworks/Cocoa.framework/Versions/A/Cocoa (compatibility version 1.0.0, current version 19.0.0)
+	/Users/pro/qt/qt5lang//5.1.1/clang_64/lib/QtWidgets.framework/Versions/5/QtWidgets (compatibility version 5.1.0, current version 5.1.1)
+	/Users/pro/qt/qt5lang//5.1.1/clang_64/lib/QtGui.framework/Versions/5/QtGui (compatibility version 5.1.0, current version 5.1.1)
+	/Users/pro/qt/qt5lang//5.1.1/clang_64/lib/QtCore.framework/Versions/5/QtCore (compatibility version 5.1.0, current version 5.1.1)
+	/Users/pro/qt/qt5lang//5.1.1/clang_64/lib/QtXml.framework/Versions/5/QtXml (compatibility version 5.1.0, current version 5.1.1)
+	/Users/pro/qt/qt5lang//5.1.1/clang_64/lib/QtNetwork.framework/Versions/5/QtNetwork (compatibility version 5.1.0, current version 5.1.1)
+	/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL (compatibility version 1.0.0, current version 1.0.0)
+	/System/Library/Frameworks/AGL.framework/Versions/A/AGL (compatibility version 1.0.0, current version 1.0.0)
+	/usr/lib/libstdc++.6.dylib (compatibility version 7.0.0, current version 56.0.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 169.3.0)
+
+
+Copy plugin to .... /Users/pro/project/github/document_editor_2/bin/OasisEdit.app/Contents/plugins.
+Processing QtCore...
+...QtCore copied.
+...QtCore done.
+Processing QtWidgets...
+...QtWidgets copied.
+...QtWidgets done.
+Processing QtGui...
+...QtGui copied.
+...QtGui done.
+Processing QtXmlPatterns...
+...QtXmlPatterns copied.
+...QtXmlPatterns done.
+Processing QtXml...
+...QtXml copied.
+...QtXml done.
+Processing QtNetwork...
+...QtNetwork copied.
+...QtNetwork done.
+Processing QtPrintSupport...
+...QtPrintSupport copied.
+...QtPrintSupport done.
+Removing any debug libraries and headers...
+Preparing image directory...
+
+
+
+
+
+
