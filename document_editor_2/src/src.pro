@@ -47,28 +47,12 @@ DEFINES += MINGWCC_
 message(win32 MINGW Compiler setting ....................) 
 }
 
-#Require at least Qt 4.4.5
 
-QT_VERSION = $$[QT_VERSION]
-QT_VERSION = $$split(QT_VERSION, ".")
-QT_VER_MAJ = $$member(QT_VERSION, 0) 
-QT_VER_MIN = $$member(QT_VERSION, 1) 
-QT_VER_PAT = $$member(QT_VERSION, 2) 
 
 lessThan(QT_VER_MAJ,5 | lessThan(QT_VER_MIN,0) ) {
 DEFINES += _HAVING_NEW_TEXTDOCUMENT_	
-DEPENDPATH +=  /Users/pro/qt/qt5lang/5.1.1/clang_64/include
-INCLUDEPATH +=  /Users/pro/qt/qt5lang/5.1.1/clang_64/include
-DEPENDPATH +=  /Users/pro/qt/qt51/qtbase/include
-INCLUDEPATH +=  /Users/pro/qt/qt51/qtbase/include
 QT += printsupport
-
 DEFINES += _HAVEPRINTSUPPORTFLAG_
-
-
-message(Use qt5 include dir ../Users/pro/qt/qt5lang/5.1.1/clang_64/include ....)
-### error(qt555)
-cache()
 } else {
 
 DEFINES += _QT4PRINTERSUPPORT_
