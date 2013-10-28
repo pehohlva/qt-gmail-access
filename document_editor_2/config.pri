@@ -5,10 +5,10 @@ QT_VER_MAJ = $$member(QT_VERSION, 0)
 QT_VER_MIN = $$member(QT_VERSION, 1) 
 QT_VER_PAT = $$member(QT_VERSION, 2) 
 
-message(version 1 $$QT_VERSION )
-message(version 2 $$QT_VER_MAJ )
-message(version 3 $$QT_VER_MIN )
-message(version 4 $$QT_VER_PAT )
+message(version asplit $$QT_VERSION )
+message(version bsplit $$QT_VER_MAJ )
+message(version csplit $$QT_VER_MIN )
+message(version dsplit $$QT_VER_PAT )
 
 
 #### discovery qt5 or qt4 
