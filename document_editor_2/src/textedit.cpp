@@ -1,48 +1,94 @@
-/****************************************************************************
- **
- ** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
- **
- ** This file is part of the demonstration applications of the Qt Toolkit.
- **
- ** This file may be used under the terms of the GNU General Public
- ** License versions 2.0 or 3.0 as published by the Free Software
- ** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
- ** included in the packaging of this file.  Alternatively you may (at
- ** your option) use any later version of the GNU General Public
- ** License if such license has been publicly approved by Trolltech ASA
- ** (or its successors, if any) and the KDE Free Qt Foundation. In
- ** addition, as a special exception, Trolltech gives you certain
- ** additional rights. These rights are described in the Trolltech GPL
- ** Exception version 1.2, which can be found at
- ** http://www.trolltech.com/products/qt/gplexception/ and in the file
- ** GPL_EXCEPTION.txt in this package.
- **
- ** Please review the following information to ensure GNU General
- ** Public Licensing requirements will be met:
- ** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
- ** you are unsure which license is appropriate for your use, please
- ** review the following information:
- ** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
- ** or contact the sales department at sales@trolltech.com.
- **
- ** In addition, as a special exception, Trolltech, as the sole
- ** copyright holder for Qt Designer, grants users of the Qt/Eclipse
- ** Integration plug-in the right for the Qt/Eclipse Integration to
- ** link to functionality provided by Qt Designer and its related
- ** libraries.
- **
- ** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
- ** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
- ** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
- ** granted herein.
- **
- ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- **
- ****************************************************************************/
+
 #include <QPointer>
 #include "textedit.h"
 #include "allconfig.h"
+
+DocEditor::DocEditor(QTextEdit *parent) :
+QTextEdit(parent), im_cursor(1) {
+
+    //// get image or other contenents if paste on text field...
+    QString sysCacheDir(__TMPCACHE__);
+    QDir dir;
+    if (!dir.exists(sysCacheDir)) {
+        dir.mkpath(sysCacheDir);
+    }
+    manager = new QNetworkAccessManager(this);
+    m_diskCache = new QNetworkDiskCache(this);
+    m_diskCache->setCacheDirectory(sysCacheDir);
+    manager->setCache(m_diskCache);
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(doc_netready(QNetworkReply*)));
+    //////// get_part(QString("http://www.liberatv.ch/sites/default/files/styles/piccolissima_87/public/topimage/unwomen.jpg"));
+
+}
+
+void DocEditor::get_part(const QString stringurl) {
+    QNetworkRequest request;
+    request.setUrl(QUrl(stringurl));
+    request.setRawHeader("User-Agent", "MyNokkia 1.0");
+    QNetworkReply *inetitem = manager->get(request);
+}
+
+void DocEditor::doc_netready(QNetworkReply* rep) {
+
+    const qint64 xsizebuff = rep->readBufferSize();
+    QVariant lmod = rep->header(QNetworkRequest::LastModifiedHeader);
+    if (rep->error() != QNetworkReply::NoError) {
+        /////// qDebug() << "### incomming error!" << __TMPCACHE__;
+    } else {
+        if (rep->isFinished()) {
+            QImage im;
+            im.loadFromData(rep->readAll());
+            if (!im.isNull()) {
+                document()->addResource(QTextDocument::ImageResource, rep->url(), QVariant(im));
+                ///// /// qDebug() << "### image ok  " << rep->url().toString();
+                update();
+                emit Newdatain();
+            }
+
+        }
+
+    }
+
+}
+
+bool DocEditor::canInsertFromMimeData(const QMimeData * source) {
+    return QTextEdit::canInsertFromMimeData(source);
+}
+
+void DocEditor::insertFromMimeData(const QMimeData * source) {
+    if (source->hasImage()) {
+        im_cursor++;
+        const QString newimagein = QString("pic_%1.png").arg(im_cursor);
+        QImage images = qvariant_cast<QImage>(source->imageData());
+        if (!images.isNull()) {
+            QTextImageFormat fragment;
+            fragment.setName(newimagein);
+            fragment.setWidth(images.width());
+            fragment.setHeight(images.height());
+            document()->addResource(QTextDocument::ImageResource, QUrl(newimagein), QVariant(images));
+            textCursor().insertImage(fragment);
+            return;
+        }
+    }
+
+    if (source->formats().contains("text/html")) {
+        QString draghtml = source->html();
+        QRegExp expression("src=[\"\'](.*)[\"\']", Qt::CaseInsensitive);
+        expression.setMinimal(true);
+        int iPosition = 0;
+        while ((iPosition = expression.indexIn(draghtml, iPosition)) != -1) {
+            QString imageurl = expression.cap(1);
+            if (!imageurl.isEmpty()) {
+                get_part(imageurl); /// load in cache if can
+            }
+            iPosition += expression.matchedLength();
+        }
+        QTextDocumentFragment fragment = QTextDocumentFragment::fromHtml(draghtml);
+        textCursor().insertFragment(fragment);
+        return;
+    }
+    return QTextEdit::insertFromMimeData(source);
+}
 
 static inline QString FileFilterHaving() {
     QString filter;
@@ -68,13 +114,11 @@ const QString rsrcPath = ":/images/win";
 
 QPointer<TextEdit> TextEdit::_self = 0L;
 
-TextEdit* TextEdit::self( QWidget* parent )
-{
-	if ( !_self )
-	_self = new TextEdit( parent );
-	return _self;
+TextEdit* TextEdit::self(QWidget* parent) {
+    if (!_self)
+        _self = new TextEdit(parent);
+    return _self;
 }
-
 
 TextEdit::TextEdit(QWidget *parent)
 : QMainWindow(parent) {
@@ -85,18 +129,29 @@ TextEdit::TextEdit(QWidget *parent)
     {
         QMenu *helpMenu = new QMenu(tr("Help"), this);
         menuBar()->addMenu(helpMenu);
-        helpMenu->addAction(tr("About"), this, SLOT(about()));
+        ///// helpMenu->addAction(tr("About"), this, SLOT(about()));
         helpMenu->addAction(tr("About &Qt"), qApp, SLOT(aboutQt()));
     }
 
-    textEdit = new QTextEdit(this);
+    QWidget *panel = new QWidget(this);
+    textEdit = new DocEditor(0);
+    gridLayout = new QGridLayout(panel);
+    Umargin = new DocMargin(panel);
+    Umargin->setFixedHeight(33);
+    gridLayout->addWidget(Umargin, 0, 0, 1, 1);
+    gridLayout->addWidget(textEdit, 1, 0, 1, 1);
+    setCentralWidget(panel);
+    
+    textEdit->setFocus();
+    
+    ///7 connect(Umargin, SIGNAL(CursorMove(qreal, qreal)), this, SLOT(CursorMargins(qreal, qreal)));
+    
     connect(textEdit, SIGNAL(currentCharFormatChanged(const QTextCharFormat &)),
             this, SLOT(currentCharFormatChanged(const QTextCharFormat &)));
     connect(textEdit, SIGNAL(cursorPositionChanged()),
             this, SLOT(cursorPositionChanged()));
     setWindowIcon(QIcon(":/images/ODTicon.png"));
-    setCentralWidget(textEdit);
-    textEdit->setFocus();
+    
     setCurrentFileName(QString());
 
     fontChanged(textEdit->font());
@@ -158,6 +213,18 @@ void TextEdit::closeEvent(QCloseEvent *e) {
     else
         e->ignore();
 }
+
+void TextEdit::CursorMargins(qreal left, qreal right) {
+    ///////// qDebug() << "### on_Umargin_Cursor_Move " << left << "," << right;
+    qreal dist = right - left;
+    QTextFrame *Tframe = textEdit->document()->rootFrame();
+    QTextFrameFormat rootformats = Tframe->frameFormat();
+    rootformats.setBorder(0);
+    rootformats.setLeftMargin(left - 1);
+    rootformats.setRightMargin(Umargin->width() - right + 1);
+    Tframe->setFrameFormat(rootformats);
+}
+
 
 void TextEdit::setupFileActions() {
     QToolBar *tb = new QToolBar(this);
@@ -423,7 +490,7 @@ void TextEdit::setCurrentFileName(const QString &fileName) {
         shownName = "untitled.txt";
     else
         shownName = QFileInfo(fileName).fileName();
-    setWindowTitle(QString("%1[*]  OASIS Open Document Format for Office Applications").arg(shownName));
+    setWindowTitle(_CVERSION_ + QString("%1 - OASIS Open Document").arg(shownName));
     setWindowModified(false);
 }
 

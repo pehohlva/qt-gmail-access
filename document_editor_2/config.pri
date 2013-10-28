@@ -20,7 +20,9 @@ LOCALQTDIR55555555 = /Users/pro/qt/qt5lang/5.1.1/clang_64/include
 DEPENDPATH +=  $$LOCALQTDIR
 INCLUDEPATH += $$LOCALQTDIR
 #### if need!!! 
+DEFINES += _HAVING_NEW_TEXTDOCUMENT_	
 QT += printsupport
+DEFINES += _HAVEPRINTSUPPORTFLAG_
 message(Use qt5 from $$LOCALQTDIR config.pri setting )
 }
 
@@ -28,7 +30,7 @@ equals(QT_VER_MAJ,4) {
 #### http://www.qtcentre.org/wiki/index.php?title=Undocumented_qmake
 #### qt4 fix  lessThan << minore 
 message(Use qt4 setting edit config.pri )
-
+DEFINES += _QT4PRINTERSUPPORT_
 }
 
 

@@ -6,18 +6,29 @@
 message( "../config.pri not found" )
 }
 
-
-
-TEMPLATE = app
-TARGET = OasisEdit
 QT += core network xml gui
 QT += widgets
+TEMPLATE = app
 
+
+
+# write here null to no debug
+CONFIG = release
+CONFIG += app_bundle
 DESTDIR += $$BUILD_TREE_PATH/bin
 CONFIG   +=  qt release warn_off 
-#CONFIG -= app_bundle # by test on console console release debug
+TARGET = OasisEdit
 
-CONFIG   -= debug
+contains(CONFIG, debug): {
+message( ---------------- Use DEBUG setting ---------------- )
+} else {
+message( ---------------- Use RELEASE setting ---------------- )
+}
+
+
+
+
+
 
 LIBS   += -lz
 win32:LIBS	+= -luser32
@@ -47,28 +58,6 @@ DEFINES += MINGWCC_
 message(win32 MINGW Compiler setting ....................) 
 }
 
-
-
-lessThan(QT_VER_MAJ,5 | lessThan(QT_VER_MIN,0) ) {
-DEFINES += _HAVING_NEW_TEXTDOCUMENT_	
-QT += printsupport
-DEFINES += _HAVEPRINTSUPPORTFLAG_
-} else {
-
-DEFINES += _QT4PRINTERSUPPORT_
-
-
-lessThan(QT_VER_MAJ, 4) | lessThan(QT_VER_MIN, 5) {
-### qt4.5 not make ! ##
-error(OAsis OpenDocument write requires Qt 4.4.5 or newer. Version $$QT_VER_MAJ was detected.  Comment out error() src.pro to only read OAsis doc)
-} else {
-message(loading 4.5  ------- 4.5 _HAVING_NEW_TEXTDOCUMENT_  best QTextDocument on QT history )
-DEFINES += _HAVING_NEW_TEXTDOCUMENT_
-}
-
-
-
-}
 
 contains(CONFIG, static): {
 
@@ -104,6 +93,7 @@ INCLUDEPATH += . tools docformat/ooo
 HEADERS += textedit.h \
            os_application.h  \
            tools/kzip.h \
+           tools/docmargin.h \
            docformat/ooo/converter.h \
            docformat/ooo/document.h \
            docformat/ooo/formatproperty.h \
@@ -112,6 +102,7 @@ HEADERS += textedit.h \
 SOURCES += main.cpp \
            textedit.cpp \
            tools/kzip.cpp \
+           tools/docmargin.cpp \
            docformat/ooo/converter.cpp \
            docformat/ooo/document.cpp \
            docformat/ooo/formatproperty.cpp \

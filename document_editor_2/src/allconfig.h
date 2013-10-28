@@ -8,6 +8,13 @@
 #ifndef ALLCONFIG_H
 #define	ALLCONFIG_H
 
+#define _CVERSION_ \
+             QString("V2510-")
+
+#define __TMPCACHE__ \
+             QString("%1/.fastcache/").arg(QDir::homePath())
+
+
 /// bind format doc having
 #include "docformat/ooo/document.h"
 #include "docformat/ooo/converter.h"
@@ -15,6 +22,7 @@
 #include "docformat/ooo/styleinformation.h"
 #include "docformat/ooo/formatproperty.h"
 #include "tools/kzip.h"
+#include "tools/docmargin.h"
 /// bind format doc having
 
 #include <QtXml/QDomDocument>
@@ -64,8 +72,14 @@
 #include <QtDebug>
 #include <QCloseEvent>
 #include <QMessageBox>
+#include <QGridLayout>
 
 #include <QStatusBar>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkDiskCache>
+#include <QTextDocumentFragment>
+#include <QMimeData>
 
 #if defined _HAVEPRINTSUPPORTFLAG_
 /// qt5 compatible ??? //// on qmake file !!! QT += printsupport

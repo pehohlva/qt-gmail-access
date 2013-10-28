@@ -11,7 +11,7 @@ QTDIR="/usr/local/Cellar/qt/4.8.5"
 # name of the binary
 BINARY_NAME="OasisEdit"
 # Qt libraries you've linked against on apps remove not needed libs "QtSql"
-declare -a NEEDED_LIBS=( "QtCore" "QtGui" "QtXml" "QtNetwork")
+declare -a NEEDED_LIBS=( "QtCore" "QtGui" "QtXml" "QtNetwork" "QtSql")
 # additional files you'd like to get copied to the final dmg
 declare -a ADD_FILES=("copying.txt" )
 declare -a ADD_FILES=("image_test.odt" )

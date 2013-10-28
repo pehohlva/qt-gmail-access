@@ -5,16 +5,18 @@
 ###  http://doc.trolltech.com/4.2/deployment-mac.html#qt-plugins  
 # relative path to the directory which contains the created app bundle
 BIN_DIR=$(pwd)
-# /// test if exist /usr/local/Cellar/qt/4.8.5/lib/QtCore.framework/Versions/Current/QtCore
-# /// test if exist /usr/local/Cellar/qt/4.8.5/lib/QtCore.framework/Versions/5/ 
-QTDIR="/Users/pro/qt/qt5lang/5.1.1/clang_64"
+# ///from bindir  otool -L OasisEdit.app/Contents/MacOs/OasisEdit  
+#QTDIR="/Users/pro/qt/qt51/qtbase/"
+
+QTDIR="/Users/pro/qt/dotoooqt5lang/5.1.1/clang_64"
 # name of the binary
-BINARY_NAME="OasisEdit"
-# Qt libraries you've linked against on apps remove not needed libs "QtSql"
-declare -a NEEDED_LIBS=( "QtCore" "QtGui" "QtXml" "QtNetwork" "QtPrintSupport")
+BINARY_NAME="OasisEdit"  
+# ////   /System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL
+# ////  /System/Library/Frameworks/AGL.framework/Versions/A/AGL
+# Qt "QtWebKit"  "QtSql"    libraries you've linked against on apps remove not needed libs "QtSql"  QtPrintSupport
+declare -a NEEDED_LIBS=( "QtCore" "QtWidgets" "QtGui" "QtXmlPatterns" "QtXml" "QtNetwork" "QtPrintSupport" "QtSql" )
 # additional files you'd like to get copied to the final dmg
-declare -a ADD_FILES=("copying.txt" )
-declare -a ADD_FILES=("image_test.odt" )
+declare -a ADD_FILES=("image_test.odt"  "copying.txt" )
 #
 # Configuration end, nothing should be edited from here on
 #
@@ -75,16 +77,16 @@ do
 
     rm -rf "$framework_dir/$lib.framework"
     cp -fR "$QTDIR/lib/$lib.framework" "$framework_dir"
-    echo "...$lib copied."
+    echo "...$QTDIR/lib/$lib.framework copied."
     
     install_name_tool \
-        -id "@executable_path/../Frameworks/$lib.framework/Versions/5/$lib" \
-        "$framework_dir/$lib.framework/Versions/5/$lib"
+        -id "@executable_path/../Frameworks/$lib.framework/Versions/Current/$lib" \
+        "$framework_dir/$lib.framework/Versions/Current/$lib"
 	
-    # other Qt libs depend at least on QtCore
+    # other Qt libs depend at least on QtCore /lib/QtPrintSupport.framework/Versions/Current
     if [ "$lib" != "QtCore" ]; then
-        install_name_tool -change "$QTDIR/lib/QtCore.framework/Versions/5/QtCore" \
-            "@executable_path/../Frameworks/QtCore.framework/Versions/5/QtCore" \
+        install_name_tool -change "$QTDIR/lib/QtCore.framework/Versions/Current/QtCore" \
+            "@executable_path/../Frameworks/QtCore.framework/Versions/Current/QtCore" \
             "$framework_dir/$lib.framework/Versions/Current/$lib"
             
     fi

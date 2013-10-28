@@ -56,7 +56,7 @@ public:
         TextEdit::self()->setWindowIcon(QIcon(":/images/ODTicon.png"));
         TextEdit::self()->show(); /* an show its */
         ////TextEdit::self()->resize(800,600);
-        TextEdit::self()->load(":/images/image_test.odt"); /// "
+        //// TextEdit::self()->load(":/images/image_test.odt"); /// "
     }
 protected:
 

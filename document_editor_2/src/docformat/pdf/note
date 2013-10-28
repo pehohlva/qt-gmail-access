@@ -1,0 +1,1 @@
+brew install -v poppler --with-qt4 --enable-xpdf-headers

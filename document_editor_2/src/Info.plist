@@ -9,7 +9,7 @@
             <dict>
                 <key>CFBundleTypeExtensions</key>
                 <array>
-                    <string>fop</string>
+                    <string>odt</string>
                 </array>
                 <key>CFBundleTypeIconFile</key>
                 <string>ODTicon.icns</string>
