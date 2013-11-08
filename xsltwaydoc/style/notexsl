@@ -1,0 +1,242 @@
+/Users/pro/code/minisvn/doc/Xsltqt5/xx
+FRAME2138
+
+xmlpatterns style/odtfullbody.xsl  cache/new.xml
+
+./xx -h /Users/pro/Desktop/app_mie/folle.odt
+
+
+<fo:document-meta version="1.2" converted-u="1383938908" converted-h="Date: Mon, 8 Nov 0 20:28:28:275">
+        <fo:meta qlev="2">
+
+
+
+
+       <xsl:text> oggetto...1  </xsl:text>
+                        <xsl:value-of select="name(*[1])"/>
+                        <xsl:text> oggetto...2  </xsl:text>
+                        <xsl:value-of select="name(*[2])"/>
+                        <xsl:text> oggetto...1  </xsl:text>
+                        <xsl:value-of select="$imageobject"/>
+                        <xsl:text> oggetto...2  </xsl:text>
+                        <xsl:value-of select="$drawobject"/> 
+
+
+
+
+    QStringList xmoore;
+    xmoore << "gnocca" << "fottere" <<  "patate" << "bollite" << "broccoli" << "fritti" << "pesce" << "lesso in pentola" << "cane" << "abbandonato in montagna" << "end" << "end";
+    const int longerlist = xmoore.size();
+    for (int x = 0; x < xmoore.size(); ++x) {
+        const QString parametro = xmoore.at(x);
+        if (parametro != "end") {
+            x++;
+            QString xvalue = QString(xmoore.at(x));
+            params[nbparams++] = (const char *) qPrintable(QString(QChar(22))+parametro+QString(QChar(22)));
+            params[nbparams++] = (const char *) qPrintable(QString(QChar(22))+xvalue+QString(QChar(22)));
+            ///out << "valuta:" << xvalue << "\n"; 
+            /// out.flush();
+        } else if (parametro == "end") {
+            params[nbparams++] = NULL;
+            break;
+        } else if (nbparams >= 8) {
+            params[nbparams++] = NULL;
+            break;
+        }
+    }
+
+
+xsltproc transform.xsl data.xml > output.txt
+
+xsltproc odtstyle.xsl sa.xml > css.txt
+
+
+ <p>FRAME2138......<img><xsl:attribute name="class">dummy_image</xsl:attribute>
+                <xsl:attribute name="height"><xsl:value-of select="@svg:height"/></xsl:attribute>
+                <xsl:attribute name="width"><xsl:value-of select="@svg:width"/></xsl:attribute>
+                <xsl:attribute name="src"><xsl:text>data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==</xsl:text></xsl:attribute>
+         </img></p>
+
+<draw:frame draw:style-name="fr2" draw:name="Object1" text:anchor-type="paragraph" svg:x="-0.076cm" svg:y="0.115cm" svg:width="18.704cm" svg:height="4.299cm" draw:z-index="0">
+                    <draw:object xlink:href="./Object 1" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>
+                    <draw:image xlink:href="./ObjectReplacements/Object 1" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>
+                </draw:frame>
+
+
+        QByteArray xdata = Kzip->fileByte(pathimage);
+                QImage pic; /// i.value() /// i.key(); 
+                pic.loadFromData(xdata);
+                if (!pic.isNull()) {
+                    QFileInfo pic(pathimage);
+                    QString blob = "data:image/" + pic.completeSuffix().toLower() + ";base64,";
+                    QString imagembed(xdata.toBase64().constData());
+                    blob.append(imagembed); /// format_string76(blob)  
+                    const QString imagehtml = f_string76(blob); /// image scroll...
+                    /// search img src="?image=rId8" && insert chunk lol
+
+
+
+
+
+     int repos = imagesrcx.indexOf("=");
+            if (repos > 0) {
+                const QString key = imagesrcx.mid(repos + 1, loengh - (repos - 1)).simplified();
+                QString imagechunker = read_docx_index(docindex, 1, key);
+                if (!imagechunker.isEmpty()) {
+                    HTMLGOLDSETTING.replace(imagesrcx, imagechunker);
+                    ////BASICDOCDEBUG() << "HTML image found Docx:" << imagesrcx;
+                    //// BASICDOCDEBUG() << "HTML image found Docx:" << key;
+                }
+
+    
+    
+    QString result; //// parse meta.xml styles.xml content.xml
+    qDebug() << "### init main void Extract, Transform ";
+    const QString xsltf("/Users/pro/code/minisvn/doc/Xsltqt5/style/stileA.xsl");
+    Ixsl conv;
+    conv.ibody = xsltf;
+    
+    const QString odtfile("/Users/pro/code/minisvn/doc/Xsltqt5/stress.docx");
+    BasicDocument *xdoc = new BasicDocument();
+    xdoc->setStyle(conv);
+         if (xdoc->load(odtfile,BasicDocument::DOCX)) {
+             qDebug() << "### doc load ok.. ";
+         }
+
+
+
+
+<xsl:template match="text:tab">
+<span class="tab"><xsl:text>un tab indentro</xsl:text></span><xsl:comment>297</xsl:comment>
+</xsl:template>
+
+<xsl:template match="text:tab">
+<xsl:text>&#x09;</xsl:text><xsl:comment>305</xsl:comment>
+<!-- emit a Unicode tab -->
+</xsl:template>  
+
+<xsl:template match="text:t">
+<span class="tab"><xsl:text>un tab indentro</xsl:text></span><xsl:comment>302</xsl:comment>
+</xsl:template>
+
+
+
+  * { margin:0;padding:0; }
+  ul,ol { margin-left:20px; }
+  li { margin-left:10px; }
+  table { border-collapse:separate; display:inline-table; }
+  td,tr { border:1px solid black; padding: 2px; }
+  body { margin: 30px; background-color:#FFFDFD; }
+  /*div.frame_base { height:96%; background-color:red; }
+  div.draw_abs { height:96%; background-color:red; }
+  div.draw_abs after clear both ...*/
+  p { line-height:1.6em; }
+  p,span,div { font-size:1.3em; } 
+  h1 { font-size:1.9em; } 
+  h2 { font-size:1.7em; } 
+  h3 { font-size:1.6em; } 
+  .tab { display: inline; }
+  .draw_frame { margin: 2px; position:relative;background-color:rgb(255,0,255,33); overflow:hidden; }
+
+
+
+
+
+    int i;
+    if (argc <= 1) {
+        usagethisapp(argv[0], argc);
+        return (1);
+    }
+
+    int nbparams = -1;
+    const char *params[16 + 1];
+    params[nbparams++] = (const char *) qPrintable(QString(QChar(22)) + QString("Insalata") + QString(QChar(22)));
+    params[nbparams++] = (const char *) qPrintable(QString(QChar(22)) + QString("Mista") + QString(QChar(22)));
+    params[nbparams++] = (const char *) qPrintable(QString(QChar(22)) + QString("Mi folle staa") + QString(QChar(22)));
+    params[nbparams++] = (const char *) qPrintable(QString(QChar(22)) + QString("Mistab") + QString(QChar(22)));
+    params[nbparams++] = (const char *) qPrintable(QString(QChar(22)) + QString("Mistac") + QString(QChar(22)));
+    params[nbparams++] = (const char *) qPrintable(QString(QChar(22)) + QString("Mistaafd") + QString(QChar(22)));
+    params[nbparams++] = (const char *) qPrintable(QString(QChar(22)) + QString("Mistasa") + QString(QChar(22)));
+    params[nbparams++] = (const char *) qPrintable(QString(QChar(22)) + QString("Misadta") + QString(QChar(22)));
+    params[nbparams++] = NULL;
+    params[nbparams++] = NULL;
+
+    CheckarrayParam(7,params);
+
+
+
+    QString result, html, outputfile, subjectfile;
+
+    out << str.fill('*', iowi) << "\n";
+    //// out << "Arg: " << argl.size() << "\n";
+    ////for (int i = 0; i < argl.size(); ++i) {
+    ////const QString argx = QString(argl.at(i).toLocal8Bit());
+    ////out << "Pos:" << i << " name: " << argx << "\n";
+    /// }
+
+
+    for (i = 1; i < argc; i++) {
+        //// --version or -V print 
+        if ((!strcmp(argv[i], "-V")) ||
+                (!strcmp(argv[i], "--version")) ||
+                (!strcmp(argv[i], "-v"))) {
+            out << "Converter-Version:" << __DOCVERSION__ << "\n";
+            out << str.fill('*', iowi) << "\n";
+            out.flush();
+            return (1);
+            //// -o Outputfile save to xxx
+        } else if ((!strcmp(argv[i], "-o")) || (!strcmp(argv[i], "--output"))) {
+            int next = i + 1;
+            outputfile = QString(argv[next]);
+            if (!outputfile.isEmpty()) {
+                out << "Outputfile go to:" << outputfile << "\n";
+                out.flush();
+                i++; // next param
+            } else {
+                out << "Outputfile is not given! for " << __APPNAME__ << " \n";
+                out << str.fill('*', iowi) << "\n";
+                out.flush();
+                return (1);
+            }
+        } else if ((!strcmp(argv[i], "-h")) || (!strcmp(argv[i], "--handle"))) {
+            int next = i + 1;
+            subjectfile = QString(argv[next]);
+            if (!subjectfile.isEmpty()) {
+                out << "Open file:" << subjectfile << "\n";
+                out.flush();
+                i++; // next param
+            } else {
+                out << "Handle and open file is not given! for " << __APPNAME__ << " \n";
+                out << str.fill('*', iowi) << "\n";
+                out.flush();
+                return (1);
+            }
+        } else if ((!strcmp(argv[i], "-f1")) || (!strcmp(argv[i], "--help"))) {
+            usagethisapp(argv[0], 1);
+            return (1);
+        } else {
+            out << "Param " << QString(argv[i]) << " not found for:" << __APPNAME__ << " write " << QString(argv[0]) << " -f2 to help text\n";
+            out << str.fill('*', iowi) << "\n";
+            out.flush();
+            return (1);
+        }
+    }
+    out << str.fill('*', iowi) << "\n";
+    out.flush();
+    bool brocken = true;
+    if (!subjectfile.isEmpty()) {
+        QFileInfo fi_c(subjectfile);
+        if (fi_c.exists()) {
+            subjectfile = fi_c.absoluteFilePath();
+            BasicDocument *xdoc = new BasicDocument();
+            if (xdoc->load(subjectfile, html)) {
+                out << "OK accept: " << subjectfile << "\n";
+                result = xdoc->htmlGold();
+                brocken = false;
+                out.flush();
+                if (!outputfile.isEmpty()) {
+                    Tools::_write_file(outputfile, result, "utf-8");
+                }
+            }
+        }
+    }

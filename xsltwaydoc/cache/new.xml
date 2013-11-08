@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fo:root version="Ve.1.0.5" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" xmlns:cms="http://www.freeroad.ch/2013/CMSFormat" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:svg="http://www.w3.org/2000/svg">
+     <fo:document-meta version="1.2" converted-u="1383943616" converted-h="Date: Fri, 8 Nov 2013 21:46:56:611"><fo:meta qlev="2"><fo:initial-creator qlev="3">Peter  Hohl</fo:initial-creator>
+               <fo:creation-date qlev="3">2013-11-07T20:30:21</fo:creation-date>
+               <fo:date qlev="3">2013-11-08T20:28:05</fo:date>
+               <fo:creator qlev="3">Peter  Hohl</fo:creator>
+               <fo:editing-duration qlev="3">PT8H20M8S</fo:editing-duration>
+               <fo:editing-cycles qlev="3">8</fo:editing-cycles>
+               <fo:generator qlev="3">OpenOffice/4.0.1$Unix OpenOffice.org_project/401m5$Build-9714</fo:generator>
+               <fo:document-statistic image-count="1" object-count="2" paragraph-count="1" character-count="13" word-count="2" qlev="3" table-count="0" page-count="2"></fo:document-statistic>
+          </fo:meta>
+     </fo:document-meta>
+     <fo:document-styles version="1.2" converted-u="1383943616" converted-h="Date: Fri, 8 Nov 2013 21:46:56:614"><fo:font-face-decls qlev="2"><fo:font-face font-family="'Times New Roman'" font-family-generic="roman" qlev="3" name="Times New Roman" font-pitch="variable"></fo:font-face>
+               <fo:font-face font-family="'Apple Chancery'" font-family-generic="script" qlev="3" name="Apple Chancery" font-pitch="variable"></fo:font-face>
+               <fo:font-face font-family="Arial" font-family-generic="swiss" qlev="3" name="Arial" font-pitch="variable"></fo:font-face>
+               <fo:font-face font-family="'Arial Unicode MS'" font-family-generic="system" qlev="3" name="Arial Unicode MS" font-pitch="variable"></fo:font-face>
+          </fo:font-face-decls>
+          <fo:css qlev="2"><fo:default-style family="graphic" qlev="3"><fo:graphic-properties shadow-offset-x="0.3cm" shadow-offset-y="0.3cm" start-line-spacing-vertical="0.283cm" wrap-option="no-wrap" end-line-spacing-horizontal="0.283cm" flow-with-text="false" end-line-spacing-vertical="0.283cm" start-line-spacing-horizontal="0.283cm" qlev="4"></fo:graphic-properties>
+                    <fo:paragraph-properties text-autospace="ideograph-alpha" line-break="strict" qlev="4" font-independent-line-spacing="false" writing-mode="lr-tb"><fo:tab-stops qlev="5"></fo:tab-stops>
+                    </fo:paragraph-properties>
+                    <fo:text-properties font-size-asian="12pt" country-complex="IN" language-complex="hi" use-window-font-color="true" letter-kerning="true" language-asian="zh" country="CH" country-asian="CN" qlev="4" language="de" font-size-complex="12pt" font-size="12pt"></fo:text-properties>
+               </fo:default-style>
+               <fo:default-style family="paragraph" qlev="3"><fo:paragraph-properties text-autospace="ideograph-alpha" tab-stop-distance="1.251cm" hyphenation-ladder-count="no-limit" line-break="strict" qlev="4" punctuation-wrap="hanging" writing-mode="page"></fo:paragraph-properties>
+                    <fo:text-properties hyphenation-push-char-count="2" country="CH" font-family="Times New Roman" country-asian="CN" language="de" font-name-complex="Arial Unicode MS" country-complex="IN" font-size-complex="12pt" qlev="4" hyphenation-remain-char-count="2" language-asian="zh" use-window-font-color="true" language-complex="hi" font-name-asian="Arial Unicode MS" font-size-asian="12pt" hyphenate="false" letter-kerning="true" font-size="12pt"></fo:text-properties>
+               </fo:default-style>
+               <fo:default-style family="table" qlev="3"><fo:table-properties border-model="collapsing" qlev="4"></fo:table-properties>
+               </fo:default-style>
+               <fo:default-style family="table-row" qlev="3"><fo:table-row-properties keep-together="auto" qlev="4"></fo:table-row-properties>
+               </fo:default-style>
+               <fo:style class="text" family="paragraph" qlev="3" name="Standard"></fo:style>
+               <fo:style class="text" family="paragraph" parent-style-name="Standard" next-style-name="Text_20_body" qlev="3" name="Heading"><fo:paragraph-properties keep-with-next="always" margin-bottom="0.212cm" qlev="4" margin-top="0.423cm"></fo:paragraph-properties>
+                    <fo:text-properties font-size-asian="14pt" font-family="Arial" qlev="4" font-name-complex="Arial Unicode MS" font-size-complex="14pt" font-size="14pt" font-name-asian="Arial Unicode MS"></fo:text-properties>
+               </fo:style>
+               <fo:style class="text" display-name="Text body" family="paragraph" parent-style-name="Standard" qlev="3" name="Text_20_body"><fo:paragraph-properties margin-bottom="0.212cm" qlev="4" margin-top="0cm"></fo:paragraph-properties>
+               </fo:style>
+               <fo:style class="list" family="paragraph" parent-style-name="Text_20_body" qlev="3" name="List"></fo:style>
+               <fo:style class="extra" family="paragraph" parent-style-name="Standard" qlev="3" name="Caption"><fo:paragraph-properties number-lines="false" margin-bottom="0.212cm" qlev="4" line-number="0" margin-top="0.212cm"></fo:paragraph-properties>
+                    <fo:text-properties font-size-asian="12pt" font-style-asian="italic" font-style="italic" qlev="4" font-size-complex="12pt" font-style-complex="italic" font-size="12pt"></fo:text-properties>
+               </fo:style>
+               <fo:style class="index" family="paragraph" parent-style-name="Standard" qlev="3" name="Index"><fo:paragraph-properties number-lines="false" qlev="4" line-number="0"></fo:paragraph-properties>
+               </fo:style>
+               <fo:style family="graphic" qlev="3" name="Graphics"><fo:graphic-properties x="0cm" y="0cm" vertical-pos="top" horizontal-rel="paragraph" wrap="none" vertical-rel="paragraph" horizontal-pos="center" qlev="4" anchor-type="paragraph"></fo:graphic-properties>
+               </fo:style>
+               <fo:style family="graphic" qlev="3" name="OLE"><fo:graphic-properties x="0cm" y="0cm" vertical-pos="top" horizontal-rel="paragraph" wrap="none" vertical-rel="paragraph" horizontal-pos="center" qlev="4" anchor-type="paragraph"></fo:graphic-properties>
+               </fo:style>
+               <fo:outline-style qlev="3" name="Outline"><fo:outline-level-style num-format="" qlev="4" level="1"><fo:list-level-properties list-level-position-and-space-mode="label-alignment" qlev="5"><fo:list-level-label-alignment margin-left="0.762cm" list-tab-stop-position="0.762cm" qlev="6" label-followed-by="listtab" text-indent="-0.762cm"></fo:list-level-label-alignment>
+                         </fo:list-level-properties>
+                    </fo:outline-level-style>
+                    <fo:outline-level-style num-format="" qlev="4" level="2"><fo:list-level-properties list-level-position-and-space-mode="label-alignment" qlev="5"><fo:list-level-label-alignment margin-left="1.016cm" list-tab-stop-position="1.016cm" qlev="6" label-followed-by="listtab" text-indent="-1.016cm"></fo:list-level-label-alignment>
+                         </fo:list-level-properties>
+                    </fo:outline-level-style>
+                    <fo:outline-level-style num-format="" qlev="4" level="3"><fo:list-level-properties list-level-position-and-space-mode="label-alignment" qlev="5"><fo:list-level-label-alignment margin-left="1.27cm" list-tab-stop-position="1.27cm" qlev="6" label-followed-by="listtab" text-indent="-1.27cm"></fo:list-level-label-alignment>
+                         </fo:list-level-properties>
+                    </fo:outline-level-style>
+                    <fo:outline-level-style num-format="" qlev="4" level="4"><fo:list-level-properties list-level-position-and-space-mode="label-alignment" qlev="5"><fo:list-level-label-alignment margin-left="1.524cm" list-tab-stop-position="1.524cm" qlev="6" label-followed-by="listtab" text-indent="-1.524cm"></fo:list-level-label-alignment>
+                         </fo:list-level-properties>
+                    </fo:outline-level-style>
+                    <fo:outline-level-style num-format="" qlev="4" level="5"><fo:list-level-properties list-level-position-and-space-mode="label-alignment" qlev="5"><fo:list-level-label-alignment margin-left="1.778cm" list-tab-stop-position="1.778cm" qlev="6" label-followed-by="listtab" text-indent="-1.778cm"></fo:list-level-label-alignment>
+                         </fo:list-level-properties>
+                    </fo:outline-level-style>
+                    <fo:outline-level-style num-format="" qlev="4" level="6"><fo:list-level-properties list-level-position-and-space-mode="label-alignment" qlev="5"><fo:list-level-label-alignment margin-left="2.032cm" list-tab-stop-position="2.032cm" qlev="6" label-followed-by="listtab" text-indent="-2.032cm"></fo:list-level-label-alignment>
+                         </fo:list-level-properties>
+                    </fo:outline-level-style>
+                    <fo:outline-level-style num-format="" qlev="4" level="7"><fo:list-level-properties list-level-position-and-space-mode="label-alignment" qlev="5"><fo:list-level-label-alignment margin-left="2.286cm" list-tab-stop-position="2.286cm" qlev="6" label-followed-by="listtab" text-indent="-2.286cm"></fo:list-level-label-alignment>
+                         </fo:list-level-properties>
+                    </fo:outline-level-style>
+                    <fo:outline-level-style num-format="" qlev="4" level="8"><fo:list-level-properties list-level-position-and-space-mode="label-alignment" qlev="5"><fo:list-level-label-alignment margin-left="2.54cm" list-tab-stop-position="2.54cm" qlev="6" label-followed-by="listtab" text-indent="-2.54cm"></fo:list-level-label-alignment>
+                         </fo:list-level-properties>
+                    </fo:outline-level-style>
+                    <fo:outline-level-style num-format="" qlev="4" level="9"><fo:list-level-properties list-level-position-and-space-mode="label-alignment" qlev="5"><fo:list-level-label-alignment margin-left="2.794cm" list-tab-stop-position="2.794cm" qlev="6" label-followed-by="listtab" text-indent="-2.794cm"></fo:list-level-label-alignment>
+                         </fo:list-level-properties>
+                    </fo:outline-level-style>
+                    <fo:outline-level-style num-format="" qlev="4" level="10"><fo:list-level-properties list-level-position-and-space-mode="label-alignment" qlev="5"><fo:list-level-label-alignment margin-left="3.048cm" list-tab-stop-position="3.048cm" qlev="6" label-followed-by="listtab" text-indent="-3.048cm"></fo:list-level-label-alignment>
+                         </fo:list-level-properties>
+                    </fo:outline-level-style>
+               </fo:outline-style>
+               <fo:notes-configuration num-format="1" footnotes-position="page" qlev="3" start-numbering-at="document" start-value="0" note-class="footnote"></fo:notes-configuration>
+               <fo:notes-configuration num-format="i" qlev="3" start-value="0" note-class="endnote"></fo:notes-configuration>
+               <fo:linenumbering-configuration offset="0.499cm" number-lines="false" num-format="1" increment="5" number-position="left" qlev="3"></fo:linenumbering-configuration>
+          </fo:css>
+          <fo:automatic-styles qlev="2"><fo:page-layout qlev="3" name="Mpm1"><fo:page-layout-properties margin-left="2cm" num-format="1" page-height="29.7cm" margin-bottom="2cm" footnote-max-height="0cm" qlev="4" margin-top="2cm" print-orientation="portrait" margin-right="2cm" page-width="21.001cm" writing-mode="lr-tb"><fo:footnote-sep width="0.018cm" adjustment="left" distance-before-sep="0.101cm" qlev="5" distance-after-sep="0.101cm" rel-width="25%" color="#000000"></fo:footnote-sep>
+                    </fo:page-layout-properties>
+                    <fo:header-style qlev="4"></fo:header-style>
+                    <fo:footer-style qlev="4"></fo:footer-style>
+               </fo:page-layout>
+          </fo:automatic-styles>
+          <fo:master-styles qlev="2"><fo:master-page qlev="3" name="Standard" page-layout-name="Mpm1"></fo:master-page>
+          </fo:master-styles>
+     </fo:document-styles>
+     <fo:document-content version="1.2" converted-u="1383943616" converted-h="Date: Fri, 8 Nov 2013 21:46:56:627"><fo:scripts qlev="2"></fo:scripts>
+          <fo:font-face-decls qlev="2"><fo:font-face font-family="'Times New Roman'" font-family-generic="roman" qlev="3" name="Times New Roman" font-pitch="variable"></fo:font-face>
+               <fo:font-face font-family="'Apple Chancery'" font-family-generic="script" qlev="3" name="Apple Chancery" font-pitch="variable"></fo:font-face>
+               <fo:font-face font-family="Arial" font-family-generic="swiss" qlev="3" name="Arial" font-pitch="variable"></fo:font-face>
+               <fo:font-face font-family="'Arial Unicode MS'" font-family-generic="system" qlev="3" name="Arial Unicode MS" font-pitch="variable"></fo:font-face>
+          </fo:font-face-decls>
+          <fo:automatic-styles qlev="2"><fo:style family="paragraph" parent-style-name="Standard" qlev="3" name="P1"><fo:paragraph-properties text-align="center" qlev="4" justify-single-word="false"></fo:paragraph-properties>
+               </fo:style>
+               <fo:style family="paragraph" parent-style-name="Standard" qlev="3" name="P2"><fo:paragraph-properties text-align="center" qlev="4" justify-single-word="false"></fo:paragraph-properties>
+                    <fo:text-properties font-size-asian="44pt" font-family="Apple Chancery" qlev="4" font-size-complex="44pt" font-size="44pt"></fo:text-properties>
+               </fo:style>
+               <fo:style family="paragraph" parent-style-name="Standard" qlev="3" name="P3"><fo:paragraph-properties text-align="center" qlev="4" justify-single-word="false"></fo:paragraph-properties>
+                    <fo:text-properties font-size-asian="44pt" font-family="Apple Chancery" qlev="4" font-size-complex="44pt" font-size="44pt"></fo:text-properties>
+               </fo:style>
+               <fo:style family="paragraph" parent-style-name="Standard" qlev="3" name="P4"><fo:paragraph-properties text-align="start" qlev="4" justify-single-word="false"></fo:paragraph-properties>
+                    <fo:text-properties font-size-asian="12pt" font-family="Apple Chancery" qlev="4" font-size-complex="12pt" font-size="12pt"></fo:text-properties>
+               </fo:style>
+               <fo:style family="graphic" parent-style-name="Graphics" qlev="3" name="fr1"><fo:graphic-properties gamma="100%" vertical-pos="from-top" horizontal-rel="paragraph" luminance="0%" color-inversion="false" vertical-rel="paragraph" horizontal-pos="from-left" red="0%" blue="0%" qlev="4" image-opacity="100%" color-mode="standard" green="0%" mirror="none" clip="rect(0cm, 0cm, 0cm, 0cm)" contrast="0%"></fo:graphic-properties>
+               </fo:style>
+               <fo:style family="graphic" parent-style-name="OLE" qlev="3" name="fr2"><fo:graphic-properties vertical-pos="from-top" horizontal-rel="paragraph" ole-draw-aspect="1" vertical-rel="paragraph" horizontal-pos="from-left" qlev="4"></fo:graphic-properties>
+               </fo:style>
+          </fo:automatic-styles>
+          <fo:body qlev="2"><fo:text use-soft-page-breaks="true" qlev="3"><fo:sequence-decls qlev="4"><fo:sequence-decl display-outline-level="0" qlev="5" name="Illustration"></fo:sequence-decl>
+                         <fo:sequence-decl display-outline-level="0" qlev="5" name="Table"></fo:sequence-decl>
+                         <fo:sequence-decl display-outline-level="0" qlev="5" name="Text"></fo:sequence-decl>
+                         <fo:sequence-decl display-outline-level="0" qlev="5" name="Drawing"></fo:sequence-decl>
+                    </fo:sequence-decls>
+                    <fo:p style-name="P1" qlev="4"></fo:p>
+                    <fo:p style-name="P1" qlev="4"></fo:p>
+                    <fo:p style-name="P2" qlev="4">Centrato ciao</fo:p>
+                    <fo:p style-name="P2" qlev="4"><fo:frame width="6.893cm" x="0.065cm" y="1.249cm" z-index="0" height="3.512cm" style-name="fr1" qlev="5" name="immagini1" anchor-type="paragraph"><fo:image actuate="onLoad" href="Pictures/100002010000027600000162203CE332.png" type="simple" qlev="6" show="embed"></fo:image>
+                         </fo:frame>
+                         <fo:frame width="16.457cm" x="0.039cm" y="6.629cm" z-index="1" height="3.798cm" style-name="fr2" qlev="5" name="Oggetto1" anchor-type="paragraph"><fo:object actuate="onLoad" href="/fo:item/fo:obj-1" type="simple" qlev="6" show="embed"></fo:object>
+                              <fo:image actuate="onLoad" href="/fo:item/fo:obj-1" type="simple" qlev="6" show="embed"></fo:image>
+                         </fo:frame>
+                    </fo:p>
+                    <fo:p style-name="P2" qlev="4"><fo:frame width="7.773cm" x="1.358cm" y="6.629cm" z-index="2" height="6.054cm" style-name="fr2" qlev="5" name="Oggetto2" anchor-type="paragraph"><fo:object actuate="onLoad" href="/fo:item/fo:obj-2" type="simple" qlev="6" show="embed"></fo:object>
+                              <fo:image actuate="onLoad" href="/fo:item/fo:obj-2" type="simple" qlev="6" show="embed"></fo:image>
+                         </fo:frame>
+                    </fo:p>
+                    <fo:p style-name="P4" qlev="4"></fo:p>
+                    <fo:p style-name="P2" qlev="4"><fo:soft-page-break qlev="5"></fo:soft-page-break>
+                    </fo:p>
+               </fo:text>
+          </fo:body>
+     </fo:document-content>
+     <fo:item>
+          <fo:obj-1>
+               <fo:document-styles version="1.2" converted-u="1383943616" converted-h="Date: Fri, 8 Nov 2013 21:46:56:618"><fo:font-face-decls qlev="2"><fo:font-face font-family="Arial" font-family-generic="swiss" qlev="3" name="Arial" font-pitch="variable"></fo:font-face>
+                         <fo:font-face font-family="'Arial Unicode MS'" font-family-generic="system" qlev="3" name="Arial Unicode MS" font-pitch="variable"></fo:font-face>
+                         <fo:font-face font-family="Tahoma" font-family-generic="system" qlev="3" name="Tahoma" font-pitch="variable"></fo:font-face>
+                    </fo:font-face-decls>
+                    <fo:css qlev="2"><fo:default-style family="table-cell" qlev="3"><fo:paragraph-properties tab-stop-distance="1.25cm" qlev="4"></fo:paragraph-properties>
+                              <fo:text-properties country-complex="IN" font-family="Arial" language-complex="hi" language-asian="zh" country="CH" country-asian="CN" qlev="4" language="de" font-name-complex="Tahoma" font-name-asian="Tahoma"></fo:text-properties>
+                         </fo:default-style>
+                         <fo:number-style qlev="3" name="N0"><fo:number min-integer-digits="1" qlev="4"></fo:number>
+                         </fo:number-style>
+                         <fo:currency-style volatile="true" qlev="3" name="N107P0"><fo:currency-symbol country="CH" qlev="4" language="de">SFr.</fo:currency-symbol>
+                              <fo:text qlev="4"> </fo:text>
+                              <fo:number min-integer-digits="1" decimal-places="2" qlev="4" grouping="true"></fo:number>
+                         </fo:currency-style>
+                         <fo:currency-style qlev="3" name="N107"><fo:text-properties qlev="4" color="#ff0000"></fo:text-properties>
+                              <fo:currency-symbol country="CH" qlev="4" language="de">SFr.</fo:currency-symbol>
+                              <fo:text qlev="4"> -</fo:text>
+                              <fo:number min-integer-digits="1" decimal-places="2" qlev="4" grouping="true"></fo:number>
+                              <fo:map condition="value()>=0" apply-style-name="N107P0" qlev="4"></fo:map>
+                         </fo:currency-style>
+                         <fo:currency-style volatile="true" qlev="3" name="N108P0"><fo:currency-symbol country="CH" qlev="4" language="de">SFr.</fo:currency-symbol>
+                              <fo:text qlev="4"> </fo:text>
+                              <fo:number min-integer-digits="1" decimal-places="2" qlev="4" grouping="true"></fo:number>
+                         </fo:currency-style>
+                         <fo:currency-style qlev="3" name="N108"><fo:currency-symbol country="CH" qlev="4" language="de">SFr.</fo:currency-symbol>
+                              <fo:text qlev="4"> -</fo:text>
+                              <fo:number min-integer-digits="1" decimal-places="2" qlev="4" grouping="true"></fo:number>
+                              <fo:map condition="value()>=0" apply-style-name="N108P0" qlev="4"></fo:map>
+                         </fo:currency-style>
+                         <fo:style family="table-cell" qlev="3" name="Default"><fo:text-properties qlev="4" font-name-complex="Arial Unicode MS" font-name-asian="Arial Unicode MS"></fo:text-properties>
+                         </fo:style>
+                         <fo:style family="table-cell" parent-style-name="Default" qlev="3" name="Result"><fo:text-properties text-underline-color="font-color" font-style="italic" text-underline-width="auto" qlev="4" font-weight="bold" text-decoration="underline"></fo:text-properties>
+                         </fo:style>
+                         <fo:style family="table-cell" data-style-name="N107" parent-style-name="Result" qlev="3" name="Result2"></fo:style>
+                         <fo:style family="table-cell" parent-style-name="Default" qlev="3" name="Heading"><fo:table-cell-properties text-align-source="fix" qlev="4" repeat-content="false"></fo:table-cell-properties>
+                              <fo:paragraph-properties text-align="center" qlev="4"></fo:paragraph-properties>
+                              <fo:text-properties font-style="italic" qlev="4" font-weight="bold" font-size="16pt"></fo:text-properties>
+                         </fo:style>
+                         <fo:style family="table-cell" parent-style-name="Heading" qlev="3" name="Heading1"><fo:table-cell-properties qlev="4" rotation-angle="90"></fo:table-cell-properties>
+                         </fo:style>
+                    </fo:css>
+                    <fo:automatic-styles qlev="2"><fo:page-layout qlev="3" name="Mpm1"><fo:page-layout-properties qlev="4" writing-mode="lr-tb"></fo:page-layout-properties>
+                              <fo:header-style qlev="4"><fo:header-footer-properties margin-left="0cm" min-height="0.75cm" margin-bottom="0.25cm" qlev="5" margin-right="0cm"></fo:header-footer-properties>
+                              </fo:header-style>
+                              <fo:footer-style qlev="4"><fo:header-footer-properties margin-left="0cm" min-height="0.75cm" qlev="5" margin-top="0.25cm" margin-right="0cm"></fo:header-footer-properties>
+                              </fo:footer-style>
+                         </fo:page-layout>
+                         <fo:page-layout qlev="3" name="Mpm2"><fo:page-layout-properties qlev="4" writing-mode="lr-tb"></fo:page-layout-properties>
+                              <fo:header-style qlev="4"><fo:header-footer-properties margin-left="0cm" background-color="#c0c0c0" min-height="0.75cm" margin-bottom="0.25cm" qlev="5" border="0.088cm solid #000000" padding="0.018cm" margin-right="0cm"><fo:background-image qlev="6"></fo:background-image>
+                                   </fo:header-footer-properties>
+                              </fo:header-style>
+                              <fo:footer-style qlev="4"><fo:header-footer-properties margin-left="0cm" background-color="#c0c0c0" min-height="0.75cm" qlev="5" border="0.088cm solid #000000" padding="0.018cm" margin-top="0.25cm" margin-right="0cm"><fo:background-image qlev="6"></fo:background-image>
+                                   </fo:header-footer-properties>
+                              </fo:footer-style>
+                         </fo:page-layout>
+                    </fo:automatic-styles>
+                    <fo:master-styles qlev="2"><fo:master-page qlev="3" name="Default" page-layout-name="Mpm1"><fo:header qlev="4"><fo:p qlev="5"><fo:sheet-name qlev="6">???</fo:sheet-name>
+                                   </fo:p>
+                              </fo:header>
+                              <fo:header-left display="false" qlev="4"></fo:header-left>
+                              <fo:footer qlev="4"><fo:p qlev="5">Page <fo:page-number qlev="6">1</fo:page-number>
+                                   </fo:p>
+                              </fo:footer>
+                              <fo:footer-left display="false" qlev="4"></fo:footer-left>
+                         </fo:master-page>
+                         <fo:master-page qlev="3" name="Report" page-layout-name="Mpm2"><fo:header qlev="4"><fo:region-left qlev="5"><fo:p qlev="6"><fo:sheet-name qlev="7">???</fo:sheet-name>
+                                             <fo:title qlev="7">???</fo:title>
+                                        </fo:p>
+                                   </fo:region-left>
+                                   <fo:region-right qlev="5"><fo:p qlev="6"><fo:date data-style-name="N2" date-value="2013-11-08" qlev="7">08.11.2013</fo:date>
+                                             <fo:time qlev="7">14:23:23</fo:time>
+                                        </fo:p>
+                                   </fo:region-right>
+                              </fo:header>
+                              <fo:header-left display="false" qlev="4"></fo:header-left>
+                              <fo:footer qlev="4"><fo:p qlev="5">Page <fo:page-number qlev="6">1</fo:page-number>
+                                        <fo:page-count qlev="6">99</fo:page-count>
+                                   </fo:p>
+                              </fo:footer>
+                              <fo:footer-left display="false" qlev="4"></fo:footer-left>
+                         </fo:master-page>
+                    </fo:master-styles>
+               </fo:document-styles>
+               <fo:document-content version="1.2" converted-u="1383943616" converted-h="Date: Fri, 8 Nov 2013 21:46:56:620"><fo:scripts qlev="2"></fo:scripts>
+                    <fo:font-face-decls qlev="2"><fo:font-face font-family="Arial" font-family-generic="swiss" qlev="3" name="Arial" font-pitch="variable"></fo:font-face>
+                         <fo:font-face font-family="'Arial Unicode MS'" font-family-generic="system" qlev="3" name="Arial Unicode MS" font-pitch="variable"></fo:font-face>
+                         <fo:font-face font-family="Tahoma" font-family-generic="system" qlev="3" name="Tahoma" font-pitch="variable"></fo:font-face>
+                    </fo:font-face-decls>
+                    <fo:automatic-styles qlev="2"><fo:style family="table-column" qlev="3" name="co1"><fo:table-column-properties qlev="4" break-before="auto" column-width="2.258cm"></fo:table-column-properties>
+                         </fo:style>
+                         <fo:style family="table-column" qlev="3" name="co2"><fo:table-column-properties qlev="4" break-before="auto" column-width="5.408cm"></fo:table-column-properties>
+                         </fo:style>
+                         <fo:style family="table-column" qlev="3" name="co3"><fo:table-column-properties qlev="4" break-before="auto" column-width="4.327cm"></fo:table-column-properties>
+                         </fo:style>
+                         <fo:style family="table-column" qlev="3" name="co4"><fo:table-column-properties qlev="4" break-before="auto" column-width="2.267cm"></fo:table-column-properties>
+                         </fo:style>
+                         <fo:style family="table-row" qlev="3" name="ro1"><fo:table-row-properties row-height="0.423cm" use-optimal-row-height="true" qlev="4" break-before="auto"></fo:table-row-properties>
+                         </fo:style>
+                         <fo:style family="table-row" qlev="3" name="ro2"><fo:table-row-properties row-height="0.423cm" use-optimal-row-height="true" qlev="4" break-before="auto"></fo:table-row-properties>
+                         </fo:style>
+                         <fo:style master-page-name="Default" family="table" qlev="3" name="ta1"><fo:table-properties display="true" qlev="4" writing-mode="lr-tb"></fo:table-properties>
+                         </fo:style>
+                         <fo:style family="table-cell" parent-style-name="Default" qlev="3" name="ce1"><fo:table-cell-properties border-bottom="0.002cm solid #000000" border-top="0.002cm solid #000000" background-color="#808080" qlev="4" border-left="0.002cm solid #000000" border-right="none"></fo:table-cell-properties>
+                              <fo:text-properties font-weight-asian="normal" font-style-asian="italic" font-weight-complex="normal" font-style="italic" qlev="4" font-weight="normal" font-style-complex="italic" color="#ffffff"></fo:text-properties>
+                         </fo:style>
+                         <fo:style family="table-cell" parent-style-name="Default" qlev="3" name="ce2"><fo:table-cell-properties border-bottom="0.002cm solid #000000" border-top="0.002cm solid #000000" background-color="#808080" text-align-source="fix" qlev="4" border-left="none" repeat-content="false" border-right="none"></fo:table-cell-properties>
+                              <fo:paragraph-properties margin-left="0cm" text-align="start" qlev="4"></fo:paragraph-properties>
+                              <fo:text-properties font-weight-asian="normal" font-style-asian="italic" font-weight-complex="normal" font-style="italic" qlev="4" font-weight="normal" font-style-complex="italic" color="#ffffff"></fo:text-properties>
+                         </fo:style>
+                         <fo:style family="table-cell" parent-style-name="Default" qlev="3" name="ce3"><fo:table-cell-properties text-align-source="fix" qlev="4" repeat-content="false"></fo:table-cell-properties>
+                              <fo:paragraph-properties margin-left="0cm" text-align="start" qlev="4"></fo:paragraph-properties>
+                         </fo:style>
+                         <fo:style family="table-cell" data-style-name="N108" parent-style-name="Default" qlev="3" name="ce4"><fo:table-cell-properties text-align-source="fix" qlev="4" repeat-content="false"></fo:table-cell-properties>
+                              <fo:paragraph-properties margin-left="0cm" text-align="start" qlev="4"></fo:paragraph-properties>
+                         </fo:style>
+                         <fo:style family="table-cell" parent-style-name="Default" qlev="3" name="ce5"><fo:table-cell-properties border-bottom="0.002cm solid #000000" border-top="0.002cm solid #000000" background-color="#808080" qlev="4" border-left="none" border-right="0.002cm solid #000000"></fo:table-cell-properties>
+                              <fo:text-properties font-weight-asian="normal" font-style-asian="italic" font-weight-complex="normal" font-style="italic" qlev="4" font-weight="normal" font-style-complex="italic" color="#ffffff"></fo:text-properties>
+                         </fo:style>
+                         <fo:style family="table-cell" data-style-name="N108" parent-style-name="Default" qlev="3" name="ce6"></fo:style>
+                         <fo:style family="table-cell" data-style-name="N108" parent-style-name="Default" qlev="3" name="ce7"><fo:text-properties font-weight-asian="bold" font-weight-complex="bold" qlev="4" font-weight="bold"></fo:text-properties>
+                         </fo:style>
+                    </fo:automatic-styles>
+                    <fo:body qlev="2"><fo:spreadsheet qlev="3"><fo:table style-name="ta1" qlev="4" name="Sheet1"><fo:table-column default-cell-style-name="Default" style-name="co1" number-columns-repeated="2" qlev="5"></fo:table-column>
+                                   <fo:table-column default-cell-style-name="Default" style-name="co2" qlev="5"></fo:table-column>
+                                   <fo:table-column default-cell-style-name="ce3" style-name="co3" qlev="5"></fo:table-column>
+                                   <fo:table-column default-cell-style-name="ce4" style-name="co1" qlev="5"></fo:table-column>
+                                   <fo:table-column default-cell-style-name="ce6" style-name="co1" qlev="5"></fo:table-column>
+                                   <fo:table-row style-name="ro1" qlev="5" number-rows-repeated="2"><fo:table-cell number-columns-repeated="3" qlev="6"></fo:table-cell>
+                                        <fo:table-cell style-name="Default" number-columns-repeated="3" qlev="6"></fo:table-cell>
+                                   </fo:table-row>
+                                   <fo:table-row style-name="ro1" qlev="5"><fo:table-cell number-columns-repeated="2" qlev="6"></fo:table-cell>
+                                        <fo:table-cell style-name="ce1" qlev="6" value-type="string"><fo:p qlev="7">Descrizioni</fo:p>
+                                        </fo:table-cell>
+                                        <fo:table-cell style-name="ce2" qlev="6" value-type="string"><fo:p qlev="7">Giorni</fo:p>
+                                        </fo:table-cell>
+                                        <fo:table-cell style-name="ce2" qlev="6" value-type="string"><fo:p qlev="7">a</fo:p>
+                                        </fo:table-cell>
+                                        <fo:table-cell style-name="ce5" qlev="6" value-type="string"><fo:p qlev="7">Totale</fo:p>
+                                        </fo:table-cell>
+                                   </fo:table-row>
+                                   <fo:table-row style-name="ro1" qlev="5"><fo:table-cell number-columns-repeated="4" qlev="6"></fo:table-cell>
+                                        <fo:table-cell style-name="ce3" qlev="6"></fo:table-cell>
+                                        <fo:table-cell style-name="Default" qlev="6"></fo:table-cell>
+                                   </fo:table-row>
+                                   <fo:table-row style-name="ro1" qlev="5"><fo:table-cell number-columns-repeated="2" qlev="6"></fo:table-cell>
+                                        <fo:table-cell qlev="6" value-type="string"><fo:p qlev="7">Realizzazione Banner Base</fo:p>
+                                        </fo:table-cell>
+                                        <fo:table-cell value="2.1" qlev="6" value-type="float"><fo:p qlev="7">2.1</fo:p>
+                                        </fo:table-cell>
+                                        <fo:table-cell currency="CHF" value="250" qlev="6" value-type="currency"><fo:p qlev="7">SFr. 250.00</fo:p>
+                                        </fo:table-cell>
+                                        <fo:table-cell currency="CHF" formula="of:=[.D5]*[.E5]" value="525" qlev="6" value-type="currency"><fo:p qlev="7">SFr. 525.00</fo:p>
+                                        </fo:table-cell>
+                                   </fo:table-row>
+                                   <fo:table-row style-name="ro1" qlev="5"><fo:table-cell number-columns-repeated="2" qlev="6"></fo:table-cell>
+                                        <fo:table-cell qlev="6" value-type="string"><fo:p qlev="7">Borradori , Giudici , Enderli</fo:p>
+                                        </fo:table-cell>
+                                        <fo:table-cell number-columns-repeated="3" qlev="6"></fo:table-cell>
+                                   </fo:table-row>
+                                   <fo:table-row style-name="ro1" qlev="5"><fo:table-cell number-columns-repeated="2" qlev="6"></fo:table-cell>
+                                        <fo:table-cell qlev="6" value-type="string"><fo:p qlev="7">Aggiornamenti</fo:p>
+                                        </fo:table-cell>
+                                        <fo:table-cell value="1.4" qlev="6" value-type="float"><fo:p qlev="7">1.4</fo:p>
+                                        </fo:table-cell>
+                                        <fo:table-cell currency="CHF" value="250" qlev="6" value-type="currency"><fo:p qlev="7">SFr. 250.00</fo:p>
+                                        </fo:table-cell>
+                                        <fo:table-cell currency="CHF" formula="of:=[.D7]*[.E7]" value="350" qlev="6" value-type="currency"><fo:p qlev="7">SFr. 350.00</fo:p>
+                                        </fo:table-cell>
+                                   </fo:table-row>
+                                   <fo:table-row style-name="ro1" qlev="5"><fo:table-cell number-columns-repeated="6" qlev="6"></fo:table-cell>
+                                   </fo:table-row>
+                                   <fo:table-row style-name="ro1" qlev="5"><fo:table-cell number-columns-repeated="2" qlev="6"></fo:table-cell>
+                                        <fo:table-cell qlev="6" value-type="string"><fo:p qlev="7">Riporto a saldo</fo:p>
+                                        </fo:table-cell>
+                                        <fo:table-cell number-columns-repeated="2" qlev="6"></fo:table-cell>
+                                        <fo:table-cell currency="CHF" style-name="ce7" formula="of:=SUM([.F5:.F8])" value="875" qlev="6" value-type="currency"><fo:p qlev="7">SFr. 875.00</fo:p>
+                                        </fo:table-cell>
+                                   </fo:table-row>
+                              </fo:table>
+                         </fo:spreadsheet>
+                    </fo:body>
+               </fo:document-content>
+          </fo:obj-1>
+          <fo:obj-2>
+               <fo:document-styles version="1.2" converted-u="1383943616" converted-h="Date: Fri, 8 Nov 2013 21:46:56:623"><fo:css qlev="2"></fo:css>
+               </fo:document-styles>
+               <fo:document-content version="1.2" converted-u="1383943616" converted-h="Date: Fri, 8 Nov 2013 21:46:56:624"><fo:automatic-styles qlev="2"><fo:number-style qlev="3" name="N0"><fo:number min-integer-digits="1" qlev="4"></fo:number>
+                         </fo:number-style>
+                         <fo:date-style country="CH" qlev="3" language="de" name="N8036" automatic-order="true"><fo:day style="long" qlev="4"></fo:day>
+                              <fo:text qlev="4">.</fo:text>
+                              <fo:month style="long" qlev="4"></fo:month>
+                              <fo:text qlev="4">.</fo:text>
+                              <fo:year style="long" qlev="4"></fo:year>
+                         </fo:date-style>
+                         <fo:style family="chart" qlev="3" name="ch1"><fo:graphic-properties fill="none" stroke="none" qlev="4"></fo:graphic-properties>
+                         </fo:style>
+                         <fo:style family="chart" qlev="3" name="ch2"><fo:graphic-properties fill="none" fill-color="#e6e6e6" stroke="none" stroke-color="#b3b3b3" qlev="4"></fo:graphic-properties>
+                              <fo:text-properties font-size-asian="10pt" qlev="4" font-size-complex="10pt" font-size="10pt"></fo:text-properties>
+                         </fo:style>
+                         <fo:style family="chart" qlev="3" name="ch3"><fo:chart-properties include-hidden-cells="false" treat-empty-cells="leave-gap" right-angled-axes="true" qlev="4"></fo:chart-properties>
+                         </fo:style>
+                         <fo:style family="chart" data-style-name="N8036" qlev="3" name="ch4"><fo:chart-properties reverse-direction="false" link-data-style-to-source="false" line-break="false" qlev="4" display-label="true" axis-position="0" logarithmic="false"></fo:chart-properties>
+                              <fo:graphic-properties stroke-color="#b3b3b3" qlev="4"></fo:graphic-properties>
+                              <fo:text-properties font-size-asian="10pt" qlev="4" font-size-complex="10pt" font-size="10pt"></fo:text-properties>
+                         </fo:style>
+                         <fo:style family="chart" data-style-name="N0" qlev="3" name="ch5"><fo:chart-properties reverse-direction="false" link-data-style-to-source="false" line-break="false" qlev="4" display-label="true" axis-position="0" logarithmic="false"></fo:chart-properties>
+                              <fo:graphic-properties stroke-color="#b3b3b3" qlev="4"></fo:graphic-properties>
+                              <fo:text-properties font-size-asian="10pt" qlev="4" font-size-complex="10pt" font-size="10pt"></fo:text-properties>
+                         </fo:style>
+                         <fo:style family="chart" qlev="3" name="ch6"><fo:graphic-properties stroke-color="#b3b3b3" qlev="4"></fo:graphic-properties>
+                         </fo:style>
+                         <fo:style family="chart" data-style-name="N0" qlev="3" name="ch7"><fo:chart-properties link-data-style-to-source="false" qlev="4"></fo:chart-properties>
+                              <fo:graphic-properties fill-color="#004586" stroke="none" edge-rounding="5%" qlev="4"></fo:graphic-properties>
+                              <fo:text-properties font-size-asian="10pt" qlev="4" font-size-complex="10pt" font-size="10pt"></fo:text-properties>
+                         </fo:style>
+                         <fo:style family="chart" data-style-name="N0" qlev="3" name="ch8"><fo:chart-properties link-data-style-to-source="false" qlev="4"></fo:chart-properties>
+                              <fo:graphic-properties fill-color="#ff420e" stroke="none" edge-rounding="5%" qlev="4"></fo:graphic-properties>
+                              <fo:text-properties font-size-asian="10pt" qlev="4" font-size-complex="10pt" font-size="10pt"></fo:text-properties>
+                         </fo:style>
+                         <fo:style family="chart" data-style-name="N0" qlev="3" name="ch9"><fo:chart-properties link-data-style-to-source="false" qlev="4"></fo:chart-properties>
+                              <fo:graphic-properties fill-color="#ffd320" stroke="none" edge-rounding="5%" qlev="4"></fo:graphic-properties>
+                              <fo:text-properties font-size-asian="10pt" qlev="4" font-size-complex="10pt" font-size="10pt"></fo:text-properties>
+                         </fo:style>
+                         <fo:style family="chart" qlev="3" name="ch10"><fo:graphic-properties fill="none" fill-color="#e6e6e6" stroke="solid" stroke-color="#b3b3b3" qlev="4"></fo:graphic-properties>
+                         </fo:style>
+                         <fo:style family="chart" qlev="3" name="ch11"><fo:graphic-properties fill-color="#cccccc" stroke-color="#b3b3b3" qlev="4"></fo:graphic-properties>
+                         </fo:style>
+                    </fo:automatic-styles>
+                    <fo:body qlev="2"><fo:chart qlev="3"><fo:chart width="7.773cm" class="chart:bar" height="6.053cm" style-name="ch1" href="." type="simple" qlev="4"><fo:legend width="2.261cm" x="5.414cm" y="0.508cm" height="1.823cm" legend-expansion-aspect-ratio="1.24026330224904" style-name="ch2" legend-expansion="custom" qlev="5"></fo:legend>
+                                   <fo:plot-area width="5.984cm" x="0.156cm" y="0.564cm" height="5.194cm" style-name="ch3" data-source-has-labels="both" qlev="5"><fo:coordinate-region width="5.34cm" x="0.8cm" y="0.761cm" height="4.354cm" qlev="6"></fo:coordinate-region>
+                                        <fo:axis axis-type="auto" style-name="ch4" dimension="x" qlev="6" name="primary-x"><fo:date-scale qlev="7"></fo:date-scale>
+                                             <fo:categories cell-range-address="local-table.$A$2:.$A$5" qlev="7"></fo:categories>
+                                        </fo:axis>
+                                        <fo:axis style-name="ch5" dimension="y" qlev="6" name="primary-y"><fo:grid class="major" style-name="ch6" qlev="7"></fo:grid>
+                                        </fo:axis>
+                                        <fo:series class="chart:bar" values-cell-range-address="local-table.$B$2:.$B$5" style-name="ch7" qlev="6" label-cell-address="local-table.$B$1"><fo:data-point repeated="4" qlev="7"></fo:data-point>
+                                        </fo:series>
+                                        <fo:series class="chart:bar" values-cell-range-address="local-table.$C$2:.$C$5" style-name="ch8" qlev="6" label-cell-address="local-table.$C$1"><fo:data-point repeated="4" qlev="7"></fo:data-point>
+                                        </fo:series>
+                                        <fo:series class="chart:bar" values-cell-range-address="local-table.$D$2:.$D$5" style-name="ch9" qlev="6" label-cell-address="local-table.$D$1"><fo:data-point repeated="4" qlev="7"></fo:data-point>
+                                        </fo:series>
+                                        <fo:wall style-name="ch10" qlev="6"></fo:wall>
+                                        <fo:floor style-name="ch11" qlev="6"></fo:floor>
+                                   </fo:plot-area>
+                                   <fo:table qlev="5" name="local-table"><fo:table-header-columns qlev="6"><fo:table-column qlev="7"></fo:table-column>
+                                        </fo:table-header-columns>
+                                        <fo:table-columns qlev="6"><fo:table-column number-columns-repeated="3" qlev="7"></fo:table-column>
+                                        </fo:table-columns>
+                                        <fo:table-header-rows qlev="6"><fo:table-row qlev="7"><fo:table-cell qlev="8"><fo:p qlev="9"></fo:p>
+                                                  </fo:table-cell>
+                                                  <fo:table-cell qlev="8" value-type="string"><fo:p qlev="9">Colonna 1</fo:p>
+                                                  </fo:table-cell>
+                                                  <fo:table-cell qlev="8" value-type="string"><fo:p qlev="9">Colonna 2</fo:p>
+                                                  </fo:table-cell>
+                                                  <fo:table-cell qlev="8" value-type="string"><fo:p qlev="9">Colonna 3</fo:p>
+                                                  </fo:table-cell>
+                                             </fo:table-row>
+                                        </fo:table-header-rows>
+                                        <fo:table-rows qlev="6"><fo:table-row qlev="7"><fo:table-cell qlev="8" value-type="string"><fo:p qlev="9">Riga 1</fo:p>
+                                                  </fo:table-cell>
+                                                  <fo:table-cell value="9.1" qlev="8" value-type="float"><fo:p qlev="9">9.1</fo:p>
+                                                  </fo:table-cell>
+                                                  <fo:table-cell value="3.2" qlev="8" value-type="float"><fo:p qlev="9">3.2</fo:p>
+                                                  </fo:table-cell>
+                                                  <fo:table-cell value="4.54" qlev="8" value-type="float"><fo:p qlev="9">4.54</fo:p>
+                                                  </fo:table-cell>
+                                             </fo:table-row>
+                                             <fo:table-row qlev="7"><fo:table-cell qlev="8" value-type="string"><fo:p qlev="9">Riga 2</fo:p>
+                                                  </fo:table-cell>
+                                                  <fo:table-cell value="2.4" qlev="8" value-type="float"><fo:p qlev="9">2.4</fo:p>
+                                                  </fo:table-cell>
+                                                  <fo:table-cell value="8.8" qlev="8" value-type="float"><fo:p qlev="9">8.8</fo:p>
+                                                  </fo:table-cell>
+                                                  <fo:table-cell value="9.65" qlev="8" value-type="float"><fo:p qlev="9">9.65</fo:p>
+                                                  </fo:table-cell>
+                                             </fo:table-row>
+                                             <fo:table-row qlev="7"><fo:table-cell qlev="8" value-type="string"><fo:p qlev="9">Riga 3</fo:p>
+                                                  </fo:table-cell>
+                                                  <fo:table-cell value="3.1" qlev="8" value-type="float"><fo:p qlev="9">3.1</fo:p>
+                                                  </fo:table-cell>
+                                                  <fo:table-cell value="1.5" qlev="8" value-type="float"><fo:p qlev="9">1.5</fo:p>
+                                                  </fo:table-cell>
+                                                  <fo:table-cell value="3.7" qlev="8" value-type="float"><fo:p qlev="9">3.7</fo:p>
+                                                  </fo:table-cell>
+                                             </fo:table-row>
+                                             <fo:table-row qlev="7"><fo:table-cell qlev="8" value-type="string"><fo:p qlev="9">Riga 4</fo:p>
+                                                  </fo:table-cell>
+                                                  <fo:table-cell value="4.3" qlev="8" value-type="float"><fo:p qlev="9">4.3</fo:p>
+                                                  </fo:table-cell>
+                                                  <fo:table-cell value="9.02" qlev="8" value-type="float"><fo:p qlev="9">9.02</fo:p>
+                                                  </fo:table-cell>
+                                                  <fo:table-cell value="6.2" qlev="8" value-type="float"><fo:p qlev="9">6.2</fo:p>
+                                                  </fo:table-cell>
+                                             </fo:table-row>
+                                        </fo:table-rows>
+                                   </fo:table>
+                              </fo:chart>
+                         </fo:chart>
+                    </fo:body>
+               </fo:document-content>
+          </fo:obj-2>
+     </fo:item>
+</fo:root>
