@@ -230,6 +230,9 @@
     <xsl:template match="fontspec">
     </xsl:template>
     
+    <xsl:template match="outline">
+    </xsl:template>
+    
     
     <xsl:template name="CssRender">
         <!--   border-left:1px solid red; --> 
