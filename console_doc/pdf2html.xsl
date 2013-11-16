@@ -154,9 +154,10 @@
     </xsl:template>
     
     
-    
-    
     <xsl:template match="image">
+    </xsl:template>
+    
+    <xsl:template match="notrenderimagehere_image">
         
         <xsl:variable name="grepimage">
             <xsl:value-of select="concat($PrependImage,@src)"/>
