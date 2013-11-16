@@ -23,10 +23,14 @@
                 doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"  -->
 
     <!-- pdf2html.xsl  variable start <xsl:output method="html" omit-xml-declaration="yes" encoding="utf-8"/>  -->  
-    <xsl:param name="convert_time" select="'0'"/>
+    <xsl:param name="Convert_Time" select="'0'"/>
+    <xsl:param name="Title_Document" select="'0'"/>
     <xsl:param name="PrependTagClass" select="'fox'"/>
     <xsl:param name="PrependImage" select="'REFIMAGE='"/>
-    <xsl:param name="TitleDocument" select="'Untitled'"/>
+    
+    <!-- param incomming from xsltproc -->
+    
+    
     <xsl:variable name="lineBreak">
         <xsl:text>
         </xsl:text>
@@ -55,9 +59,10 @@
             <xsl:call-template name="InfoDoc" />
             <head>
                 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+                <meta name="ConvertTime" content="$Convert_Time"/>
                 <xsl:call-template name="Metaobject" />
                 <title>
-                    <xsl:value-of select="$TitleDocument"/>
+                    <xsl:value-of select="$Title_Document"/>
                 </title>
                 <xsl:call-template name="CssRender"/> 
             </head>
