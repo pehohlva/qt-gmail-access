@@ -60,8 +60,8 @@
             <xsl:call-template name="InfoDoc" />
             <head>
                 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-                <meta name="ConvertTime" content="$Convert_Time"/>
-                <meta name="FileName" content="$Filename"/>
+                <meta name="ConvertTime" content="{$Convert_Time}"/>
+                <meta name="FileName" content="{$Filename}"/>
                 <xsl:call-template name="Metaobject" />
                 <title>
                     <xsl:value-of select="$Title_Document"/>
