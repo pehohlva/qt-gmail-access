@@ -115,6 +115,7 @@
                     <xsl:text>px</xsl:text>
                     <xsl:text>;</xsl:text>
                 </xsl:attribute>
+                <xsl:comment>Page_<xsl:value-of select="@number"/>|<xsl:value-of select="@width"/>|<xsl:value-of select="@height"/></xsl:comment>
                 <xsl:apply-templates/>
             </div>
             <div class="PageSpace">
