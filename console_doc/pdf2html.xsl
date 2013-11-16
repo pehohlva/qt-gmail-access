@@ -24,10 +24,11 @@
 
     <!-- pdf2html.xsl  variable start <xsl:output method="html" omit-xml-declaration="yes" encoding="utf-8"/>  -->  
     <xsl:param name="Convert_Time" select="'0'"/>
-    <xsl:param name="Title_Document" select="'0'"/>
-    <xsl:param name="PrependTagClass" select="'fox'"/>
-    <xsl:param name="PrependImage" select="'REFIMAGE='"/>
     
+    <xsl:variable name="PrependTagClass" select="'fox'"/>
+    <xsl:variable name="PrependImage" select="'REFIMAGE='"/>
+    <xsl:variable name="Title_Document" select="/pdf2xml/@doctitle"/>
+    <xsl:variable name="Filename" select="/pdf2xml/@docname"/>
     <!-- param incomming from xsltproc -->
     
     
@@ -60,6 +61,7 @@
             <head>
                 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
                 <meta name="ConvertTime" content="$Convert_Time"/>
+                <meta name="FileName" content="$Filename"/>
                 <xsl:call-template name="Metaobject" />
                 <title>
                     <xsl:value-of select="$Title_Document"/>
