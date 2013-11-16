@@ -30,7 +30,7 @@
                 encoding="UTF-8" />
   
   <xsl:param name="convert_time" select="'0'"/>
-
+  <xsl:variable name="BgBodycolor">#A0A0A0</xsl:variable>
   <xsl:variable name="paraStyleID_Default">Normal</xsl:variable>
   <xsl:variable name="tblStyleID_Default">TableNormal</xsl:variable>
 
@@ -6420,8 +6420,8 @@ if (msoBrowserCheck())
                         <xsl:apply-templates select="a:theme/a:themeElements/a:fontScheme"/>
 
                         <xsl:apply-templates select="$nsStyles"/>
-                        body { background-color:white; }
-                        #Page { width:22cm;min-height:28cm;padding:10px;margin-left:auto; margin-right:auto; margin-top:1cm; margin-bottom:1cm;background-color:#F4F4F0; }
+                        body { background-color:#A0A0A0; }
+                        #Page { width:22cm;min-height:28cm;padding:10px;margin-left:auto; margin-right:auto; margin-top:1cm; margin-bottom:1cm;background-color:#fff; }
                         
 
                     </xsl:comment>
