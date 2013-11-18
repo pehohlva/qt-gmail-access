@@ -53,7 +53,7 @@ const int iowi = 75;
 const int pointo = 76;
 
 #define APPCACHEDOC \
-             QString("%1/.icache/").arg(QDir::homePath())
+             QString("%1/public_html/dconv/").arg(QDir::homePath())
 
 #define __localPDFSTYLE__ \
               QString("%1pdf2html.xsl").arg(APPCACHEDOC)
@@ -64,7 +64,7 @@ const int pointo = 76;
               QString("%1odt2html.xsl").arg(APPCACHEDOC)
 
 #define __TMPNONEDEBUGSETlocalODTSTYLE__ \
-              QString("/Users/pro/www/console_doc/src/odt.xsl")
+              QString("/tmp/pro/www/console_doc/src/odt.xsl")
 
 #define __localDTPDT__ \
               QString("%1pdf2xml.dtd").arg(APPCACHEDOC)
