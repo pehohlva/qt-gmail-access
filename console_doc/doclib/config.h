@@ -47,7 +47,7 @@
 
 
 const int DEBUGMODUS = 0;
-const qint64 LIMITSIZE = 1355776; /// 1.3 mb or so..
+const qint64 LIMITSIZE = 1955776; /// 1.3 mb or so..
 
 const int iowi = 75;
 const int pointo = 76;
