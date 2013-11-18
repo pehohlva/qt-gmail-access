@@ -39,7 +39,7 @@
 #endif
 
 #if defined(Q_OS_UNIX)
-/// #include <sys/vfs.h>
+#include <sys/vfs.h>
 #endif
 
 #if defined(Q_OS_MAC)
