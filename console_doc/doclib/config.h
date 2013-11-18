@@ -6,7 +6,7 @@
  */
 
 #ifndef CONFIG_H
-#define	CONFIG_H
+#define CONFIG_H
 
 #include <QtCore/qfile.h>
 #include <QtCore/qstring.h>
@@ -40,11 +40,6 @@
 #include <QTextDocument>
 #include <QStack>
 #include <QTextCursor>
-
-
-//// bundle setting bust see different!!! /Users/pro/Qt5-Source/current/bin/xmlpatterns
-#define QTXSLT2 \
-              QString("")
 
 
 
@@ -97,7 +92,7 @@ const int pointo = 76;
 
  //// which xmlpatterns or bundle on installer or mac bundledir..
 #define QTXSLT2 \
-              QString("/Users/pro/Qt5-Source/current/bin/xmlpatterns") 
+              QString("/usr/bin/xmlpatterns") 
 
 /*  
  
