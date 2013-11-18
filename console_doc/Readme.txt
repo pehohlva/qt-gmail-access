@@ -1,1 +1,5 @@
-Method to convert docx & odt document on html
+Method to convert document to html
+- pdf
+- docx
+- odt
+- rtf
