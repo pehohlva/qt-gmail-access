@@ -8,9 +8,7 @@
 #include "config.h"
 #include "odtzip.h"
 #include "kzip.h"
-#include <QtXML>
 #include <QtXmlPatterns>
-#include <QAbstractMessageHandler>
 
 
 
