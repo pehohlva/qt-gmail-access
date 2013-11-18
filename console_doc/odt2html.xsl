@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
                 xmlns:dc="http://purl.org/dc/elements/1.1/" 
                 xmlns:fn="http://www.w3.org/2005/xpath-functions"
@@ -12,6 +12,10 @@
                 xmlns:xlink="http://www.w3.org/1999/xlink" 
                 xmlns:cms="http://www.freeroad.ch/2013/CMSFormat" 
                 version="1.0">
+    <!-- 
+     todo grep tabstop widht from meta and insert as param on root tagname
+
+    -->
     
     <xsl:output method="xml"
                 indent="yes"
@@ -20,12 +24,12 @@
                 doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
                 encoding="UTF-8" />
 
-    <xsl:param name="oggiarriva" select="'0'"/>
+    <xsl:param name="TimeXsltConvert" select="'0'"/>
     <xsl:variable name="lineBreak">
         <xsl:text>
         </xsl:text>
     </xsl:variable>
-
+    <xsl:variable name="DocumentName" select="/fo:root/@doctitle"></xsl:variable>
     <xsl:variable name="tabulator">
         <xsl:text>      </xsl:text>
     </xsl:variable>
@@ -35,6 +39,14 @@
     <xsl:variable name="onlymastercss" select="'0'"></xsl:variable>
     <xsl:variable name="debugcss" select="'0'"></xsl:variable>
     <xsl:variable name="ConvertTime" select="/fo:root/fo:document-meta/@converted-h"></xsl:variable>
+    <xsl:variable name="TotalPages" select="//fo:meta/fo:document-statistic/@page-count"></xsl:variable>
+    <xsl:variable name="Creator" select="//fo:meta/fo:creator"></xsl:variable>
+    <xsl:variable name="InitialCreator" select="//fo:meta/fo:initial-creator"></xsl:variable>
+    <xsl:variable name="CreatotionDate" select="//fo:meta/fo:creation-date"></xsl:variable>
+    <xsl:variable name="GeneratorApp" select="//fo:meta/fo:generator"></xsl:variable>
+    <!-- query qml to find this default line height! -->
+    <xsl:variable name="MinimumHeightPara" select="'12px'"></xsl:variable>
+    
     
    
     
@@ -44,15 +56,22 @@
             <xsl:call-template name="infodoc" />
             <head>
                 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+                <meta name="Generator" content="XSLT gen on {$ConvertTime}" />
+                
                 <xsl:comment> parse odt meta.xml styles.xml content.xml - meta.xml  </xsl:comment>
                 <xsl:comment> Metadata ends next css  </xsl:comment>
                 <xsl:call-template name="meta" />
-                <title> documento </title>
+                <title>
+                    <xsl:value-of select="$Creator"/><xsl:text> - </xsl:text>
+                    <xsl:value-of select="$DocumentName"/><xsl:text> - </xsl:text>
+                    <xsl:value-of select="$CreatotionDate"/>
+                </title> 
+                
                 
                 <xsl:call-template name="cssrender"/> 
                 
             </head>
-            <body>
+            <body datacreator="{$Creator} - {$DocumentName} - {$CreatotionDate}">
                 <div id="WrapperPage">
                     <div id="Page">
                     <xsl:if test="$debugcss = '0'">
@@ -298,10 +317,11 @@
             <xsl:value-of select="$lineBreak"/>
             <xsl:text> 
                 * {margin:0;padding:0;}
-                body { background-color:white; }
+                body { background-color:#A0A0A0; }
                 table { width:100%; }
+                div { position:static; }
                 #WrapperPage 
-                { position:relative;background-color:#F4F4F0;width:</xsl:text> 
+                { background-color:#fff;width:</xsl:text> 
             <xsl:value-of select="//fo:page-layout/fo:page-layout-properties/@page-width"/>
             <xsl:text>;</xsl:text>
             <xsl:text>min-height:</xsl:text>
@@ -336,12 +356,15 @@
             <xsl:text>;</xsl:text>
             <xsl:text> }
             </xsl:text>
+            div.space_frame { background-color:transparent; }
+            div.text_box { padding:5px; }
+            div.frame_in_relative { position:relative;min-height:<xsl:value-of select="$MinimumHeightPara"/>; }  
+            div.paragraph_frame {position:static;min-height:<xsl:value-of select="$MinimumHeightPara"/>; }  
             <xsl:value-of select="$lineBreak"/>
             <xsl:text>/* Placeholder base style */</xsl:text>
             <xsl:text>
-                .GTZHHGJKGBTRSDER36HL34GT56{}
-                .GTZHHGJKGB264239462GSHFAS8{}
-                div.frame_in_relative {display:block;position:relative; }
+                .GTZHHGJKGBTRSDER36HL34GT56{ background-color:lime; }
+                .GTZHHGJKGB264239462GSHFAS8{ background-color:transparent; }
             </xsl:text>
             <xsl:text>/* Placeholder base style */</xsl:text>
             <xsl:value-of select="$lineBreak"/>
@@ -437,7 +460,7 @@
             </xsl:when>
             <xsl:when test="@family='graphic'">
                 <xsl:call-template name="process-tag">
-                    <xsl:with-param name="typehtml" select="'img'"/>
+                    <xsl:with-param name="typehtml" select="'div'"/>  <!-- image is inside on div -->
                     <xsl:with-param name="styleobject" select="$cssname"/>
                     <xsl:with-param name="writename" select="string-length(@name)"/>
                 </xsl:call-template>
@@ -473,70 +496,164 @@
                 <xsl:if test="count(node())=0">
                     <br/>
                 </xsl:if>
-                <xsl:if test="$nextnodename = 'fo:frame' ">
+            </p>
+        </div>
+    </xsl:template>  
+    
+    <!--    <xsl:if test="$nextnodename = 'fo:frame' ">
                     <xsl:call-template name="render_space">
                         <xsl:with-param name="hispace" select="fo:frame/@height"/>
                         <xsl:with-param name="wispace" select="fo:frame/@width"/>
                     </xsl:call-template>
-                </xsl:if>
-            </p>
-            
-        </div>
-    </xsl:template>  
-    
-    <!--  <fo:frame xpx="1.10551" anchor-type="paragraph" 
-hipx="107.66" qlev="5" height="3.798cm" wipx="466.498" 
-style-name="fr2" z-index="1" ypx="187.909" x="0.039cm" 
-width="16.457cm" name="Oggetto1" y="6.629cm">
- <xsl:if test="fo:frame/@hipx !='' ">
-                <xsl:attribute name="gto">
-                    <xsl:text>height:</xsl:text>
-                    <xsl:value-of select="fo:frame/@hipx" />
-                    <xsl:text>px;</xsl:text>
-                </xsl:attribute> 
-            </xsl:if>
-    -->
-    <!--   <xsl:value-of select="@height" />
+                </xsl:if><xsl:value-of select="@height" />
     <xsl:text>;</xsl:text>
     <xsl:text>width:</xsl:text>
     <xsl:value-of select="@width" /> <xsl:value-of select="../@y" /> -->
     <xsl:template match="fo:image">  
+        <xsl:if test="starts-with(@href,'Pictu')">
         <div>
             <xsl:attribute name="style">
-                <xsl:text>position:absolute;z-index:1;</xsl:text>
                 <xsl:text>height:</xsl:text>
                 <xsl:value-of select="../@height" />
-                <xsl:text>;</xsl:text>
-                <xsl:text>z-index:</xsl:text>
-                <xsl:value-of select="../@z-index" />
                 <xsl:text>;</xsl:text>
                 <xsl:text>width:</xsl:text>
                 <xsl:value-of select="../@width" />
                 <xsl:text>;</xsl:text>
+                <xsl:if test="../@z-index !='' ">
+                    <xsl:text>z-index:</xsl:text>
+                    <xsl:value-of select="../@z-index" />
+                    <xsl:text>;</xsl:text>
+                </xsl:if>
                 <xsl:text>border:1px solid black;</xsl:text>
-                <xsl:text>left:</xsl:text>
-                <xsl:value-of select="../@x" />
-                <xsl:text>;</xsl:text>
-                <xsl:text>top:</xsl:text>
-                <xsl:value-of select="../@y" />
-                <xsl:text>;</xsl:text>
+                <xsl:if test="../@x !='' and ../@y !='' ">
+                    <xsl:text>position:absolute;left:</xsl:text>
+                    <xsl:value-of select="../@x" />
+                    <xsl:text>;</xsl:text>
+                    <xsl:text>top:</xsl:text>
+                    <xsl:value-of select="../@y" />
+                    <xsl:text>;</xsl:text>
+                </xsl:if>
             </xsl:attribute> 
-            <img title="{../@name}" width="100%" height="100%" data="{../@wipx}|{../@hipx}" src="{@href}" />
+            <xsl:attribute name="class">
+                <xsl:value-of select="../@style-name" />
+            </xsl:attribute>
+            <img title="{../@name}" width="100%" height="100%" data="|{../@wipx}|{../@hipx}|" src="{@href}" />
+            <xsl:comment>resize image from data if need..</xsl:comment>
         </div>
         <xsl:apply-templates/>
+        </xsl:if>
     </xsl:template>
     
     <xsl:template match="fo:object">
-        <!-- do nothing --> 
+        <!-- do nothing fo:frame handle  /fo:item   --> 
+        <xsl:if test="starts-with(@href,'/fo:item')">
+              <div>
+            <xsl:attribute name="style">
+                <xsl:text>min-height:</xsl:text>
+                <xsl:value-of select="../@height" />
+                <xsl:text>;</xsl:text>
+                <xsl:text>width:</xsl:text>
+                <xsl:value-of select="../@width" />
+                <xsl:text>;</xsl:text>
+                <xsl:if test="../@z-index !='' ">
+                    <xsl:text>z-index:</xsl:text>
+                    <xsl:value-of select="../@z-index" />
+                    <xsl:text>;</xsl:text>
+                </xsl:if>
+                <xsl:text>border:1px solid black;</xsl:text>
+                <xsl:if test="../@x !='' and ../@y !='' ">
+                    <xsl:text>position:absolute;left:</xsl:text>
+                    <xsl:value-of select="../@x" />
+                    <xsl:text>;</xsl:text>
+                    <xsl:text>top:</xsl:text>
+                    <xsl:value-of select="../@y" />
+                    <xsl:text>;</xsl:text>
+                </xsl:if>
+            </xsl:attribute> 
+            <xsl:attribute name="class">
+                <xsl:value-of select="../@style-name" />
+            </xsl:attribute>
+            <xsl:comment>Table calc object start </xsl:comment>
+            <xsl:call-template name="externalobject">
+                        <xsl:with-param name="swaproad" select="@href"/>
+                    </xsl:call-template>
+            <xsl:comment>Table calc object end </xsl:comment>
+        </div>
+        <xsl:if test="../@x !='' and ../@y !='' ">
+        <div>
+            <xsl:attribute name="style">
+                  <xsl:text>height:</xsl:text>
+                <xsl:value-of select="../@height" />
+                <xsl:text>;</xsl:text>
+                <xsl:text>width:</xsl:text>
+                <xsl:value-of select="../@width" />
+                <xsl:text>;</xsl:text>
+            </xsl:attribute>
+            <xsl:comment>spazio tabella</xsl:comment>
+        </div>
+        </xsl:if>
+        </xsl:if>
     </xsl:template>
     
-    <xsl:template match="fo:frame">
-        
+    <xsl:template match="fo:text-box">
+        <div>
+            <xsl:attribute name="class">
+                <xsl:text>text_box  </xsl:text><xsl:value-of select="../@style-name" /> 
+            </xsl:attribute>
+            <xsl:attribute name="style">
+                <xsl:if test="../@z-index !='' ">
+                    <xsl:text>z-index:</xsl:text>
+                    <xsl:value-of select="../@z-index" />
+                    <xsl:text>;</xsl:text>  
+                </xsl:if>
+                <xsl:text>min-height:</xsl:text>
+                <xsl:value-of select="@min-height" />
+                <xsl:text>;</xsl:text>
+                <xsl:text>border:1px solid black;</xsl:text>
+                <xsl:text>width:</xsl:text>
+                <xsl:value-of select="../@width" />
+                <xsl:text>;</xsl:text>
+                <xsl:if test="../@x !='' and ../@y !='' ">
+                    <xsl:text>position:absolute;left:</xsl:text>
+                    <xsl:value-of select="../@x" />
+                    <xsl:text>;</xsl:text>
+                    <xsl:text>top:</xsl:text>
+                    <xsl:value-of select="../@y" />
+                    <xsl:text>;</xsl:text>
+                </xsl:if>
+            </xsl:attribute>
+            <xsl:apply-templates /> 
+        </div>
+    </xsl:template>
+    
+    <!-- anchor-type can be =  char as-char frame page  --> 
+    <xsl:template match="fo:frame[@anchor-type = 'page']">
+    </xsl:template>
+    
+    <xsl:template match="fo:frame[@anchor-type = 'frame']">
+    </xsl:template> 
+    
+    
+    <xsl:template match="fo:frame[@anchor-type = 'as-char' ]">
+    </xsl:template>
+    
+    <xsl:template match="fo:frame[@anchor-type='paragraph' and @anchor-type='char']">
+        <!-- test if next fo:text-box  -->
+        <xsl:variable name="nexttagname">
+            <xsl:value-of select="name(*[1])"/>
+        </xsl:variable>
         <xsl:choose>
             <xsl:when test="fo:image/@href = fo:object/@href">
                 <div>
+                    <xsl:attribute name="class">
+                        <xsl:value-of select="@style-name" />
+                    </xsl:attribute>
                     <xsl:attribute name="style">
-                        <xsl:text>position:absolute;z-index:1;</xsl:text>
+                        <xsl:if test="@z-index !='' ">
+                            <xsl:text>z-index:</xsl:text>
+                            <xsl:value-of select="@z-index" />
+                            <xsl:text>;</xsl:text>  
+                        </xsl:if>
                         <xsl:text>min-height:</xsl:text>
                         <xsl:value-of select="@height" />
                         <xsl:text>;</xsl:text>
@@ -544,12 +661,14 @@ width="16.457cm" name="Oggetto1" y="6.629cm">
                         <xsl:text>width:</xsl:text>
                         <xsl:value-of select="@width" />
                         <xsl:text>;</xsl:text>
-                        <xsl:text>left:</xsl:text>
-                        <xsl:value-of select="@x" />
-                        <xsl:text>;</xsl:text>
-                        <xsl:text>top:</xsl:text>
-                        <xsl:value-of select="@y" />
-                        <xsl:text>;</xsl:text>
+                        <xsl:if test="@x !='' and @y !='' ">
+                            <xsl:text>position:absolute;left:</xsl:text>
+                            <xsl:value-of select="@x" />
+                            <xsl:text>;</xsl:text>
+                            <xsl:text>top:</xsl:text>
+                            <xsl:value-of select="@y" />
+                            <xsl:text>;</xsl:text>
+                        </xsl:if>
                     </xsl:attribute> 
                     <xsl:call-template name="externalobject">
                         <xsl:with-param name="swaproad" select="fo:object/@href"/>
@@ -572,18 +691,22 @@ width="16.457cm" name="Oggetto1" y="6.629cm">
     <xsl:template name="render_space">
         <xsl:param name="hispace"/>
         <xsl:param name="wispace"/>
-        <!--  outside parent div position absolute -->
+        <!--  outside parent div position absolute <xsl:text>min-height:</xsl:text>
+        <xsl:value-of select="$hispace"/>
+        <xsl:text>;</xsl:text> <xsl:text>width:</xsl:text><xsl:value-of select="$wispace"/><xsl:text>;</xsl:text>
+        <xsl:text>height:</xsl:text><xsl:value-of select="$hispace"/><xsl:text>;</xsl:text>-->
         <div>
             <xsl:attribute name="style">
-                <xsl:text>position:relative;z-index:-100;</xsl:text>
-                <xsl:text>min-height:</xsl:text><xsl:value-of select="$hispace"/><xsl:text>;</xsl:text>
-                <xsl:text>width:100%;</xsl:text>
+                <xsl:text>position:static;z-index:-100;</xsl:text>
             </xsl:attribute> 
+            <xsl:attribute name="class">
+                <xsl:text>space_frame</xsl:text>
+            </xsl:attribute>
             <!--  start -->
             <xsl:for-each select="fo:frame">
                 <xsl:sort select="@xpx" sort="ascending" />
                 <xsl:if test="position() = last()"> <!-- {@xpx}  + @hipx -->
-                    <img width="10px" height="{@xpx}px"  src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" />
+                    <img width="1px" height="{@xpx}px"  src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" />
                     <!-- <p><xsl:value-of select="@xpx"/>:<xsl:value-of select="@hipx"/> ultimo <xsl:value-of select="@xpx + @hipx"/></p> -->
                 </xsl:if>
             </xsl:for-each>
@@ -592,9 +715,13 @@ width="16.457cm" name="Oggetto1" y="6.629cm">
         </div>
     </xsl:template>
  
+ 
+ 
     <xsl:template match="fo:root/fo:obj">
         <!-- do nothing --> 
     </xsl:template>
+    
+    
     
     
     <!-- included on  xml external object calc charts  or elese .. fo:spreadsheet -->
@@ -607,31 +734,31 @@ width="16.457cm" name="Oggetto1" y="6.629cm">
             <xsl:text> Draw Object nr:</xsl:text>
             <xsl:value-of select="$nextsteep"/>
         </xsl:comment>
-        <xsl:if test="$nextsteep = 1">
+        <xsl:if test="$nextsteep = '1'">
             <xsl:call-template name="cssinline">
                 <xsl:with-param name="nodeselectitem" select="'1'"/>
             </xsl:call-template>
             <xsl:apply-templates select="//fo:item/fo:obj-1/fo:document-content/fo:body/fo:spreadsheet"/>
         </xsl:if>
-        <xsl:if test="$nextsteep = 2">
+        <xsl:if test="$nextsteep = '2'">
             <xsl:call-template name="cssinline">
                 <xsl:with-param name="nodeselectitem" select="'2'"/>
             </xsl:call-template>
             <xsl:apply-templates select="//fo:item/fo:obj-2/fo:document-content/fo:body/fo:spreadsheet"/>
         </xsl:if>
-        <xsl:if test="$nextsteep = 3">
+        <xsl:if test="$nextsteep = '3'">
             <xsl:call-template name="cssinline">
                 <xsl:with-param name="nodeselectitem" select="'3'"/>
             </xsl:call-template>
             <xsl:apply-templates select="//fo:item/fo:obj-3/fo:document-content/fo:body/fo:spreadsheet"/>
         </xsl:if> 
-        <xsl:if test="$nextsteep = 4">
+        <xsl:if test="$nextsteep = '4'">
             <xsl:call-template name="cssinline">
                 <xsl:with-param name="nodeselectitem" select="'4'"/>
             </xsl:call-template>
             <xsl:apply-templates select="//fo:item/fo:obj-4/fo:document-content/fo:body/fo:spreadsheet"/>
         </xsl:if>   
-        <xsl:if test="$nextsteep = 5">
+        <xsl:if test="$nextsteep = '5'">
             <xsl:call-template name="cssinline">
                 <xsl:with-param name="nodeselectitem" select="'5'"/>
             </xsl:call-template>
@@ -694,53 +821,110 @@ width="16.457cm" name="Oggetto1" y="6.629cm">
         <xsl:text>}</xsl:text>
     </xsl:template>
     
-    
+    <!-- compatible on multiple xslt processor!!!
+    fo:paragraph-properties  
+    fo:text-properties
+    fo:table-properties
+    fo:table-row-properties
+    fo:table-cell-properties
+    fo:graphic-properties
+    -->
+        
+    <!-- forbidden css props!
+ ##########################################################################################
+ SET HER THE CSS NAME DO NOT! USE TO NOT INSERT
+ ##########################################################################################
+    justify-single-word:false;qlev:4;qlev:4;font-size-complex:16pt;font-size-asian 
+    uncomment if browser support lol  clip rect 0 0 0 0 detroy !!   
+    insert css propriety if prowser support and destroy item!
+    -->
+
+    <cms:map>
+        <nocss item="clip" />
+        <nocss item="font-size-complex" />
+        <nocss item="shadow-offset-y" />
+        <nocss item="shadow-offset-x" /> 
+        <nocss item="start-line-spacing-horizontal" />
+        <nocss item="font-name-complex" />
+        <nocss item="font-size-asian" />
+        <nocss item="contrast" />
+        <nocss item="qlev" />
+        <nocss item="flow-with-text" />
+        <nocss item="contrast" />
+        <nocss item="justify-single-word" />
+        <nocss item="gamma" />  
+        <nocss item="country" />  
+        <nocss item="language" />  
+        <nocss item="text-underline-width" />  
+        <nocss item="font-weight-asian" />  
+        <nocss item="orphans" />  
+        <nocss item="widows" /> 
+        <nocss item="horizontal-rel" />
+    </cms:map>  
+
     <xsl:template name="loopcss-items">
         <xsl:param name="nodeselectitem"/>
-        <!-- compatible on multiple xslt processor!!!
-        fo:paragraph-properties  
-        fo:text-properties
-        fo:table-properties
-        fo:table-row-properties
-        fo:table-cell-properties
-        fo:graphic-properties
-        -->
         <xsl:choose>
             <xsl:when test="$nodeselectitem='fo:graphic-properties'">
                 <xsl:for-each select="fo:graphic-properties/@*">
-                    <xsl:value-of select="name(.)" />
-                    <xsl:text>:</xsl:text>
-                    <xsl:value-of select="." />
-                    <xsl:text>;</xsl:text>
+                    <xsl:choose>
+                        <xsl:when test="document('')/xsl:stylesheet/cms:map//nocss/@item = name(.) ">
+                            <xsl:text> </xsl:text> <!-- nice space insert lol -->
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="name(.)" />
+                            <xsl:text>:</xsl:text>
+                            <xsl:value-of select="." />
+                            <xsl:text>;</xsl:text>
+                        </xsl:otherwise>
+                    </xsl:choose>
                 </xsl:for-each>
             </xsl:when>
             <xsl:when test="$nodeselectitem='fo:text-properties'">
                 <xsl:for-each select="fo:text-properties/@*">
-                    <xsl:value-of select="name(.)" />
-                    <xsl:text>:</xsl:text>
-                    <xsl:value-of select="." />
-                    <xsl:text>;</xsl:text>
+                    <xsl:choose>
+                        <xsl:when test="document('')/xsl:stylesheet/cms:map//nocss/@item = name(.) ">
+                            <xsl:text> </xsl:text> <!-- nice space insert lol -->
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="name(.)" />
+                            <xsl:text>:</xsl:text>
+                            <xsl:value-of select="." />
+                            <xsl:text>;</xsl:text>
+                        </xsl:otherwise>
+                    </xsl:choose>
                 </xsl:for-each>
             </xsl:when>
             
             <!--  paragraph having sub text if having true take propriety!
-            <fo:style family="paragraph" parent-style-name="Table_20_Heading" qlev="3" name="P7">
-            <fo:paragraph-properties text-align="start" qlev="4" justify-single-word="false"></fo:paragraph-properties>
-                 <fo:text-properties font-style="italic" font-weight-asian="normal" text-shadow="none" font-size-complex="12pt" font-name="Thorndale" font-weight="normal" color="#ffffff" qlev="4" text-underline-style="none" text-outline="false" text-line-through-style="none" font-style-asian="italic" font-weight-complex="normal" font-style-complex="italic" font-size-asian="12pt" text-overline-color="font-color" text-overline-style="none" font-size="12pt"></fo:text-properties>
-            </fo:style> -->
+            -->
             
             <xsl:when test="$nodeselectitem='fo:paragraph-properties'">
                 <xsl:for-each select="fo:paragraph-properties/@*">
-                    <xsl:value-of select="name(.)" />
-                    <xsl:text>:</xsl:text>
-                    <xsl:value-of select="." />
-                    <xsl:text>;</xsl:text>
+                    <xsl:choose>
+                        <xsl:when test="document('')/xsl:stylesheet/cms:map//nocss/@item = name(.) ">
+                            <xsl:text> </xsl:text> <!-- nice space insert lol -->
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="name(.)" />
+                            <xsl:text>:</xsl:text>
+                            <xsl:value-of select="." />
+                            <xsl:text>;</xsl:text>
+                        </xsl:otherwise>
+                    </xsl:choose>
                 </xsl:for-each>
                 <xsl:for-each select="fo:text-properties/@*">
-                    <xsl:value-of select="name(.)" />
-                    <xsl:text>:</xsl:text>
-                    <xsl:value-of select="." />
-                    <xsl:text>;</xsl:text>
+                    <xsl:choose>
+                        <xsl:when test="document('')/xsl:stylesheet/cms:map//nocss/@item = name(.) ">
+                            <xsl:text> </xsl:text> <!-- nice space insert lol -->
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="name(.)" />
+                            <xsl:text>:</xsl:text>
+                            <xsl:value-of select="." />
+                            <xsl:text>;</xsl:text>
+                        </xsl:otherwise>
+                    </xsl:choose>
                 </xsl:for-each>
             </xsl:when>
             <xsl:when test="$nodeselectitem='fo:table-properties'">
@@ -786,11 +970,6 @@ width="16.457cm" name="Oggetto1" y="6.629cm">
        <xsl:value-of select="name()"/> 
     </xsl:attribute> @name='LHSMenu']"   --> 
     <xsl:template name="timegenerator">
-        <h4>
-            <xsl:text>Param  oggiarriva:</xsl:text><xsl:value-of select="$oggiarriva"/> 
-        </h4>
-        
-        
         <xsl:for-each select="//*[@converted-h !='']">
             <xsl:comment>
                 <xsl:text>Time </xsl:text>
