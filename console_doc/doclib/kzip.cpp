@@ -38,8 +38,11 @@
 /// separate on conflict
 #endif
 
+//// qt5 + new xcode maverik ...
 #if defined(Q_OS_UNIX)
+#if !defined(Q_OS_MAC) 
 #include <sys/vfs.h>
+#endif
 #endif
 
 #if defined(Q_OS_MAC)
