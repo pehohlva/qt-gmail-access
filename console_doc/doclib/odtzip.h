@@ -4,6 +4,8 @@
  *
  * Created on 8. November 2013, 11:55
  */
+ 
+ //// memo union xml file http://sourceforge.net/p/qtexcel-xslt/code/HEAD/tree/_odbc_wizard/browser.cpp#l615
 
 #ifndef ODTZIP_H
 #define	ODTZIP_H
