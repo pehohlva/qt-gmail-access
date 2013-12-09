@@ -1,0 +1,56 @@
+
+
+xslt convert running..
+
+bool XsltVersion1::TransformXSLT(const QString stylexslt, const QString xmlfiledata) {
+
+    /// params = param
+    QString infilexslt = stylexslt;
+    QString outfilexml = xmlfiledata;
+    QString resulterxml = TEMPFILEXSLTRESULTS;
+    QString catnummer = QString("\"%1\"").arg(Tools::TimeNow());
+    QByteArray nummero = catnummer.toLocal8Bit();
+    QString catnummer1 = QString("\"%1\"").arg(Tools::QTime_Null());
+    QByteArray nummero1 = catnummer1.toLocal8Bit();
+
+    QString success = "";
+    const char* params[6];
+    params[0] = "NowTime";
+    params[1] = nummero.data();
+    params[2] = "UnixTime";
+    params[3] = nummero1.data();
+    params[4] = NULL;
+    params[5] = NULL;
+
+    /* ######################################### */
+    xsltStylesheetPtr cur = NULL;
+    xmlDocPtr doc, outputDoc;
+    xmlSubstituteEntitiesDefault(1);
+    xmlLoadExtDtdDefaultValue = 1;
+    /* ######################################### */
+    char* xslt_errors;
+    xsltSetGenericErrorFunc(&xslt_errors, qt_libxml_error_handler);
+    xmlSetGenericErrorFunc(&xslt_errors, qt_libxml_error_handler);
+    xsltSetGenericDebugFunc(&xslt_errors, qt_libxml_error_handler);
+    QByteArray gocharxslt = infilexslt.toLocal8Bit();
+    cur = xsltParseStylesheetFile((const xmlChar*) gocharxslt.data());
+    doc = xmlParseFile(QFile::encodeName(outfilexml));
+    outputDoc = xsltApplyStylesheet(cur, doc, params);
+    xmlFreeDoc(doc); /* free ram from xml! */
+    doc = outputDoc; /* swap input and output */
+    FILE* outfile = fopen(QFile::encodeName(resulterxml), "w");
+    xsltSaveResultToFile(outfile, doc, cur);
+    fclose(outfile);
+    xsltFreeStylesheet(cur);
+    xmlFreeDoc(outputDoc);
+    xsltCleanupGlobals();
+    xmlCleanupParser();
+
+    //// read result file and delete 
+    RamBuffer *buffer = new RamBuffer("xslt1result");
+    buffer->LoadFile(TEMPFILEXSLTRESULTS);
+    XMLHTMLRESULT = buffer->fromUtf8();
+    KZIPDEBUG() << " end XMLHTMLRESULT " << XMLHTMLRESULT.size();
+    KZIPDEBUG() << " endfile " << TEMPFILEXSLTRESULTS;
+    return (XMLHTMLRESULT.size() > 11) ? true : false;
+}
