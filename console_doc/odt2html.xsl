@@ -76,6 +76,7 @@
                     <div id="Page">
                     <xsl:if test="$debugcss = '0'">
                         <xsl:apply-templates select="/fo:root/fo:document-content/fo:body/fo:text"/> 
+                         <xsl:apply-templates select="/fo:root/fo:document-content/fo:body/fo:spreadsheet"/> 
                     </xsl:if>
                     </div>
                 </div>
