@@ -38,7 +38,7 @@
     <xsl:variable name="debugmy" select="'0'"></xsl:variable>
     <xsl:variable name="onlymastercss" select="'0'"></xsl:variable>
     <xsl:variable name="debugcss" select="'0'"></xsl:variable>
-    <xsl:variable name="ConvertTime" select="/fo:root/fo:document-meta/@converted-h"></xsl:variable>
+    <xsl:variable name="ConvertTime" select="/fo:root/@dateconvert"></xsl:variable>
     <xsl:variable name="TotalPages" select="//fo:meta/fo:document-statistic/@page-count"></xsl:variable>
     <xsl:variable name="Creator" select="//fo:meta/fo:creator"></xsl:variable>
     <xsl:variable name="InitialCreator" select="//fo:meta/fo:initial-creator"></xsl:variable>
