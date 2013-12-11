@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+                xmlns:fo="http://www.w3.org/1999/XSL/Format" 
+                xmlns:cms="http://www.freeroad.ch/2013/CMSFormat" 
                 xmlns:dc="http://purl.org/dc/elements/1.1/" 
                 xmlns:fn="http://www.w3.org/2005/xpath-functions"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema" 
                 xmlns:fox="http://xmlgraphics.apache.org/fop/extensions"
-                xmlns:fo="http://www.w3.org/1999/XSL/Format" 
                 xmlns:int="http://catcode.com/odf_to_xhtml/internal" 
                 xmlns:math="http://www.w3.org/1998/Math/MathML" 
                 xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0" 
                 xmlns:xforms="http://www.w3.org/2002/xforms" 
                 xmlns:xlink="http://www.w3.org/1999/xlink" 
-                xmlns:cms="http://www.freeroad.ch/2013/CMSFormat" 
+                exclude-result-prefixes="fo cms"
                 version="1.0">
     <!-- 
      todo grep tabstop widht from meta and insert as param on root tagname
@@ -139,7 +140,7 @@
     </xsl:template>
 
     <xsl:template match="fo:tab">
-        <img  data="render93" class="tab"  width="75px" height="1px" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="text:tab" />
+        <img  data="render93" class="tab"  width="42px" height="12px" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="text:tab" />
     </xsl:template> 
       
       
@@ -211,7 +212,26 @@
     <!--  XXXXXXXXXXX style section to table XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  -->
     
     
+    
+    <xsl:template name="ground_sheet">
+        <div class="shapes">
+            <xsl:apply-templates/>
+        </div>
+    </xsl:template>
+    
+    <xsl:template name="fo:shapes">
+            <div class="shapes">
+            <xsl:apply-templates/>
+        </div>
+    </xsl:template>
+    
+    
     <xsl:template match="fo:table">
+         <!--   test fo:shapes -->
+             <xsl:if test="fo:shapes">
+                <xsl:call-template name="ground_sheet" />
+            </xsl:if>
+        
         <xsl:variable name="nametable">
             <xsl:value-of select="@style-name"/>
         </xsl:variable>
@@ -359,6 +379,7 @@
             </xsl:text>
             div.space_frame { background-color:transparent; }
             div.text_box { padding:5px; }
+            div.shapes { position:relative; }  
             div.frame_in_relative { position:relative;min-height:<xsl:value-of select="$MinimumHeightPara"/>; }  
             div.paragraph_frame {position:static;min-height:<xsl:value-of select="$MinimumHeightPara"/>; }  
             <xsl:value-of select="$lineBreak"/>
@@ -626,6 +647,9 @@
             <xsl:apply-templates /> 
         </div>
     </xsl:template>
+    
+    
+    
     
     <!-- anchor-type can be =  char as-char frame page  --> 
     <xsl:template match="fo:frame[@anchor-type = 'page']">
@@ -971,26 +995,13 @@
        <xsl:value-of select="name()"/> 
     </xsl:attribute> @name='LHSMenu']"   --> 
     <xsl:template name="timegenerator">
-        <xsl:for-each select="//*[@converted-h !='']">
+        <xsl:for-each select="//fo:graphic-properties/@*">
             <xsl:comment>
-                <xsl:text>Time </xsl:text>
-                <xsl:value-of select="name()"/> 
-                <xsl:value-of select="@converted-h"/>
-            </xsl:comment>
-            <xsl:value-of select="$lineBreak"/>
-        </xsl:for-each> 
-
-        <xsl:for-each select="//fo:document-meta/fo:meta/*[@qlev =3]">
-            <xsl:comment>
-                <xsl:text>Meta Info:</xsl:text>  
-                <xsl:value-of select="name()"/> 
-                <xsl:text>  / </xsl:text>
-                <xsl:value-of select="."/>
+                <xsl:text>Name:</xsl:text>  
+                <xsl:value-of select="concat(name(), ' : ', .)"/>
             </xsl:comment>
             <xsl:value-of select="$lineBreak"/>
         </xsl:for-each>
-
-
     </xsl:template>
 
     
