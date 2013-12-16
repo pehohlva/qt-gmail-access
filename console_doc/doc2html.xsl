@@ -122,6 +122,14 @@
     <xsl:template match="fo:root">
     </xsl:template>
     
+    
+    <xsl:template match="fo:css">
+        <xsl:text>.</xsl:text><xsl:value-of select="@class"/><xsl:text> { font-style:</xsl:text><xsl:value-of select="@font"/> <xsl:text>; }</xsl:text>
+    </xsl:template>
+    
+     <xsl:template match="fo:pagemaster">
+    </xsl:template>
+    
     <xsl:template match="fo:office">
         <xsl:apply-templates/>
     </xsl:template>
@@ -144,11 +152,14 @@
                 table { width:100%; }
                 div { position:static; }
                 #WrapperPage { padding:1.4cm; width:22cm;background-color:#fff;margin-left:auto;margin-right:auto; }
-                
-                
             </xsl:text>
+            <xsl:value-of select="$lineBreak"/>
+            <xsl:if test="$onlymastercss = '0'">
+                <xsl:apply-templates select="/fo:root/fo:head/fo:style"/>
+            </xsl:if>
+            <xsl:value-of select="$lineBreak"/>
         </style> 
-        
+         <xsl:value-of select="$lineBreak"/>
           <xsl:comment>
                 This file handle doc binary xml version
                 New Revision from Peter Hohl 2013 pehohlva@gmail.com
@@ -167,7 +178,7 @@
                 See the License for the specific language governing permissions and
                 limitations under the License.
             </xsl:comment> 
-            
+           <xsl:value-of select="$lineBreak"/> 
     </xsl:template>
     
     <xsl:template name="info_debug">
