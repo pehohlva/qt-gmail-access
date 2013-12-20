@@ -151,7 +151,7 @@
                 body { background-color:#A0A0A0; }
                 table { width:100%; }
                 div { position:static; }
-                #WrapperPage { padding:1.4cm; width:22cm;background-color:#fff;margin-left:auto;margin-right:auto; }
+                #WrapperPage { padding:1.4cm;min-height:21cm;width:22cm;background-color:#fff;margin-left:auto;margin-right:auto; }
             </xsl:text>
             <xsl:value-of select="$lineBreak"/>
             <xsl:if test="$onlymastercss = '0'">
