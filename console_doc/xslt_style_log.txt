@@ -1,3 +1,3 @@
 Created on 18 dez 2013, 13:56
-callo mio
 log from style update.
+fix min-height document to doc binary version.
